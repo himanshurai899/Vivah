@@ -1,1 +1,65 @@
-[]
+[
+  {
+    "id": "budget-venue",
+    "category": "Venue and Mandap",
+    "planned": 450000,
+    "actual": 0,
+    "paid": 0
+  },
+  {
+    "id": "budget-catering",
+    "category": "Catering and Sweets",
+    "planned": 650000,
+    "actual": 0,
+    "paid": 0
+  },
+  {
+    "id": "budget-decor",
+    "category": "Decor and Flowers",
+    "planned": 275000,
+    "actual": 0,
+    "paid": 0
+  },
+  {
+    "id": "budget-photo",
+    "category": "Photography and Video",
+    "planned": 220000,
+    "actual": 0,
+    "paid": 0
+  },
+  {
+    "id": "budget-ritual",
+    "category": "Ritual Samagri and Pandit",
+    "planned": 90000,
+    "actual": 0,
+    "paid": 0
+  },
+  {
+    "id": "budget-band",
+    "category": "Band, DJ, and Entertainment",
+    "planned": 180000,
+    "actual": 0,
+    "paid": 0
+  },
+  {
+    "id": "budget-accommodation",
+    "category": "Accommodation",
+    "planned": 300000,
+    "actual": 0,
+    "paid": 0
+  },
+  {
+    "id": "budget-travel",
+    "category": "Travel and Pickup",
+    "planned": 160000,
+    "actual": 0,
+    "paid": 0
+  },
+  {
+    "id": "budget-gifts",
+    "category": "Tilak Gifts and Return Gifts",
+    "planned": 250000,
+    "actual": 0,
+    "paid": 0
+  }
+]

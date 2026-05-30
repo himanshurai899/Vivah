@@ -1,16 +1,37 @@
 [
   {
-    "id": "template-1",
-    "name": "Event Invitation",
+    "id": "whatsapp-save-date",
+    "name": "Save the Date",
     "category": "Invitation",
-    "message": "Dear [Name], you are warmly invited to our wedding celebration on [Date] at [Venue]. Please RSVP at your earliest convenience.",
+    "message": "Namaste. With blessings of our elders, we invite you to save the date for the Vivah Sanskar on 25 November 2026 in Vadodara. Detailed schedule will follow.",
     "active": true
   },
   {
-    "id": "template-2",
+    "id": "whatsapp-rsvp",
+    "name": "RSVP Reminder",
+    "category": "RSVP Reminder",
+    "message": "Namaste. Please confirm your attendance and guest count for the wedding functions. Also share if accommodation or pickup is required.",
+    "active": true
+  },
+  {
+    "id": "whatsapp-hotel",
+    "name": "Accommodation Info",
+    "category": "Hotel Info",
+    "message": "Your accommodation details are ready. Please keep your ID proof handy for check-in and contact the accommodation desk on arrival.",
+    "active": true
+  },
+  {
+    "id": "whatsapp-pickup",
     "name": "Pickup Reminder",
     "category": "Pickup Reminder",
-    "message": "Reminder: Your pickup for the wedding reception is scheduled at [Time]. Please be ready by [Location].",
+    "message": "Pickup reminder: Please share live location after arrival and keep your phone reachable. Our pickup coordinator will contact you shortly.",
+    "active": true
+  },
+  {
+    "id": "whatsapp-schedule",
+    "name": "Function Schedule Update",
+    "category": "Schedule Update",
+    "message": "Schedule update: Please arrive on time for the next function. Elders and outstation guests may contact the family desk for assistance.",
     "active": true
   }
 ]

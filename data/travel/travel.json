@@ -1,1 +1,38 @@
-[]
+[
+  {
+    "id": "travel-family-train",
+    "guestName": "Patna Family Group",
+    "arrivalDate": "2026-11-23",
+    "arrivalTime": "08:30",
+    "transportType": "Train",
+    "pnr": "",
+    "pickupRequired": true,
+    "pickupCoordinator": "Travel Lead",
+    "vehicleNumber": "",
+    "status": "Pending"
+  },
+  {
+    "id": "travel-delhi-flight",
+    "guestName": "Delhi Guest Group",
+    "arrivalDate": "2026-11-24",
+    "arrivalTime": "12:15",
+    "transportType": "Flight",
+    "pnr": "",
+    "pickupRequired": true,
+    "pickupCoordinator": "Pickup Desk",
+    "vehicleNumber": "",
+    "status": "Pending"
+  },
+  {
+    "id": "travel-local-cabs",
+    "guestName": "Local Elder Pickup",
+    "arrivalDate": "2026-11-25",
+    "arrivalTime": "17:30",
+    "transportType": "Cab",
+    "pnr": "",
+    "pickupRequired": true,
+    "pickupCoordinator": "Hospitality Lead",
+    "vehicleNumber": "",
+    "status": "Pending"
+  }
+]

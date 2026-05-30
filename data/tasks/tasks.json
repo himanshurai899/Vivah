@@ -1,1 +1,62 @@
-[]
+[
+  {
+    "id": "tasks-pandit-samagri",
+    "task": "Confirm pandit ji and final samagri list",
+    "owner": "Family Ritual Lead",
+    "backupPerson": "Groom Uncle",
+    "deadline": "2026-11-10",
+    "status": "Pending",
+    "priority": "Critical",
+    "comments": "Collect separate lists for tilak, mandapachhadan, havan, phere, and griha pravesh."
+  },
+  {
+    "id": "tasks-function-sequence",
+    "task": "Lock function sequence and timings",
+    "owner": "Wedding Coordinator",
+    "backupPerson": "Bride Cousin",
+    "deadline": "2026-11-12",
+    "status": "Pending",
+    "priority": "High",
+    "comments": "Share final flow with both families and vendors."
+  },
+  {
+    "id": "tasks-garlands",
+    "task": "Order jaimala and backup garlands",
+    "owner": "Decor Lead",
+    "backupPerson": "Bride Brother",
+    "deadline": "2026-11-20",
+    "status": "Pending",
+    "priority": "High",
+    "comments": "Keep backup garlands near stage."
+  },
+  {
+    "id": "tasks-baraat-route",
+    "task": "Finalize baraat route and arrival window",
+    "owner": "Baraat Coordinator",
+    "backupPerson": "Groom Friend",
+    "deadline": "2026-11-18",
+    "status": "Pending",
+    "priority": "High",
+    "comments": "Confirm band, vehicle, parking, and police or venue restrictions."
+  },
+  {
+    "id": "tasks-guest-rooming",
+    "task": "Prepare guest rooming list",
+    "owner": "Accommodation Lead",
+    "backupPerson": "Travel Lead",
+    "deadline": "2026-11-15",
+    "status": "Pending",
+    "priority": "High",
+    "comments": "Separate senior citizens, families with children, and outstation guests."
+  },
+  {
+    "id": "tasks-prasad-sweets",
+    "task": "Book sweets, prasad, and dry fruit hampers",
+    "owner": "Hospitality Lead",
+    "backupPerson": "Groom Aunt",
+    "deadline": "2026-11-14",
+    "status": "Pending",
+    "priority": "Medium",
+    "comments": "Include tilak boxes and return gifts."
+  }
+]

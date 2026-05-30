@@ -1,1 +1,25 @@
-[]
+[
+  {
+    "id": "room-ritual-team",
+    "propertyName": "Family Guest Hotel",
+    "roomNumber": "To assign",
+    "assignedGuests": [
+      "Pandit Ji",
+      "Ritual Assistants"
+    ],
+    "checkInDate": "2026-11-23",
+    "checkOutDate": "2026-11-26",
+    "status": "Pending"
+  },
+  {
+    "id": "room-elder-group",
+    "propertyName": "Guest House Block",
+    "roomNumber": "Ground floor rooms",
+    "assignedGuests": [
+      "Senior family guests"
+    ],
+    "checkInDate": "2026-11-24",
+    "checkOutDate": "2026-11-27",
+    "status": "Pending"
+  }
+]

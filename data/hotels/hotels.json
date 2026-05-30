@@ -1,1 +1,41 @@
-[]
+[
+  {
+    "id": "hotels-family-hotel",
+    "propertyName": "Family Guest Hotel",
+    "propertyType": "Hotel",
+    "address": "Vadodara",
+    "contactPerson": "Hotel Desk",
+    "phone": "",
+    "roomsAvailable": 20,
+    "roomsAllocated": 0,
+    "checkInDate": "2026-11-23",
+    "checkOutDate": "2026-11-28",
+    "cost": 180000
+  },
+  {
+    "id": "hotels-relative-home",
+    "propertyName": "Relative Home Stay",
+    "propertyType": "Relative Home",
+    "address": "Vadodara",
+    "contactPerson": "Family Host",
+    "phone": "",
+    "roomsAvailable": 8,
+    "roomsAllocated": 0,
+    "checkInDate": "2026-11-22",
+    "checkOutDate": "2026-11-28",
+    "cost": 0
+  },
+  {
+    "id": "hotels-guest-house",
+    "propertyName": "Guest House Block",
+    "propertyType": "Guest House",
+    "address": "Near Wedding Venue",
+    "contactPerson": "Accommodation Desk",
+    "phone": "",
+    "roomsAvailable": 12,
+    "roomsAllocated": 0,
+    "checkInDate": "2026-11-24",
+    "checkOutDate": "2026-11-27",
+    "cost": 90000
+  }
+]

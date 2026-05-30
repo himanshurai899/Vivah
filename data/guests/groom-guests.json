@@ -1,1 +1,19 @@
-[]
+[
+  {
+    "name": "Yash Gohil",
+    "familyName": "Gohil Family",
+    "mobile": "",
+    "city": "Vadodara",
+    "state": "Gujarat",
+    "relationship": "Friend",
+    "side": "Groom",
+    "count": 1,
+    "accommodationRequired": false,
+    "pickupRequired": false,
+    "invitationSent": true,
+    "rsvpStatus": "Confirmed",
+    "giftReceived": false,
+    "specialNotes": "",
+    "id": "guests-1780162460215"
+  }
+]

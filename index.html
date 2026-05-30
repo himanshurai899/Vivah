@@ -22,7 +22,7 @@
           <span class="card-border"></span>
         </div>
         <div class="card-inner">
-          <img src="assets/icons/logo-mark.svg" alt="Bride and Groom initials logo" width="68" height="68">
+          <img src="assets/icons/logo-mark.svg" alt="S and H initials logo" width="68" height="68">
           <span>Vivah</span>
           <small>Wedding OS</small>
         </div>
@@ -35,7 +35,7 @@
       <header class="topbar">
         <div class="topbar-heading">
           <a class="brand" href="#dashboard" aria-label="Vivah dashboard">
-            <img class="brand-mark" src="assets/icons/logo-mark.svg" alt="Bride and Groom initials logo" width="42" height="42">
+            <img class="brand-mark" src="assets/icons/logo-mark.svg" alt="S and H initials logo" width="42" height="42">
             <span>
               <strong>Vivah</strong>
               <small>Wedding OS</small>
@@ -58,42 +58,28 @@
       <nav class="navbar" id="appNav" aria-label="Primary navigation">
         <div class="nav-group">
           <span class="nav-group-title">Core</span>
-          <div class="nav-control" data-route-category="core">
-            <button class="nav-trigger" type="button" aria-haspopup="menu" aria-expanded="false">Dashboard ▾</button>
-            <ul class="nav-menu" role="menu">
-              <li role="menuitem" class="nav-item" data-route="dashboard">Dashboard</li>
-              <li role="menuitem" class="nav-item" data-route="functions">Functions</li>
-              <li role="menuitem" class="nav-item" data-route="guests">Guests</li>
-              <li role="menuitem" class="nav-item" data-route="invitation">Invitation</li>
-              <li role="menuitem" class="nav-item" data-route="vendors">Vendors</li>
-            </ul>
-          </div>
+          <a class="nav-link" href="#dashboard" data-route="dashboard">Dashboard</a>
+          <a class="nav-link" href="#functions" data-route="functions">Functions</a>
+          <a class="nav-link" href="#guests" data-route="guests">Guests</a>
+          <a class="nav-link" href="#invitation" data-route="invitation">Invitation</a>
+          <a class="nav-link" href="#vendors" data-route="vendors">Vendors</a>
         </div>
         <div class="nav-group">
           <span class="nav-group-title">Operations</span>
-          <div class="nav-control" data-route-category="operations">
-            <button class="nav-trigger" type="button" aria-haspopup="menu" aria-expanded="false">Accommodation ▾</button>
-            <ul class="nav-menu" role="menu">
-              <li role="menuitem" class="nav-item" data-route="accommodation">Accommodation</li>
-              <li role="menuitem" class="nav-item" data-route="travel">Travel</li>
-              <li role="menuitem" class="nav-item" data-route="rituals">Rituals</li>
-              <li role="menuitem" class="nav-item" data-route="responsibilities">Responsibilities</li>
-              <li role="menuitem" class="nav-item" data-route="finance">Finance</li>
-            </ul>
-          </div>
+          <a class="nav-link" href="#accommodation" data-route="accommodation">Stay</a>
+          <a class="nav-link" href="#travel" data-route="travel">Travel</a>
+          <a class="nav-link" href="#tasks" data-route="tasks">Tasks</a>
+          <a class="nav-link" href="#rituals" data-route="rituals">Rituals</a>
+          <a class="nav-link" href="#responsibilities" data-route="responsibilities">Roles</a>
+          <a class="nav-link" href="#finance" data-route="finance">Finance</a>
         </div>
         <div class="nav-group">
           <span class="nav-group-title">Command Center</span>
-          <div class="nav-control" data-route-category="commandCenter">
-            <button class="nav-trigger" type="button" aria-haspopup="menu" aria-expanded="false">Reports ▾</button>
-            <ul class="nav-menu" role="menu">
-              <li role="menuitem" class="nav-item" data-route="reports">Reports</li>
-              <li role="menuitem" class="nav-item" data-route="commandCenter">Command Center</li>
-              <li role="menuitem" class="nav-item" data-route="alerts">Alerts</li>
-              <li role="menuitem" class="nav-item" data-route="checkin">Check-In</li>
-              <li role="menuitem" class="nav-item" data-route="whatsapp">WhatsApp</li>
-            </ul>
-          </div>
+          <a class="nav-link" href="#reports" data-route="reports">Reports</a>
+          <a class="nav-link" href="#commandCenter" data-route="commandCenter">Live</a>
+          <a class="nav-link" href="#alerts" data-route="alerts">Alerts</a>
+          <a class="nav-link" href="#checkin" data-route="checkin">Check-In</a>
+          <a class="nav-link" href="#whatsapp" data-route="whatsapp">WhatsApp</a>
         </div>
       </nav>
       <section id="alertStrip" class="alert-strip" aria-live="polite"></section>

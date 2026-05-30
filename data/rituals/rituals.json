@@ -1,1 +1,188 @@
-[]
+[
+  {
+    "id": "rituals-tilak",
+    "name": "Tilak",
+    "description": "Bride family blesses the groom and presents ceremonial gifts.",
+    "requiredItems": [
+      "Tilak paste",
+      "Akshat",
+      "Sweets",
+      "Coconut",
+      "Groom clothes"
+    ],
+    "responsiblePerson": "Bride Side Lead",
+    "budget": 25000,
+    "status": "Pending",
+    "notes": "Confirm gift list with elders before packing."
+  },
+  {
+    "id": "rituals-mandapachhadan",
+    "name": "Mandapachhadan",
+    "description": "Sacred mandap preparation and purification.",
+    "requiredItems": [
+      "Bamboo poles",
+      "Banana leaves",
+      "Mango leaves",
+      "Kalash",
+      "Gangajal"
+    ],
+    "responsiblePerson": "Pandit Ji",
+    "budget": 12000,
+    "status": "Pending",
+    "notes": "Coordinate timing with venue decorator."
+  },
+  {
+    "id": "rituals-matkor",
+    "name": "Matkor",
+    "description": "Ceremonial soil collection by family women with folk songs.",
+    "requiredItems": [
+      "Earthen pot",
+      "Diyas",
+      "Haldi",
+      "Kumkum",
+      "Folk song group"
+    ],
+    "responsiblePerson": "Family Ritual Team",
+    "budget": 10000,
+    "status": "Pending",
+    "notes": "Keep transport ready for elders."
+  },
+  {
+    "id": "rituals-haldi",
+    "name": "Haldi",
+    "description": "Turmeric paste ceremony for bride and groom.",
+    "requiredItems": [
+      "Haldi paste",
+      "Rose water",
+      "Mustard oil",
+      "Flower petals",
+      "Yellow dupatta"
+    ],
+    "responsiblePerson": "Bride and Groom Cousins",
+    "budget": 18000,
+    "status": "Pending",
+    "notes": "Keep separate bowls for both sides."
+  },
+  {
+    "id": "rituals-imli-ghutai",
+    "name": "Imli Ghutai",
+    "description": "Traditional groom-side playful ritual before wedding departure.",
+    "requiredItems": [
+      "Tamarind",
+      "Water bowl",
+      "Ritual plate",
+      "Family gifts"
+    ],
+    "responsiblePerson": "Groom Sister",
+    "budget": 5000,
+    "status": "Pending",
+    "notes": "Confirm whether the family wants to include this ritual."
+  },
+  {
+    "id": "rituals-baraat-swagat",
+    "name": "Baraat Swagat",
+    "description": "Welcome of groom and baraatis by bride family.",
+    "requiredItems": [
+      "Aarti thali",
+      "Garlands",
+      "Rose petals",
+      "Welcome drinks"
+    ],
+    "responsiblePerson": "Bride Welcome Team",
+    "budget": 22000,
+    "status": "Pending",
+    "notes": "Assign one person to guide groom family to the stage."
+  },
+  {
+    "id": "rituals-jaimala",
+    "name": "Jaimala",
+    "description": "Bride and groom exchange garlands.",
+    "requiredItems": [
+      "Two garlands",
+      "Stage lights",
+      "Flower shower",
+      "Music cue"
+    ],
+    "responsiblePerson": "Stage Coordinator",
+    "budget": 18000,
+    "status": "Pending",
+    "notes": "Keep backup garlands near the stage."
+  },
+  {
+    "id": "rituals-kanyadaan",
+    "name": "Kanyadaan",
+    "description": "Bride parents formally give the bride in marriage.",
+    "requiredItems": [
+      "Havan samagri",
+      "Kalash",
+      "Flowers",
+      "Rice",
+      "Sacred thread"
+    ],
+    "responsiblePerson": "Pandit Ji",
+    "budget": 15000,
+    "status": "Pending",
+    "notes": "Seat parents near mandap before ritual starts."
+  },
+  {
+    "id": "rituals-laja-homa",
+    "name": "Laja Homa",
+    "description": "Bride offers puffed rice into the sacred fire with groom support.",
+    "requiredItems": [
+      "Lava",
+      "Ghee",
+      "Havan kund",
+      "Wood",
+      "Camphor"
+    ],
+    "responsiblePerson": "Pandit Ji",
+    "budget": 8000,
+    "status": "Pending",
+    "notes": "Keep lava ready before phere."
+  },
+  {
+    "id": "rituals-saptapadi",
+    "name": "Saat Phere and Saptapadi",
+    "description": "Seven sacred rounds and vows around the fire.",
+    "requiredItems": [
+      "Havan fire",
+      "Gathbandhan cloth",
+      "Flowers",
+      "Rice"
+    ],
+    "responsiblePerson": "Pandit Ji",
+    "budget": 10000,
+    "status": "Pending",
+    "notes": "Photography team should be briefed on mandap angles."
+  },
+  {
+    "id": "rituals-sindoor-daan",
+    "name": "Sindoor Daan",
+    "description": "Groom applies sindoor to bride as part of the wedding completion.",
+    "requiredItems": [
+      "Sindoor",
+      "Silver box",
+      "Mangalsutra",
+      "Dupatta"
+    ],
+    "responsiblePerson": "Pandit Ji",
+    "budget": 7000,
+    "status": "Pending",
+    "notes": "Keep sindoor box with trusted family member."
+  },
+  {
+    "id": "rituals-kohbar",
+    "name": "Kohbar",
+    "description": "Post-wedding family ritual and blessings for the couple.",
+    "requiredItems": [
+      "Kohbar room decor",
+      "Diyas",
+      "Sweets",
+      "Family gifts"
+    ],
+    "responsiblePerson": "Groom Family Lead",
+    "budget": 12000,
+    "status": "Pending",
+    "notes": "Prepare room before griha pravesh."
+  }
+]

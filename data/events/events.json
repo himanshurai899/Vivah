@@ -1,1 +1,155 @@
-[]
+[
+  {
+    "id": "events-tilak",
+    "name": "Tilak Ceremony",
+    "date": "2026-11-21",
+    "venue": "Bride Family Home",
+    "startTime": "17:00",
+    "endTime": "20:00",
+    "coordinator": "Bride Side Lead",
+    "budget": 75000,
+    "checklist": [
+      "Tilak thali",
+      "Dry fruits and sweets",
+      "Groom gifts",
+      "Family welcome"
+    ],
+    "notes": "Formal blessing and gift exchange from bride family to groom."
+  },
+  {
+    "id": "events-mandapachhadan",
+    "name": "Mandapachhadan",
+    "date": "2026-11-22",
+    "venue": "Wedding Venue",
+    "startTime": "09:00",
+    "endTime": "11:00",
+    "coordinator": "Pandit Ji",
+    "budget": 25000,
+    "checklist": [
+      "Mandap setup",
+      "Banana leaves",
+      "Kalash",
+      "Mango leaves"
+    ],
+    "notes": "Mandap purification and setup before the main wedding rituals."
+  },
+  {
+    "id": "events-haldi-matkor",
+    "name": "Haldi and Matkor",
+    "date": "2026-11-23",
+    "venue": "Family Courtyard",
+    "startTime": "10:00",
+    "endTime": "13:00",
+    "coordinator": "Family Ritual Team",
+    "budget": 55000,
+    "checklist": [
+      "Haldi paste",
+      "Matkor pot",
+      "Folk songs",
+      "Lunch counter"
+    ],
+    "notes": "Traditional turmeric ceremony and ceremonial soil collection."
+  },
+  {
+    "id": "events-mehendi-sangeet",
+    "name": "Mehendi and Sangeet",
+    "date": "2026-11-24",
+    "venue": "Banquet Hall",
+    "startTime": "17:00",
+    "endTime": "22:30",
+    "coordinator": "Entertainment Lead",
+    "budget": 150000,
+    "checklist": [
+      "Mehendi artists",
+      "DJ sound check",
+      "Dance slots",
+      "Snacks and mocktails"
+    ],
+    "notes": "Mehendi for bride and guests followed by family performances."
+  },
+  {
+    "id": "events-baraat-jaimala",
+    "name": "Baraat and Jaimala",
+    "date": "2026-11-25",
+    "venue": "Wedding Venue Entrance",
+    "startTime": "19:00",
+    "endTime": "21:00",
+    "coordinator": "Baraat Coordinator",
+    "budget": 125000,
+    "checklist": [
+      "Band booking",
+      "Ghodi or car decor",
+      "Welcome aarti",
+      "Jaimala stage"
+    ],
+    "notes": "Groom procession, welcome, and garland exchange."
+  },
+  {
+    "id": "events-vivah-sanskar",
+    "name": "Vivah Sanskar",
+    "date": "2026-11-25",
+    "venue": "Main Mandap",
+    "startTime": "22:00",
+    "endTime": "02:30",
+    "coordinator": "Pandit Ji",
+    "budget": 100000,
+    "checklist": [
+      "Havan samagri",
+      "Kanyadaan setup",
+      "Laja homa items",
+      "Sindoor and mangalsutra"
+    ],
+    "notes": "Core wedding rituals including kanyadaan, phere, laja homa, and sindoor daan."
+  },
+  {
+    "id": "events-vidaai",
+    "name": "Vidaai",
+    "date": "2026-11-26",
+    "venue": "Wedding Venue",
+    "startTime": "06:30",
+    "endTime": "08:00",
+    "coordinator": "Bride Family Lead",
+    "budget": 20000,
+    "checklist": [
+      "Decorated car",
+      "Rice ritual",
+      "Family gifts",
+      "Photography"
+    ],
+    "notes": "Departure ceremony for the bride."
+  },
+  {
+    "id": "events-griha-pravesh",
+    "name": "Griha Pravesh",
+    "date": "2026-11-26",
+    "venue": "Groom Family Home",
+    "startTime": "10:00",
+    "endTime": "12:00",
+    "coordinator": "Groom Family Lead",
+    "budget": 30000,
+    "checklist": [
+      "Aarti thali",
+      "Kalash",
+      "Alta plate",
+      "Welcome sweets"
+    ],
+    "notes": "Bride welcome into groom family home."
+  },
+  {
+    "id": "events-reception",
+    "name": "Reception",
+    "date": "2026-11-27",
+    "venue": "Reception Lawn",
+    "startTime": "19:00",
+    "endTime": "23:00",
+    "coordinator": "Reception Lead",
+    "budget": 250000,
+    "checklist": [
+      "Stage decor",
+      "Catering final count",
+      "Guest seating",
+      "Photo booth"
+    ],
+    "notes": "Post-wedding dinner and family meet-and-greet."
+  }
+]

@@ -1,1 +1,62 @@
-[]
+[
+  {
+    "id": "invitations-couple",
+    "section": "Couple",
+    "title": "Vivah Sanskar",
+    "primaryText": "With blessings of our elders, we invite you to celebrate the wedding.",
+    "description": "Join both families for traditional Bihari wedding functions, rituals, dinner, and blessings.",
+    "date": "2026-11-25",
+    "time": "19:00",
+    "contact": "Family RSVP Desk"
+  },
+  {
+    "id": "invitations-schedule-tilak",
+    "section": "Schedule",
+    "title": "Tilak Ceremony",
+    "primaryText": "21 November 2026, 5:00 PM",
+    "description": "Blessings and ceremonial gift exchange.",
+    "date": "2026-11-21",
+    "time": "17:00",
+    "contact": ""
+  },
+  {
+    "id": "invitations-schedule-haldi",
+    "section": "Schedule",
+    "title": "Haldi and Matkor",
+    "primaryText": "23 November 2026, 10:00 AM",
+    "description": "Traditional haldi ceremony and matkor ritual with family songs.",
+    "date": "2026-11-23",
+    "time": "10:00",
+    "contact": ""
+  },
+  {
+    "id": "invitations-schedule-wedding",
+    "section": "Schedule",
+    "title": "Baraat, Jaimala, and Vivah Sanskar",
+    "primaryText": "25 November 2026, 7:00 PM onwards",
+    "description": "Baraat welcome, jaimala, kanyadaan, phere, and sindoor daan.",
+    "date": "2026-11-25",
+    "time": "19:00",
+    "contact": ""
+  },
+  {
+    "id": "invitations-venue",
+    "section": "Venue",
+    "title": "Vadodara, Gujarat",
+    "primaryText": "Wedding venue details will be shared with confirmed guests.",
+    "description": "Accommodation and pickup details will be coordinated separately for outstation guests.",
+    "date": "",
+    "time": "",
+    "contact": "Travel and Accommodation Desk"
+  },
+  {
+    "id": "invitations-rsvp",
+    "section": "RSVP",
+    "title": "RSVP",
+    "primaryText": "Please confirm attendance with guest count.",
+    "description": "Share accommodation, pickup, and meal preference needs with the family desk.",
+    "date": "",
+    "time": "",
+    "contact": "Family RSVP Desk"
+  }
+]

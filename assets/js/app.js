@@ -4,8 +4,6 @@ const INR = new Intl.NumberFormat("en-IN", {
   maximumFractionDigits: 0
 });
 
-const STORAGE_PREFIX = "vivah:";
-
 const appState = {
   route: "dashboard",
   edit: null,
@@ -68,6 +66,7 @@ const pageTitles = {
   vendors: "Vendors",
   accommodation: "Accommodation",
   travel: "Travel",
+  tasks: "Task Allocation",
   rituals: "Rituals",
   responsibilities: "Responsibilities",
   finance: "Finance",
@@ -86,6 +85,7 @@ const routes = {
   vendors: renderVendors,
   accommodation: renderAccommodation,
   travel: renderTravel,
+  tasks: renderTasks,
   rituals: renderRituals,
   responsibilities: renderResponsibilities,
   finance: renderFinance,
@@ -503,95 +503,13 @@ function bindNavigation() {
     render();
   });
 
-  // New navigation for hoverable/clickable menus
-  // Toggle menu open on trigger click (useful for touch/mobile)
-  nav?.addEventListener("click", (event) => {
-    const trigger = event.target.closest(".nav-trigger");
-    if (trigger) {
-      const control = trigger.closest(".nav-control") || trigger.parentElement;
-      const open = control.classList.toggle("open");
-      trigger.setAttribute("aria-expanded", open ? "true" : "false");
-      return;
-    }
-
-    const item = event.target.closest(".nav-item[data-route]");
-    if (item) {
-      const route = item.dataset.route;
-      if (!routes[route]) {
-        return;
-      }
-      // close any open menus
-      document.querySelectorAll('.nav-group.open, .nav-control.open').forEach((g) => g.classList.remove('open'));
-      if (appState.route !== route) {
-        window.location.hash = `#${route}`;
-        return;
-      }
-      appState.route = route;
-      appState.edit = null;
-      render();
-    }
-  });
-
-  // Close menus when clicking outside
-  document.addEventListener("click", (ev) => {
-    if (ev.target.closest(".nav-group") || ev.target.closest('.nav-control')) return;
-    document.querySelectorAll('.nav-group.open, .nav-control.open').forEach((g) => {
-      g.classList.remove('open');
-      const trig = g.querySelector('.nav-trigger');
-      if (trig) trig.setAttribute('aria-expanded', 'false');
-    });
-  });
-
-  // Hover-intent on desktop: delayed open/close (less sensitive than pure :hover)
-  if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
-    document.querySelectorAll('#appNav .nav-control').forEach((control) => {
-      let openTimer = null;
-      let closeTimer = null;
-      const trigger = control.querySelector('.nav-trigger');
-      const menu = control.querySelector('.nav-menu');
-
-      control.addEventListener('mouseenter', () => {
-        clearTimeout(closeTimer);
-        openTimer = setTimeout(() => {
-          control.classList.add('open');
-          if (trigger) trigger.setAttribute('aria-expanded', 'true');
-        }, 180);
-      });
-
-      control.addEventListener('mouseleave', () => {
-        clearTimeout(openTimer);
-        closeTimer = setTimeout(() => {
-          control.classList.remove('open');
-          if (trigger) trigger.setAttribute('aria-expanded', 'false');
-        }, 300);
-      });
-
-      menu?.addEventListener('mouseenter', () => {
-        clearTimeout(closeTimer);
-      });
-      menu?.addEventListener('mouseleave', () => {
-        closeTimer = setTimeout(() => {
-          control.classList.remove('open');
-          if (trigger) trigger.setAttribute('aria-expanded', 'false');
-        }, 300);
-      });
-    });
-  }
-
   appState.route = getRouteFromHash();
 }
 
 function syncNavDropdowns() {
-  // Update nav menus/triggers to reflect current route
-  document.querySelectorAll("#appNav .nav-control").forEach((control) => {
-    const trigger = control.querySelector('.nav-trigger');
-    const items = Array.from(control.querySelectorAll('.nav-item'));
-    items.forEach((it) => it.removeAttribute('aria-current'));
-    const match = items.find((it) => it.dataset.route === appState.route);
-    if (match) {
-      match.setAttribute('aria-current', 'true');
-      if (trigger) trigger.textContent = (match.textContent || match.dataset.route) + ' ▾';
-    }
+  document.querySelectorAll("#appNav .nav-link[data-route]").forEach((link) => {
+    const isCurrent = link.dataset.route === appState.route;
+    link.setAttribute("aria-current", isCurrent ? "page" : "false");
   });
 }
 
@@ -653,6 +571,7 @@ function render() {
   pageTitle.textContent = pageTitles[appState.route] || titleCase(appState.route);
   renderAlerts();
   routes[appState.route]();
+  insertPageContext();
   syncNavDropdowns();
 }
 
@@ -679,6 +598,216 @@ function playOpeningCardOnce() {
   weddingCardLoader.classList.add("is-playing");
 
   setTimeout(hideLoader, 2200);
+}
+
+function insertPageContext() {
+  const context = pageContext(appState.route);
+  if (!context) {
+    return;
+  }
+
+  const target = app.querySelector(".stats-grid");
+  const html = `
+    <section class="page-context" aria-label="Page relationships">
+      <div>
+        <span class="eyebrow">${escapeHtml(context.label)}</span>
+        <h2>${escapeHtml(context.title)}</h2>
+        <p>${escapeHtml(context.summary)}</p>
+      </div>
+      <div class="relation-strip">
+        ${context.links.map((link) => `
+          <a class="relation-link" href="#${escapeAttribute(link.route)}">
+            <strong>${escapeHtml(link.label)}</strong>
+            <small>${escapeHtml(link.detail)}</small>
+          </a>
+        `).join("")}
+      </div>
+    </section>
+  `;
+
+  if (target) {
+    target.insertAdjacentHTML("afterend", html);
+    return;
+  }
+
+  app.insertAdjacentHTML("afterbegin", html);
+}
+
+function pageContext(route) {
+  const spend = totals();
+  const confirmedGuests = appState.data.guests
+    .filter((guest) => guest.rsvpStatus === "Confirmed")
+    .reduce((total, guest) => total + Number(guest.count || 0), 0);
+  const totalGuestCount = appState.data.guests.reduce((total, guest) => total + Number(guest.count || 0), 0);
+  const openTasks = appState.data.tasks.filter((task) => task.status !== "Completed").length;
+  const pendingRituals = appState.data.rituals.filter((ritual) => ritual.status !== "Completed").length;
+  const openRooms = Math.max(sum(appState.data.hotels, "roomsAvailable") - sum(appState.data.hotels, "roomsAllocated"), 0);
+  const pendingPickups = appState.data.travel.filter((entry) => entry.pickupRequired && entry.status !== "Completed").length;
+
+  const contexts = {
+    dashboard: {
+      label: "Control overview",
+      title: "Data from every module rolls up here.",
+      summary: `${confirmedGuests} of ${totalGuestCount} guests confirmed, ${pendingRituals} rituals pending, ${openTasks} tasks open, and ${INR.format(spend.planned)} planned budget tracked.`,
+      links: [
+        { route: "guests", label: "Guest load", detail: `${appState.data.guests.length} families` },
+        { route: "finance", label: "Budget health", detail: `${percent(spend.actual, spend.planned)} used` },
+        { route: "commandCenter", label: "Open work", detail: `${openTasks} active tasks` }
+      ]
+    },
+    functions: {
+      label: "Function dependencies",
+      title: "Functions drive rituals, vendors, and guest movement.",
+      summary: `${appState.data.events.length} functions are mapped with ${appState.data.tasks.length} execution tasks and ${appState.data.rituals.length} ritual records.`,
+      links: [
+        { route: "tasks", label: "Task allocation", detail: `${openTasks} active tasks` },
+        { route: "rituals", label: "Ritual sequence", detail: `${pendingRituals} pending` },
+        { route: "vendors", label: "Vendor coverage", detail: `${appState.data.vendors.length} vendors` }
+      ]
+    },
+    guests: {
+      label: "Guest dependencies",
+      title: "Guest data feeds accommodation, pickups, invitations, and check-in.",
+      summary: `${totalGuestCount} people are represented across ${appState.data.guests.length} family records; ${neededRooms()} records need accommodation support.`,
+      links: [
+        { route: "accommodation", label: "Room planning", detail: `${openRooms} rooms open` },
+        { route: "travel", label: "Pickup planning", detail: `${pendingPickups} active pickups` },
+        { route: "checkin", label: "Check-in", detail: `${appState.data.guestCheckins.length} records` }
+      ]
+    },
+    invitation: {
+      label: "Invitation data",
+      title: "Invitation sections should mirror the event schedule and RSVP needs.",
+      summary: `${appState.data.invitations.length} invitation blocks are connected to ${appState.data.events.length} functions and ${appState.data.whatsappTemplates.length} WhatsApp templates.`,
+      links: [
+        { route: "functions", label: "Schedule source", detail: `${appState.data.events.length} functions` },
+        { route: "guests", label: "RSVP records", detail: `${confirmedGuests} confirmed` },
+        { route: "whatsapp", label: "Message templates", detail: `${appState.data.whatsappTemplates.length} templates` }
+      ]
+    },
+    vendors: {
+      label: "Vendor dependencies",
+      title: "Vendors connect budget categories to function execution.",
+      summary: `${appState.data.vendors.length} vendors are tracked with ${INR.format(sum(appState.data.vendors, "balanceDue"))} balance due and ${appState.data.events.length} functions needing coverage.`,
+      links: [
+        { route: "finance", label: "Payments", detail: `${INR.format(sum(appState.data.vendors, "advancePaid"))} paid` },
+        { route: "functions", label: "Function needs", detail: `${appState.data.events.length} events` },
+        { route: "commandCenter", label: "Follow-ups", detail: `${appState.data.vendors.filter((vendor) => vendor.status !== "Finalized").length} active` }
+      ]
+    },
+    accommodation: {
+      label: "Accommodation dependencies",
+      title: "Rooms should follow guest RSVP, family grouping, and travel arrivals.",
+      summary: `${sum(appState.data.hotels, "roomsAllocated")} of ${sum(appState.data.hotels, "roomsAvailable")} rooms allocated; ${neededRooms()} guest records currently need accommodation.`,
+      links: [
+        { route: "guests", label: "Guest demand", detail: `${neededRooms()} need rooms` },
+        { route: "travel", label: "Arrival windows", detail: `${appState.data.travel.length} records` },
+        { route: "checkin", label: "Arrival desk", detail: `${appState.data.guestCheckins.length} check-ins` }
+      ]
+    },
+    travel: {
+      label: "Travel dependencies",
+      title: "Travel records determine pickup staffing, room readiness, and check-in load.",
+      summary: `${appState.data.travel.length} travel records include ${pendingPickups} pickup needs and ${appState.data.travel.filter((entry) => entry.status === "Delayed").length} delayed arrivals.`,
+      links: [
+        { route: "accommodation", label: "Room readiness", detail: `${openRooms} rooms open` },
+        { route: "guests", label: "Guest records", detail: `${appState.data.guests.length} families` },
+        { route: "whatsapp", label: "Pickup messages", detail: `${appState.data.whatsappTemplates.filter((item) => item.category === "Pickup Reminder").length} templates` }
+      ]
+    },
+    tasks: {
+      label: "Task dependencies",
+      title: "Task allocation turns planning work into owner-driven execution.",
+      summary: `${appState.data.tasks.length} task allocations include ${openTasks} open items and ${appState.data.tasks.filter((task) => task.status === "Blocked").length} blocked items.`,
+      links: [
+        { route: "functions", label: "Function schedule", detail: `${appState.data.events.length} functions` },
+        { route: "responsibilities", label: "Family owners", detail: `${appState.data.responsibilities.length} assignments` },
+        { route: "commandCenter", label: "Escalations", detail: `${openTasks} active tasks` }
+      ]
+    },
+    rituals: {
+      label: "Ritual dependencies",
+      title: "Ritual readiness depends on samagri, owners, budget, and function timing.",
+      summary: `${pendingRituals} rituals are still pending or in progress with ${INR.format(sum(appState.data.rituals, "budget"))} ritual budget planned.`,
+      links: [
+        { route: "functions", label: "Ceremony timing", detail: `${appState.data.events.length} functions` },
+        { route: "responsibilities", label: "Owners", detail: `${appState.data.responsibilities.length} assignments` },
+        { route: "finance", label: "Ritual budget", detail: `${INR.format(sum(appState.data.rituals, "budget"))}` }
+      ]
+    },
+    responsibilities: {
+      label: "Responsibility dependencies",
+      title: "Family ownership turns event, guest, ritual, and vendor data into execution.",
+      summary: `${openTasks} tasks and ${appState.data.responsibilities.filter((item) => item.status !== "Completed").length} responsibilities remain active.`,
+      links: [
+        { route: "tasks", label: "Task allocation", detail: `${appState.data.tasks.length} tasks` },
+        { route: "rituals", label: "Ritual owners", detail: `${pendingRituals} pending` },
+        { route: "commandCenter", label: "Escalations", detail: `${appState.data.responsibilities.filter((item) => item.status === "Blocked").length} blocked` }
+      ]
+    },
+    finance: {
+      label: "Finance dependencies",
+      title: "Budget data should explain vendors, rituals, accommodation, travel, and gifts.",
+      summary: `${INR.format(spend.actual)} actual cost against ${INR.format(spend.planned)} planned, with ${INR.format(spend.paid)} already paid.`,
+      links: [
+        { route: "vendors", label: "Vendor payments", detail: `${INR.format(sum(appState.data.vendors, "balanceDue"))} due` },
+        { route: "rituals", label: "Ritual costs", detail: `${INR.format(sum(appState.data.rituals, "budget"))}` },
+        { route: "reports", label: "Reports", detail: "Snapshot" }
+      ]
+    },
+    reports: {
+      label: "Reporting dependencies",
+      title: "Reports summarize the same source data used by operations.",
+      summary: `Snapshot includes ${confirmedGuests} confirmed guests, ${appState.data.vendors.length} vendors, ${appState.data.travel.length} travel records, and ${percent(spend.actual, spend.planned)} budget utilization.`,
+      links: [
+        { route: "finance", label: "Budget", detail: `${INR.format(spend.planned)}` },
+        { route: "guests", label: "Guests", detail: `${confirmedGuests} confirmed` },
+        { route: "commandCenter", label: "Live view", detail: `${openTasks} open tasks` }
+      ]
+    },
+    alerts: {
+      label: "Alert dependencies",
+      title: "Alerts should point to the data module that needs action.",
+      summary: `${appState.data.alerts.filter((item) => item.active).length} active alert rules watch budget, vendor payments, rooms, pickups, and overdue tasks.`,
+      links: [
+        { route: "finance", label: "Budget alerts", detail: `${appState.data.alerts.filter((item) => item.type === "Budget Overrun").length} rules` },
+        { route: "vendors", label: "Payment alerts", detail: `${sum(appState.data.vendors, "balanceDue") ? "Due exists" : "No due"}` },
+        { route: "travel", label: "Pickup alerts", detail: `${pendingPickups} pickups` }
+      ]
+    },
+    checkin: {
+      label: "Check-in dependencies",
+      title: "Check-in should reflect guest records, function attendance, and travel arrivals.",
+      summary: `${appState.data.guestCheckins.length} check-in records are available for ${appState.data.events.length} functions and ${appState.data.travel.length} travel arrivals.`,
+      links: [
+        { route: "guests", label: "Guest master", detail: `${appState.data.guests.length} families` },
+        { route: "travel", label: "Arrivals", detail: `${appState.data.travel.length} records` },
+        { route: "functions", label: "Functions", detail: `${appState.data.events.length} events` }
+      ]
+    },
+    whatsapp: {
+      label: "Messaging dependencies",
+      title: "Templates should be driven by RSVP, hotel, pickup, and schedule data.",
+      summary: `${appState.data.whatsappTemplates.filter((item) => item.active).length} active templates support invitations, RSVP, accommodation, pickup, and schedule updates.`,
+      links: [
+        { route: "invitation", label: "Invitation copy", detail: `${appState.data.invitations.length} blocks` },
+        { route: "guests", label: "Recipient data", detail: `${appState.data.guests.length} families` },
+        { route: "travel", label: "Pickup updates", detail: `${pendingPickups} pickups` }
+      ]
+    },
+    commandCenter: {
+      label: "Execution dependencies",
+      title: "Command center consolidates unresolved work across every planning module.",
+      summary: `${openTasks} tasks, ${pendingRituals} rituals, ${pendingPickups} pickups, and ${appState.data.vendors.filter((vendor) => vendor.status !== "Finalized").length} vendors need attention.`,
+      links: [
+        { route: "responsibilities", label: "Owners", detail: `${appState.data.responsibilities.length} assignments` },
+        { route: "alerts", label: "Alerts", detail: `${appState.data.alerts.filter((item) => item.active).length} active` },
+        { route: "reports", label: "Reports", detail: "Snapshot" }
+      ]
+    }
+  };
+
+  return contexts[route];
 }
 
 function renderAlerts() {
@@ -749,9 +878,25 @@ function renderFunctions() {
       <div class="panel-header"><h2>Wedding Timeline Planner</h2><span class="badge pending">${appState.data.events.length} functions</span></div>
       ${crudSection("events", visibleItems("events"))}
     </section>
+  `;
+}
+
+function renderTasks() {
+  const tasks = visibleItems("tasks");
+  const openTasks = tasks.filter((task) => task.status !== "Completed");
+  const blockedTasks = tasks.filter((task) => task.status === "Blocked");
+  const assignedOwners = unique(tasks.map((task) => task.owner).filter(Boolean)).length;
+
+  app.innerHTML = `
+    <section class="stats-grid">
+      ${statCard(["Total Tasks", tasks.length, "Allocation records"])}
+      ${statCard(["Open Tasks", openTasks.length, "Still active"])}
+      ${statCard(["Blocked", blockedTasks.length, "Need escalation"])}
+      ${statCard(["Owners", assignedOwners, "Assigned people"])}
+    </section>
     <section class="panel">
-      <div class="panel-header"><h2>Operations Checklist</h2><span class="badge">${appState.data.tasks.length} tasks</span></div>
-      ${crudSection("tasks", visibleItems("tasks"))}
+      <div class="panel-header"><h2>Task Allocation</h2><span class="badge">${tasks.length} tasks</span></div>
+      ${crudSection("tasks", tasks)}
     </section>
   `;
 }
@@ -1061,8 +1206,8 @@ function crudSection(collection, items) {
     : null;
 
   return `
-    ${crudForm(collection, config, editing)}
     ${crudTable(collection, config, items)}
+    ${crudForm(collection, config, editing)}
   `;
 }
 
@@ -1158,10 +1303,11 @@ function crudTable(collection, config, items) {
   `;
 }
 
-function saveCrudForm(collection, form) {
+async function saveCrudForm(collection, form) {
   const config = crudConfigs[collection];
   const formData = new FormData(form);
   const record = {};
+  const previousItems = appState.data[collection];
 
   config.fields.forEach((field) => {
     if (field.type === "checkbox") {
@@ -1191,18 +1337,31 @@ function saveCrudForm(collection, form) {
     appState.data[collection] = [record, ...appState.data[collection]];
   }
 
-  persistCollection(collection);
-  appState.edit = null;
-  render();
+  try {
+    await persistCollection(collection);
+    appState.edit = null;
+    render();
+  } catch (error) {
+    appState.data[collection] = previousItems;
+    alert(`Unable to save ${config.title}: ${error.message}`);
+    render();
+  }
 }
 
-function deleteRecord(collection, id) {
+async function deleteRecord(collection, id) {
+  const previousItems = appState.data[collection];
   appState.data[collection] = appState.data[collection].filter((item) => item.id !== id);
-  persistCollection(collection);
-  if (appState.edit?.collection === collection && appState.edit.id === id) {
-    appState.edit = null;
+  try {
+    await persistCollection(collection);
+    if (appState.edit?.collection === collection && appState.edit.id === id) {
+      appState.edit = null;
+    }
+    render();
+  } catch (error) {
+    appState.data[collection] = previousItems;
+    alert(`Unable to delete record: ${error.message}`);
+    render();
   }
-  render();
 }
 
 function visibleItems(collection) {
@@ -1251,20 +1410,22 @@ function filteredResponsibilities() {
 }
 
 function loadCollection(collection, fallback) {
-  const stored = localStorage.getItem(`${STORAGE_PREFIX}${collection}`);
-  if (!stored) {
-    return ensureIds(fallback, collection);
-  }
-
-  try {
-    return ensureIds(JSON.parse(stored), collection);
-  } catch {
-    return ensureIds(fallback, collection);
-  }
+  return ensureIds(fallback, collection);
 }
 
-function persistCollection(collection) {
-  localStorage.setItem(`${STORAGE_PREFIX}${collection}`, JSON.stringify(appState.data[collection]));
+async function persistCollection(collection) {
+  const response = await fetch(`/api/data/${collection}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(appState.data[collection])
+  });
+
+  if (!response.ok) {
+    const details = await response.json().catch(() => ({}));
+    throw new Error(details.error || "JSON write failed. Start the local dev server to save file changes.");
+  }
 }
 
 function ensureIds(items, collection) {
@@ -1286,9 +1447,12 @@ function bindFilter(selector, key, eventName, callback) {
 function statCard([label, value, context]) {
   return `
     <article class="stat-card">
-      <span class="stat-label">${escapeHtml(label)}</span>
-      <strong class="stat-value">${escapeHtml(value)}</strong>
-      <small class="stat-context">${escapeHtml(context)}</small>
+      <div>
+        <span class="stat-label">${escapeHtml(label)}</span>
+        <strong class="stat-value">${escapeHtml(value)}</strong>
+        <small class="stat-context">${escapeHtml(context)}</small>
+      </div>
+      <span class="stat-spark" aria-hidden="true"><span></span></span>
     </article>
   `;
 }
@@ -1426,9 +1590,10 @@ function exportCurrentView() {
     finance: () => [...appState.data.budget, ...appState.data.expenses],
     accommodation: () => [...appState.data.hotels, ...appState.data.roomAllocations],
     travel: filteredTravel,
+    tasks: () => appState.data.tasks,
     rituals: filteredRituals,
     responsibilities: filteredResponsibilities,
-    functions: () => [...appState.data.events, ...appState.data.tasks],
+    functions: () => appState.data.events,
     dashboard: () => appState.data.events
   };
   const rows = (exportMap[appState.route] || exportMap.dashboard)();

@@ -1,1 +1,56 @@
-[]
+[
+  {
+    "id": "responsibilities-ritual-lead",
+    "task": "Coordinate all ritual items with pandit ji",
+    "owner": "Family Ritual Lead",
+    "backupPerson": "Bride Uncle",
+    "deadline": "2026-11-10",
+    "priority": "Critical",
+    "status": "Pending"
+  },
+  {
+    "id": "responsibilities-baraat",
+    "task": "Manage baraat timing, band, and groom arrival",
+    "owner": "Baraat Coordinator",
+    "backupPerson": "Groom Cousin",
+    "deadline": "2026-11-25",
+    "priority": "Critical",
+    "status": "Pending"
+  },
+  {
+    "id": "responsibilities-hospitality",
+    "task": "Manage food counters, welcome drinks, and elder seating",
+    "owner": "Hospitality Lead",
+    "backupPerson": "Bride Cousin",
+    "deadline": "2026-11-23",
+    "priority": "High",
+    "status": "Pending"
+  },
+  {
+    "id": "responsibilities-accommodation",
+    "task": "Assign rooms and handle check-in desk",
+    "owner": "Accommodation Lead",
+    "backupPerson": "Travel Lead",
+    "deadline": "2026-11-20",
+    "priority": "High",
+    "status": "Pending"
+  },
+  {
+    "id": "responsibilities-photography",
+    "task": "Share must-capture ritual list with photo and video team",
+    "owner": "Media Lead",
+    "backupPerson": "Bride Sister",
+    "deadline": "2026-11-18",
+    "priority": "Medium",
+    "status": "Pending"
+  },
+  {
+    "id": "responsibilities-gifts",
+    "task": "Track tilak gifts, return gifts, and family hampers",
+    "owner": "Gift Desk Lead",
+    "backupPerson": "Groom Aunt",
+    "deadline": "2026-11-21",
+    "priority": "Medium",
+    "status": "Pending"
+  }
+]

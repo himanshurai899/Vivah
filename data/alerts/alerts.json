@@ -1,16 +1,30 @@
 [
   {
-    "id": "alert-1",
+    "id": "alerts-budget",
     "type": "Budget Overrun",
-    "message": "Budget for catering has exceeded 90% of the allocation.",
-    "threshold": 90,
-    "active": true
+    "message": "Review categories above 85 percent utilization before final approvals.",
+    "active": true,
+    "threshold": 85
   },
   {
-    "id": "alert-2",
+    "id": "alerts-vendor-payment",
+    "type": "Vendor Payment",
+    "message": "Follow up with finalized vendors that still have balance due.",
+    "active": true,
+    "threshold": 1
+  },
+  {
+    "id": "alerts-room-shortage",
+    "type": "Room Shortage",
+    "message": "Check room capacity against guests marked accommodation required.",
+    "active": true,
+    "threshold": 0
+  },
+  {
+    "id": "alerts-pickup",
     "type": "Pickup Reminder",
-    "message": "Confirm pickup details for VIP guests arriving tomorrow.",
-    "threshold": 1,
-    "active": true
+    "message": "Send pickup reminder to guests arriving within the next 24 hours.",
+    "active": true,
+    "threshold": 24
   }
 ]
