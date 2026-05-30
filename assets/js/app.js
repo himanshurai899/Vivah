@@ -1410,21 +1410,31 @@ function filteredResponsibilities() {
 }
 
 function loadCollection(collection, fallback) {
-  return ensureIds(fallback, collection);
+  const local = getLocalData(collection);
+  return ensureIds(local ?? fallback, collection);
 }
 
 async function persistCollection(collection) {
-  const response = await fetch(`/api/data/${collection}`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(appState.data[collection])
-  });
+  try {
+    const response = await fetch(`/api/data/${collection}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(appState.data[collection])
+    });
 
-  if (!response.ok) {
-    const details = await response.json().catch(() => ({}));
-    throw new Error(details.error || "JSON write failed. Start the local dev server to save file changes.");
+    if (!response.ok) {
+      const details = await response.json().catch(() => ({}));
+      throw new Error(details.error || "JSON write failed. Start the local dev server to save file changes.");
+    }
+
+    setLocalData(collection, appState.data[collection]);
+    return;
+  } catch (error) {
+    setLocalData(collection, appState.data[collection]);
+    console.warn(`Persist failed for ${collection}, saved locally instead:`, error.message);
+    return;
   }
 }
 
@@ -1433,6 +1443,25 @@ function ensureIds(items, collection) {
     id: item.id || `${collection}-${index + 1}`,
     ...item
   }));
+}
+
+const storagePrefix = "vivah:data:";
+
+function getLocalData(collection) {
+  try {
+    const raw = localStorage.getItem(`${storagePrefix}${collection}`);
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+}
+
+function setLocalData(collection, items) {
+  try {
+    localStorage.setItem(`${storagePrefix}${collection}`, JSON.stringify(items));
+  } catch {
+    // Ignore storage failures.
+  }
 }
 
 function bindFilter(selector, key, eventName, callback) {
