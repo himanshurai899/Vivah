@@ -37,7 +37,7 @@ Current Phase 1 files:
 
 ## Phase 2 - Wedding Operations
 
-Status: Completed foundation
+Status: Completed
 
 Goal: Add day-to-day wedding operations modules that help the family manage guest movement, stay arrangements, rituals, and ownership.
 
@@ -71,6 +71,14 @@ Completed deliverables:
   - Status filtering added.
   - Summary cards added for total responsibilities, open items, blocked items, and owner count.
 
+- Invitation Builder
+  - Navigation route added.
+  - Invitation CRUD route and data file added.
+  - Invitation content sections supported for Couple, Schedule, Venue, RSVP, and Blessing.
+  - Top navigation bar replaces the left sidebar and improves workflow accessibility.
+
+- Full CRUD support now exists across all app pages, including dashboard modules and wedding operations pages.
+
 Completed data files:
 
 - `data/hotels/hotels.json`
@@ -78,20 +86,22 @@ Completed data files:
 - `data/travel/travel.json`
 - `data/rituals/rituals.json`
 - `data/responsibilities/responsibilities.json`
+- `data/invitations/invitations.json`
 
-Remaining enhancements:
+Phase 3 work started:
 
-- Add create/edit/delete forms for accommodation, travel, rituals, and responsibilities.
-- Add room shortage and over-allocation alerts.
-- Add pickup manifest grouped by date, arrival point, and coordinator.
-- Add ritual sequence and priest-notes view.
-- Add owner-grouped and overdue responsibility views.
+- Reports, command center, alerts, QR check-in, and WhatsApp workflows are now the next development focus.
+- Phase 3 will build on the current static JSON architecture and support richer summaries, live control plane views, and exportable operational reports.
 
 ## Phase 3 - Advanced Features
 
-Status: Planned
+Status: In progress
 
 Goal: Add reporting, wedding-day control, live alerts, and guest-facing operational flows.
+
+Phase 3 has started with an initial Reports route and summary page scaffold added to the main app.
+A Wedding Command Center route has also been added as the next active Phase 3 screen.
+Top navigation and polished animation styling are now part of the current UI update.
 
 Planned modules:
 

@@ -1,0 +1,16 @@
+[
+  {
+    "id": "template-1",
+    "name": "Event Invitation",
+    "category": "Invitation",
+    "message": "Dear [Name], you are warmly invited to our wedding celebration on [Date] at [Venue]. Please RSVP at your earliest convenience.",
+    "active": true
+  },
+  {
+    "id": "template-2",
+    "name": "Pickup Reminder",
+    "category": "Pickup Reminder",
+    "message": "Reminder: Your pickup for the wedding reception is scheduled at [Time]. Please be ready by [Location].",
+    "active": true
+  }
+]

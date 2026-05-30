@@ -86,7 +86,7 @@ node dev-server.mjs
 http://localhost:8080
 ```
 
-- Verify dashboard, guests, vendors, finance, functions, and CSV export.
+- Verify dashboard, guests, vendors, finance, functions, invitation builder, and CRUD workflows.
 
 ## Suggested Repository Settings
 

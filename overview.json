@@ -1,0 +1,407 @@
+{
+  "rootFolder": "c:\\Himanshu\\Projects\\Vivah",
+  "analyzedAt": "2026-05-30T13:56:30.568Z",
+  "rootStructure": [
+    {
+      "name": ".gitignore",
+      "type": "file",
+      "size": 287,
+      "lines": 25
+    },
+    {
+      "name": "Application Creation Prompt.md",
+      "type": "file",
+      "size": 9123,
+      "lines": 673
+    },
+    {
+      "name": "assets",
+      "type": "dir"
+    },
+    {
+      "name": "data",
+      "type": "dir"
+    },
+    {
+      "name": "dev-server.mjs",
+      "type": "file",
+      "size": 1138,
+      "lines": 34
+    },
+    {
+      "name": "DEVELOPMENT_PHASES.md",
+      "type": "file",
+      "size": 7544,
+      "lines": 189
+    },
+    {
+      "name": "favicon.ico",
+      "type": "file",
+      "size": 3438,
+      "lines": 25
+    },
+    {
+      "name": "HOSTING_PLAN.md",
+      "type": "file",
+      "size": 6869,
+      "lines": 221
+    },
+    {
+      "name": "index.html",
+      "type": "file",
+      "size": 5511,
+      "lines": 122
+    },
+    {
+      "name": "pages",
+      "type": "dir"
+    },
+    {
+      "name": "README.md",
+      "type": "file",
+      "size": 2723,
+      "lines": 82
+    },
+    {
+      "name": "site.webmanifest",
+      "type": "file",
+      "size": 460,
+      "lines": 21
+    }
+  ],
+  "rootFileSnippets": {
+    "Application Creation Prompt.md": [
+      "# Application Creation Prompt",
+      "",
+      "## Role",
+      "",
+      "Act as a combination of:",
+      "",
+      "* Senior Wedding Planner with 15+ years of experience managing large Indian weddings.",
+      "* Senior Full-Stack Software Architect.",
+      "* Senior UI/UX Designer.",
+      "* Event Operations Manager."
+    ],
+    "dev-server.mjs": [
+      "import { createReadStream, existsSync, statSync } from \"node:fs\";",
+      "import { createServer } from \"node:http\";",
+      "import { extname, join, normalize } from \"node:path\";",
+      "",
+      "const port = Number(process.env.PORT || 8080);",
+      "const root = process.cwd();",
+      "const types = {",
+      "\".css\": \"text/css; charset=utf-8\",",
+      "\".html\": \"text/html; charset=utf-8\",",
+      "\".js\": \"text/javascript; charset=utf-8\","
+    ],
+    "DEVELOPMENT_PHASES.md": [
+      "# Vivah Development Phases",
+      "",
+      "The prompt describes a wedding operating system large enough to be developed in focused phases. Phase 1 is implemented as the current foundation, while later phases build dedicated operating modules on top of the same vanilla HTML, CSS, JavaScript, and JSON data architecture.",
+      "",
+      "## Phase 1 - Core Foundation",
+      "",
+      "Status: Completed",
+      "",
+      "Completed deliverables:",
+      ""
+    ],
+    "favicon.ico": [
+      "\u0000\u0000\u0001\u0000\u0003\u0000\u0010\u0010\u0000\u0000\u0001\u0000 \u0000M\u0002\u0000\u00006\u0000\u0000\u0000  \u0000\u0000\u0001\u0000 \u0000D\u0004\u0000\u0000�\u0002\u0000\u000000\u0000\u0000\u0001\u0000 \u0000�\u0006\u0000\u0000�\u0006\u0000\u0000�PNG",
+      "\u001a",
+      "\u0000\u0000\u0000\rIHDR\u0000\u0000\u0000\u0010\u0000\u0000\u0000\u0010\b\u0006\u0000\u0000\u0000\u001f��a\u0000\u0000\u0000\u0001sRGB\u0000��\u001c�\u0000\u0000\u0000\u0004gAMA\u0000\u0000��\u000b�a\u0005\u0000\u0000\u0000\tpHYs\u0000\u0000\u000e�\u0000\u0000\u000e�\u0001�o�d\u0000\u0000\u0001�IDAT8O�S�KTQ\u0018��EB-\\(8��4��`ZT\u000b\u0017ѶŀHL�\u001c\bQ�",
+      "Ņ���\b6\u00128��",
+      "cP(� �\u001c7\u0013� a(�Ѕ\u000b7�\u0012�\\��\rޑs\u001f��LOsq��9���{��\u0010B\b���XJ���\\��8\u000b�Xjg\u0006��\r�\u00158(�ZeY\"���\u0013�2��&�<Ans�mT�\u0007�[�.���ȧ���Bc\u0005��C\u001a��w�\u0003�4+�Rr��I�E����@\b�\u000fP��ױ�w4��9m\"Nvx�\u0016�o\u0005��k\u001f6�c������8^��",
+      "��\u001a��t`��\b\u0016F\u0012nn��\u0003��\u0011�ܵMN5�\u000bb�\u000f�;\u0006��ˮ8�\u0014ě{&\u0016��\u00117����t��|�\u001f��\u0002��\u001a���NCO�鑁�Q{",
+      "O����\u0006��_wv��]\f�u���\u0006\u0014\u0010��n\u0007��|<��'��\u001a��rڧ�s�j��`!��G@p�����4�7^���ɥd3�w�@v0���I\\�9���Z~k�@�d\u0019L���\u0011CW[܂j��&u�\u0015j�7���BЀ(LM��s\u001a�kYL��dTo�U�ag#�\u0003n�uX�b�\u0011�j�����t\u0000\u0000\u0000\u0000IEND�B`��PNG",
+      "\u001a",
+      "\u0000\u0000\u0000\rIHDR\u0000\u0000\u0000 \u0000\u0000\u0000 \b\u0006\u0000\u0000\u0000szz�\u0000\u0000\u0000\u0001sRGB\u0000��\u001c�\u0000\u0000\u0000\u0004gAMA\u0000\u0000��\u000b�a\u0005\u0000\u0000\u0000\tpHYs\u0000\u0000\u000e�\u0000\u0000\u000e�\u0001�o�d\u0000\u0000\u0003�IDATXG�W[H\u0014Q\u0018��\u001e{K(� bWͬ��$#���|�a�F��� ��b�v�����,dE�lò�",
+      ",%/DZt\u0011-��\u0007!�Qڎ�d;����vf����nc\r|0�����9��s,\u0016�C���\u0014�;$Q蒂��D��\u0000>d_��'��`��S\u001e\"�LI\u0014�\u000e�\u001b C�@�:x \u0010'�V�_A���oV��$�{�J#�z���S���I\u0005���"
+    ],
+    "HOSTING_PLAN.md": [
+      "# Vivah Free Hosting Plan",
+      "",
+      "This project is currently a static HTML, CSS, JavaScript, and JSON app. That makes it a good fit for free static hosting.",
+      "",
+      "Recommended path: GitHub Pages from a public GitHub repository.",
+      "",
+      "## Hosting Goals",
+      "",
+      "- Make the app accessible to family members and collaborators through a public URL.",
+      "- Keep hosting free while the app remains a static site."
+    ],
+    "index.html": [
+      "<!DOCTYPE html>",
+      "<html lang=\"en\">",
+      "<head>",
+      "<meta charset=\"UTF-8\">",
+      "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">",
+      "<title>Vivah | Wedding Operating System</title>",
+      "<link rel=\"icon\" href=\"assets/icons/favicon.ico\" sizes=\"any\">",
+      "<link rel=\"icon\" type=\"image/svg+xml\" href=\"assets/icons/favicon.svg\">",
+      "<link rel=\"apple-touch-icon\" href=\"assets/icons/apple-touch-icon.png\">",
+      "<link rel=\"manifest\" href=\"site.webmanifest\">"
+    ],
+    "README.md": [
+      "# Vivah",
+      "",
+      "Vivah is a vanilla HTML, CSS, and JavaScript wedding operating system for a traditional Bihari wedding hosted in Vadodara, Gujarat.",
+      "",
+      "## Phase 1 Scope",
+      "",
+      "- Responsive navigation framework",
+      "- Executive dashboard with countdown, budget, guest, vendor, and event metrics",
+      "- Guest management with side, city, RSVP, accommodation, and pickup tracking",
+      "- Vendor management with payment and status tracking"
+    ],
+    "site.webmanifest": [
+      "{",
+      "\"name\": \"Vivah\",",
+      "\"short_name\": \"Vivah\",",
+      "\"description\": \"Wedding operating system for planning a traditional Indian wedding.\",",
+      "\"icons\": [",
+      "{",
+      "\"src\": \"assets/icons/favicon-192.png\",",
+      "\"sizes\": \"192x192\",",
+      "\"type\": \"image/png\"",
+      "},"
+    ]
+  },
+  "importantFolders": [
+    {
+      "path": "assets",
+      "category": "assets",
+      "fileCount": 15,
+      "primaryLanguage": "JavaScript"
+    },
+    {
+      "path": "assets\\images",
+      "category": "assets",
+      "fileCount": 2
+    },
+    {
+      "path": "pages\\settings",
+      "category": "config",
+      "fileCount": 0
+    }
+  ],
+  "readmeParagraphs": {
+    "root": "# Vivah"
+  },
+  "totals": {
+    "numFiles": 43,
+    "numDirs": 40,
+    "totalSizeBytes": 201529,
+    "totalLinesOfCode": 1466
+  },
+  "fileCategories": {
+    "other": 20,
+    "documentation": 4,
+    "source": 1,
+    "config": 18
+  },
+  "linesOfCodePerLanguage": {
+    "JavaScript": 1466
+  },
+  "filesPerLanguage": {
+    "JavaScript": 1
+  },
+  "projectTypes": [],
+  "frameworks": [],
+  "entryPoints": [],
+  "ciCdTools": [],
+  "packageManagers": [],
+  "topLevelDirectories": [
+    {
+      "name": "assets",
+      "numFiles": 15,
+      "totalLoc": 1466,
+      "dominantLanguage": "JavaScript"
+    },
+    {
+      "name": "data",
+      "numFiles": 18,
+      "totalLoc": 0
+    },
+    {
+      "name": "pages",
+      "numFiles": 1,
+      "totalLoc": 0
+    }
+  ],
+  "detailedDirectories": [
+    {
+      "path": "assets",
+      "name": "assets",
+      "level": 1,
+      "numFiles": 15,
+      "totalLoc": 1466,
+      "dominantLanguage": "JavaScript",
+      "category": "General",
+      "description": "General module with 15 files (JavaScript)",
+      "subdirectories": [
+        {
+          "path": "assets\\js",
+          "name": "js",
+          "level": 2,
+          "numFiles": 1,
+          "totalLoc": 1466,
+          "dominantLanguage": "JavaScript",
+          "category": "General",
+          "description": "General module with 1 files (JavaScript)",
+          "subdirectories": []
+        },
+        {
+          "path": "assets\\icons",
+          "name": "icons",
+          "level": 2,
+          "numFiles": 10,
+          "totalLoc": 0,
+          "category": "General",
+          "description": "General module with 10 files",
+          "subdirectories": []
+        },
+        {
+          "path": "assets\\css",
+          "name": "css",
+          "level": 2,
+          "numFiles": 2,
+          "totalLoc": 0,
+          "category": "General",
+          "description": "General module with 2 files",
+          "subdirectories": []
+        },
+        {
+          "path": "assets\\images",
+          "name": "images",
+          "level": 2,
+          "numFiles": 2,
+          "totalLoc": 0,
+          "category": "General",
+          "description": "General module with 2 files",
+          "subdirectories": []
+        }
+      ]
+    },
+    {
+      "path": "data",
+      "name": "data",
+      "level": 1,
+      "numFiles": 18,
+      "totalLoc": 0,
+      "category": "Data",
+      "description": "Data module with 18 files",
+      "subdirectories": [
+        {
+          "path": "data\\accommodation",
+          "name": "accommodation",
+          "level": 2,
+          "numFiles": 1,
+          "totalLoc": 0,
+          "category": "General",
+          "description": "General module with 1 files",
+          "subdirectories": []
+        },
+        {
+          "path": "data\\alerts",
+          "name": "alerts",
+          "level": 2,
+          "numFiles": 1,
+          "totalLoc": 0,
+          "category": "General",
+          "description": "General module with 1 files",
+          "subdirectories": []
+        },
+        {
+          "path": "data\\checkin",
+          "name": "checkin",
+          "level": 2,
+          "numFiles": 1,
+          "totalLoc": 0,
+          "category": "General",
+          "description": "General module with 1 files",
+          "subdirectories": []
+        },
+        {
+          "path": "data\\command-center",
+          "name": "command-center",
+          "level": 2,
+          "numFiles": 1,
+          "totalLoc": 0,
+          "category": "General",
+          "description": "General module with 1 files",
+          "subdirectories": []
+        },
+        {
+          "path": "data\\events",
+          "name": "events",
+          "level": 2,
+          "numFiles": 1,
+          "totalLoc": 0,
+          "category": "General",
+          "description": "General module with 1 files",
+          "subdirectories": []
+        }
+      ]
+    },
+    {
+      "path": "pages",
+      "name": "pages",
+      "level": 1,
+      "numFiles": 1,
+      "totalLoc": 0,
+      "category": "General",
+      "description": "General module with 1 files",
+      "subdirectories": [
+        {
+          "path": "pages\\invitation",
+          "name": "invitation",
+          "level": 2,
+          "numFiles": 1,
+          "totalLoc": 0,
+          "category": "General",
+          "description": "General module with 1 files",
+          "subdirectories": []
+        }
+      ]
+    }
+  ],
+  "architecturalInsights": {
+    "coreApplications": [],
+    "entryPointDetails": [],
+    "serviceArchitecture": {
+      "microservices": [],
+      "monoliths": [],
+      "libraries": []
+    },
+    "layeredArchitecture": {
+      "presentation": [],
+      "business": [],
+      "data": [
+        "data"
+      ],
+      "infrastructure": []
+    }
+  },
+  "largeFiles": [],
+  "dependencies": {
+    "production": [],
+    "development": [],
+    "total": 0
+  },
+  "complexity": {
+    "averageFileSize": 34.093023255813954,
+    "maxFileSize": 0,
+    "nestedDepth": 0,
+    "estimatedComplexity": "low"
+  },
+  "gitRepo": {
+    "firstCommitDate": "2026-05-30",
+    "totalCommits": 2,
+    "numContributors": 0,
+    "currentBranch": "feature/codex-code-gen",
+    "remoteUrls": [
+      "https://github.com/himanshurai899/Vivah.git"
+    ]
+  }
+}

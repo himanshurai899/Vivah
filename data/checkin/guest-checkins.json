@@ -1,0 +1,20 @@
+[
+  {
+    "id": "checkin-1",
+    "guestName": "Amit Sharma",
+    "familyName": "Sharma",
+    "functionName": "Reception",
+    "checkinStatus": "Pending",
+    "arrivalTime": "",
+    "notes": "VIP guest arriving from Delhi."
+  },
+  {
+    "id": "checkin-2",
+    "guestName": "Priya Singh",
+    "familyName": "Singh",
+    "functionName": "Mandap",
+    "checkinStatus": "Checked In",
+    "arrivalTime": "17:20",
+    "notes": "Reached with family."
+  }
+]

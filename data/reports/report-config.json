@@ -1,0 +1,17 @@
+[
+  {
+    "title": "Guest Attendance",
+    "value": 0,
+    "description": "Tracks confirmed guest count versus total invited."
+  },
+  {
+    "title": "Budget vs Actual",
+    "value": 0,
+    "description": "Summarizes actual spend against planned budget."
+  },
+  {
+    "title": "Vendor Commitments",
+    "value": 0,
+    "description": "A high-level count of finalized versus pending vendors."
+  }
+]

@@ -1,0 +1,17 @@
+[
+  {
+    "section": "Vendor Logistics",
+    "status": "On Track",
+    "details": "Vendor confirmations are up to date for the main events."
+  },
+  {
+    "section": "Guest Pickup",
+    "status": "Pending",
+    "details": "Pickup routes need final confirmation for 18 guests."
+  },
+  {
+    "section": "Accommodation",
+    "status": "Review",
+    "details": "Room allocation is 92% complete; remaining assignments need updates."
+  }
+]

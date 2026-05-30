@@ -18,7 +18,11 @@ Vivah is a vanilla HTML, CSS, and JavaScript wedding operating system for a trad
 - Travel management with transport, PNR, pickup, vehicle, coordinator, and status fields
 - Ritual planner for Bihari wedding ceremony preparation
 - Family responsibility matrix with owner, backup, deadline, priority, and status tracking
+- Invitation builder with section-based content and full CRUD route support
+- Top navigation replaces the left sidebar and supports grouped category navigation
+- Improved animated nav item styling and hover interactions
 - Empty production-ready JSON stores with dummy records removed
+- All pages now support CRUD operations through the shared app framework
 
 ## Project Structure
 
@@ -68,4 +72,13 @@ The repository currently contains empty JSON arrays instead of fictional dummy r
 
 ## Next Phase
 
-Phase 3 should add reports, the wedding command center, alerts and notifications, QR check-in, and WhatsApp message workflows.
+Phase 3 development has started. The next work items are:
+
+- Reports and print-friendly report layouts for budget, guest, vendor, accommodation, and travel data
+- Wedding command center with live event progress, vendor arrival status, guest arrival tracking, and unresolved action items
+- Alerts and reminders for budget overruns, vendor payments, room shortages, pickups, overdue rituals, and open responsibilities
+- QR check-in workflow with guest attendance tracking and exportable logs
+- WhatsApp message workflows for invitations, RSVP follow-ups, hotel details, pickup reminders, and schedule notifications
+
+
+Update the top navbars some shading gradient would look good and the first one look so huge and vertical space consuming with the details and height fix it.

@@ -1,0 +1,16 @@
+[
+  {
+    "id": "alert-1",
+    "type": "Budget Overrun",
+    "message": "Budget for catering has exceeded 90% of the allocation.",
+    "threshold": 90,
+    "active": true
+  },
+  {
+    "id": "alert-2",
+    "type": "Pickup Reminder",
+    "message": "Confirm pickup details for VIP guests arriving tomorrow.",
+    "threshold": 1,
+    "active": true
+  }
+]

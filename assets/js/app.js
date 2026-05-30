@@ -21,7 +21,12 @@ const appState = {
     roomAllocations: [],
     travel: [],
     rituals: [],
-    responsibilities: []
+    responsibilities: [],
+    reports: [],
+    liveStatus: [],
+    alerts: [],
+    guestCheckins: [],
+    whatsappTemplates: []
   },
   filters: {
     guestSearch: "",
@@ -47,7 +52,12 @@ const dataSources = {
   roomAllocations: "data/accommodation/room-allocations.json",
   travel: "data/travel/travel.json",
   rituals: "data/rituals/rituals.json",
-  responsibilities: "data/responsibilities/responsibilities.json"
+  responsibilities: "data/responsibilities/responsibilities.json",
+  reports: "data/reports/report-config.json",
+  liveStatus: "data/command-center/live-status.json",
+  alerts: "data/alerts/alerts.json",
+  guestCheckins: "data/checkin/guest-checkins.json",
+  whatsappTemplates: "data/messages/whatsapp-templates.json"
 };
 
 const pageTitles = {
@@ -60,7 +70,12 @@ const pageTitles = {
   travel: "Travel",
   rituals: "Rituals",
   responsibilities: "Responsibilities",
-  finance: "Finance"
+  finance: "Finance",
+  reports: "Reports",
+  commandCenter: "Command Center",
+  alerts: "Alerts",
+  checkin: "Check-In",
+  whatsapp: "WhatsApp"
 };
 
 const routes = {
@@ -73,7 +88,12 @@ const routes = {
   travel: renderTravel,
   rituals: renderRituals,
   responsibilities: renderResponsibilities,
-  finance: renderFinance
+  finance: renderFinance,
+  reports: renderReports,
+  commandCenter: renderCommandCenter,
+  alerts: renderAlertsPage,
+  checkin: renderCheckin,
+  whatsapp: renderWhatsApp
 };
 
 const crudConfigs = {
@@ -344,6 +364,58 @@ const crudConfigs = {
       column("priority", "Priority"),
       column("status", "Status", (item) => badge(item.status))
     ]
+  },
+  alerts: {
+    title: "Alert",
+    empty: "No alert rules have been added yet.",
+    fields: [
+      selectField("type", "Alert Type", ["Budget Overrun", "Vendor Payment", "Room Shortage", "Pickup Reminder", "Overdue Task"], true),
+      textField("message", "Message", true),
+      checkboxField("active", "Active"),
+      numberField("threshold", "Threshold Value")
+    ],
+    columns: [
+      column("type", "Type"),
+      column("message", "Message"),
+      column("threshold", "Threshold"),
+      column("active", "Active", (item) => item.active ? "Yes" : "No")
+    ]
+  },
+  guestCheckins: {
+    title: "Guest Check-In",
+    empty: "No guest check-ins have been recorded yet.",
+    fields: [
+      textField("guestName", "Guest Name", true),
+      textField("familyName", "Family"),
+      textField("functionName", "Function / Event"),
+      selectField("checkinStatus", "Status", ["Pending", "Checked In", "Absent"], true),
+      textField("arrivalTime", "Arrival Time"),
+      textAreaField("notes", "Notes")
+    ],
+    columns: [
+      column("guestName", "Guest"),
+      column("familyName", "Family"),
+      column("functionName", "Function"),
+      column("checkinStatus", "Status", (item) => badge(item.checkinStatus)),
+      column("arrivalTime", "Arrival Time"),
+      column("notes", "Notes")
+    ]
+  },
+  whatsappTemplates: {
+    title: "WhatsApp Template",
+    empty: "No WhatsApp templates have been added yet.",
+    fields: [
+      textField("name", "Template Name", true),
+      selectField("category", "Category", ["Invitation", "RSVP Reminder", "Hotel Info", "Pickup Reminder", "Schedule Update"], true),
+      textAreaField("message", "Message", true),
+      checkboxField("active", "Active")
+    ],
+    columns: [
+      column("name", "Template"),
+      column("category", "Category"),
+      column("message", "Message", (item) => escapeHtml(item.message || "").slice(0, 50) + (item.message && item.message.length > 50 ? "..." : "")),
+      column("active", "Active", (item) => item.active ? "Yes" : "No")
+    ]
   }
 };
 
@@ -368,11 +440,15 @@ async function init() {
 async function loadData() {
   const loaded = await Promise.all(
     Object.entries(dataSources).map(async ([key, url]) => {
-      const response = await fetch(url);
-      if (!response.ok) {
-        throw new Error(`Unable to load ${url}`);
+      try {
+        const response = await fetch(url);
+        if (!response.ok) {
+          return [key, []];
+        }
+        return [key, await response.json()];
+      } catch {
+        return [key, []];
       }
-      return [key, await response.json()];
     })
   );
 
@@ -389,16 +465,134 @@ async function loadData() {
   appState.data.travel = loadCollection("travel", sourceMap.travel);
   appState.data.rituals = loadCollection("rituals", sourceMap.rituals);
   appState.data.responsibilities = loadCollection("responsibilities", sourceMap.responsibilities);
+  appState.data.reports = loadCollection("reports", sourceMap.reports);
+  appState.data.liveStatus = loadCollection("liveStatus", sourceMap.liveStatus);
+  appState.data.alerts = loadCollection("alerts", sourceMap.alerts);
+  appState.data.guestCheckins = loadCollection("guestCheckins", sourceMap.guestCheckins);
+  appState.data.whatsappTemplates = loadCollection("whatsappTemplates", sourceMap.whatsappTemplates);
 }
 
 function bindNavigation() {
+  const nav = document.querySelector("#appNav");
+
   window.addEventListener("hashchange", () => {
     appState.route = getRouteFromHash();
     appState.edit = null;
     render();
   });
 
+  nav?.addEventListener("click", (event) => {
+    const link = event.target.closest("a[data-route]");
+    if (!link) {
+      return;
+    }
+
+    event.preventDefault();
+    const route = link.dataset.route;
+    if (!routes[route]) {
+      return;
+    }
+
+    if (appState.route !== route) {
+      window.location.hash = `#${route}`;
+      return;
+    }
+
+    appState.route = route;
+    appState.edit = null;
+    render();
+  });
+
+  // New navigation for hoverable/clickable menus
+  // Toggle menu open on trigger click (useful for touch/mobile)
+  nav?.addEventListener("click", (event) => {
+    const trigger = event.target.closest(".nav-trigger");
+    if (trigger) {
+      const control = trigger.closest(".nav-control") || trigger.parentElement;
+      const open = control.classList.toggle("open");
+      trigger.setAttribute("aria-expanded", open ? "true" : "false");
+      return;
+    }
+
+    const item = event.target.closest(".nav-item[data-route]");
+    if (item) {
+      const route = item.dataset.route;
+      if (!routes[route]) {
+        return;
+      }
+      // close any open menus
+      document.querySelectorAll('.nav-group.open, .nav-control.open').forEach((g) => g.classList.remove('open'));
+      if (appState.route !== route) {
+        window.location.hash = `#${route}`;
+        return;
+      }
+      appState.route = route;
+      appState.edit = null;
+      render();
+    }
+  });
+
+  // Close menus when clicking outside
+  document.addEventListener("click", (ev) => {
+    if (ev.target.closest(".nav-group") || ev.target.closest('.nav-control')) return;
+    document.querySelectorAll('.nav-group.open, .nav-control.open').forEach((g) => {
+      g.classList.remove('open');
+      const trig = g.querySelector('.nav-trigger');
+      if (trig) trig.setAttribute('aria-expanded', 'false');
+    });
+  });
+
+  // Hover-intent on desktop: delayed open/close (less sensitive than pure :hover)
+  if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    document.querySelectorAll('#appNav .nav-control').forEach((control) => {
+      let openTimer = null;
+      let closeTimer = null;
+      const trigger = control.querySelector('.nav-trigger');
+      const menu = control.querySelector('.nav-menu');
+
+      control.addEventListener('mouseenter', () => {
+        clearTimeout(closeTimer);
+        openTimer = setTimeout(() => {
+          control.classList.add('open');
+          if (trigger) trigger.setAttribute('aria-expanded', 'true');
+        }, 180);
+      });
+
+      control.addEventListener('mouseleave', () => {
+        clearTimeout(openTimer);
+        closeTimer = setTimeout(() => {
+          control.classList.remove('open');
+          if (trigger) trigger.setAttribute('aria-expanded', 'false');
+        }, 300);
+      });
+
+      menu?.addEventListener('mouseenter', () => {
+        clearTimeout(closeTimer);
+      });
+      menu?.addEventListener('mouseleave', () => {
+        closeTimer = setTimeout(() => {
+          control.classList.remove('open');
+          if (trigger) trigger.setAttribute('aria-expanded', 'false');
+        }, 300);
+      });
+    });
+  }
+
   appState.route = getRouteFromHash();
+}
+
+function syncNavDropdowns() {
+  // Update nav menus/triggers to reflect current route
+  document.querySelectorAll("#appNav .nav-control").forEach((control) => {
+    const trigger = control.querySelector('.nav-trigger');
+    const items = Array.from(control.querySelectorAll('.nav-item'));
+    items.forEach((it) => it.removeAttribute('aria-current'));
+    const match = items.find((it) => it.dataset.route === appState.route);
+    if (match) {
+      match.setAttribute('aria-current', 'true');
+      if (trigger) trigger.textContent = (match.textContent || match.dataset.route) + ' ▾';
+    }
+  });
 }
 
 function bindThemeToggle() {
@@ -459,6 +653,7 @@ function render() {
   pageTitle.textContent = pageTitles[appState.route] || titleCase(appState.route);
   renderAlerts();
   routes[appState.route]();
+  syncNavDropdowns();
 }
 
 function playOpeningCardOnce() {
@@ -467,16 +662,23 @@ function playOpeningCardOnce() {
   }
 
   window.vivahOpeningCardPlayed = true;
-  document.body.classList.add("opening-card-active");
-  weddingCardLoader.classList.add("is-playing");
+
+  const hideLoader = () => {
+    weddingCardLoader.classList.remove("is-playing");
+    document.body.classList.remove("opening-card-active");
+  };
 
   weddingCardLoader.addEventListener("animationend", (event) => {
     if (event.animationName !== "loaderFade") {
       return;
     }
-    weddingCardLoader.classList.remove("is-playing");
-    document.body.classList.remove("opening-card-active");
+    hideLoader();
   }, { once: true });
+
+  document.body.classList.add("opening-card-active");
+  weddingCardLoader.classList.add("is-playing");
+
+  setTimeout(hideLoader, 2200);
 }
 
 function renderAlerts() {
@@ -577,6 +779,26 @@ function renderGuests() {
   bindFilter("#guestSearch", "guestSearch", "input", renderGuests);
   bindFilter("#guestCity", "guestCity", "change", renderGuests);
   bindFilter("#guestRsvp", "guestRsvp", "change", renderGuests);
+}
+
+function renderInvitation() {
+  const invitations = visibleItems("invitations");
+  const coupleCount = invitations.filter((item) => item.section === "Couple").length;
+  const scheduleCount = invitations.filter((item) => item.section === "Schedule").length;
+  const venueCount = invitations.filter((item) => item.section === "Venue").length;
+
+  app.innerHTML = `
+    <section class="stats-grid">
+      ${statCard(["Invitation Items", invitations.length, "Sections configured"])}
+      ${statCard(["Couple Details", coupleCount, "Couple content blocks"])}
+      ${statCard(["Schedule Sections", scheduleCount, "Timeline entries"])}
+      ${statCard(["Venue Items", venueCount, "Location blocks"])}
+    </section>
+    <section class="panel">
+      <div class="panel-header"><h2>Invitation Builder</h2><span class="badge">${invitations.length} items</span></div>
+      ${crudSection("invitations", invitations)}
+    </section>
+  `;
 }
 
 function renderVendors() {
@@ -699,6 +921,135 @@ function renderFinance() {
     <section class="panel">
       <div class="panel-header"><h2>Recent Expenses</h2><span class="badge paid">${INR.format(sum(appState.data.expenses, "amount"))}</span></div>
       ${crudSection("expenses", visibleItems("expenses"))}
+    </section>
+  `;
+}
+
+function renderReports() {
+  const spend = totals();
+  const confirmedGuests = appState.data.guests
+    .filter((guest) => guest.rsvpStatus === "Confirmed")
+    .reduce((total, guest) => total + Number(guest.count || 0), 0);
+
+  app.innerHTML = `
+    <section class="stats-grid">
+      ${statCard(["Confirmed Guests", confirmedGuests, `${appState.data.guests.length} families`])}
+      ${statCard(["Budget Actual", INR.format(spend.actual), `${percent(spend.actual, spend.planned)} utilized`])}
+      ${statCard(["Vendors Finalized", appState.data.vendors.filter((vendor) => vendor.status === "Finalized").length, `${appState.data.vendors.length} tracked vendors`])}
+      ${statCard(["Travel Records", appState.data.travel.length, `${appState.data.travel.filter((entry) => entry.status === "Confirmed").length} confirmed`])}
+    </section>
+    <section class="panel">
+      <div class="panel-header"><h2>Report Summary</h2><span class="badge">Operational snapshot</span></div>
+      <div class="content-grid">
+        <article class="panel">
+          <h3>Budget Health</h3>
+          ${chartRows(appState.data.budget.map((item) => [item.category, item.actual]), spend.actual)}
+        </article>
+        <article class="panel">
+          <h3>Vendor Status</h3>
+          ${chartList(groupBy(appState.data.vendors, "status"), appState.data.vendors.length)}
+        </article>
+      </div>
+    </section>
+    <section class="panel">
+      <div class="panel-header"><h2>Phase 3 Roadmap</h2><span class="badge">Next work</span></div>
+      <ul>
+        <li>Print-friendly report layouts</li>
+        <li>Wedding command center metrics</li>
+        <li>Live alerts and notification triggers</li>
+        <li>QR check-in workflow prep</li>
+        <li>WhatsApp message tooling</li>
+      </ul>
+    </section>
+  `;
+}
+
+function renderAlertsPage() {
+  const alerts = visibleItems("alerts");
+  app.innerHTML = `
+    <section class="stats-grid">
+      ${statCard(["Alert Rules", alerts.length, "Live notification rules"])}
+      ${statCard(["Active Alerts", alerts.filter((item) => item.active).length, "Currently enabled"])}
+      ${statCard(["Budget Alerts", alerts.filter((item) => item.type === "Budget Overrun").length, "Budget rules"])}
+      ${statCard(["Pickup Alerts", alerts.filter((item) => item.type === "Pickup Reminder").length, "Pickup reminders"])}
+    </section>
+    <section class="panel">
+      <div class="panel-header"><h2>Alerts Manager</h2><span class="badge">${alerts.length} rules</span></div>
+      ${crudSection("alerts", alerts)}
+    </section>
+  `;
+}
+
+function renderCheckin() {
+  const checkins = visibleItems("guestCheckins");
+  app.innerHTML = `
+    <section class="stats-grid">
+      ${statCard(["Check-Ins", checkins.length, "Guest arrivals"])}
+      ${statCard(["Checked In", checkins.filter((item) => item.checkinStatus === "Checked In").length, "Confirmed arrivals"])}
+      ${statCard(["Pending", checkins.filter((item) => item.checkinStatus === "Pending").length, "Awaiting arrivals"])}
+      ${statCard(["Absent", checkins.filter((item) => item.checkinStatus === "Absent").length, "No-shows"])}
+    </section>
+    <section class="panel">
+      <div class="panel-header"><h2>Guest Check-In</h2><span class="badge">${checkins.length} records</span></div>
+      ${crudSection("guestCheckins", checkins)}
+    </section>
+  `;
+}
+
+function renderWhatsApp() {
+  const templates = visibleItems("whatsappTemplates");
+  app.innerHTML = `
+    <section class="stats-grid">
+      ${statCard(["Templates", templates.length, "WhatsApp messages"])}
+      ${statCard(["Active", templates.filter((item) => item.active).length, "Enabled templates"])}
+      ${statCard(["Invitations", templates.filter((item) => item.category === "Invitation").length, "Invite messages"])}
+      ${statCard(["Reminders", templates.filter((item) => item.category !== "Invitation").length, "Follow-up messages"])}
+    </section>
+    <section class="panel">
+      <div class="panel-header"><h2>WhatsApp Templates</h2><span class="badge">${templates.length} items</span></div>
+      ${crudSection("whatsappTemplates", templates)}
+    </section>
+  `;
+}
+
+function renderCommandCenter() {
+  const unresolvedTasks = appState.data.tasks.filter((task) => task.status !== "Completed").length;
+  const pendingRituals = appState.data.rituals.filter((ritual) => ritual.status !== "Completed").length;
+  const roomsAvailable = sum(appState.data.hotels, "roomsAvailable") - sum(appState.data.hotels, "roomsAllocated");
+  const activeVendors = appState.data.vendors.filter((vendor) => vendor.status !== "Finalized").length;
+
+  app.innerHTML = `
+    <section class="stats-grid">
+      ${statCard(["Open Tasks", unresolvedTasks, "Needs attention"])}
+      ${statCard(["Pending Rituals", pendingRituals, "Ceremony readiness"])}
+      ${statCard(["Available Rooms", roomsAvailable, "Accommodation capacity"])}
+      ${statCard(["Active Vendors", activeVendors, "Vendor follow-ups"])}
+    </section>
+    <section class="panel">
+      <div class="panel-header"><h2>Command Center Overview</h2><span class="badge">Live operations</span></div>
+      <div class="content-grid">
+        <article class="panel">
+          <h3>Action Required</h3>
+          <ul>
+            <li>${unresolvedTasks} open task(s)</li>
+            <li>${pendingRituals} ritual(s) not completed</li>
+            <li>${activeVendors} vendor relationship(s) in progress</li>
+          </ul>
+        </article>
+        <article class="panel">
+          <h3>Accommodation Status</h3>
+          <p>${roomsAvailable} rooms still available across registered properties.</p>
+          ${chartList(groupBy(appState.data.hotels, "propertyType"), appState.data.hotels.length)}
+        </article>
+      </div>
+    </section>
+    <section class="panel">
+      <div class="panel-header"><h2>Quick Actions</h2><span class="badge">Phase 3 build</span></div>
+      <ul>
+        <li>Build live vendor arrival tracking</li>
+        <li>Create guest pickup status dashboard</li>
+        <li>Add emergency contact priorities</li>
+      </ul>
     </section>
   `;
 }
