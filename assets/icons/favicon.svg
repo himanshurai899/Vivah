@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Vivah bride and groom initials">
+  <defs>
+    <linearGradient id="gold" x1="12" x2="52" y1="7" y2="57" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fff4b8"/>
+      <stop offset="0.45" stop-color="#d8a328"/>
+      <stop offset="1" stop-color="#8e5d12"/>
+    </linearGradient>
+    <linearGradient id="maroon" x1="8" x2="56" y1="6" y2="58" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#8b1e35"/>
+      <stop offset="1" stop-color="#4d0f22"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="15" fill="#fffaf0"/>
+  <rect x="6" y="6" width="52" height="52" rx="13" fill="url(#maroon)"/>
+  <text x="32" y="31" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="22" font-weight="700" fill="#fff4d6">B</text>
+  <text x="32" y="49" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="22" font-weight="700" fill="url(#gold)">G</text>
+  <path d="M18 34h28" stroke="#d8a328" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="15" cy="15" r="2.2" fill="#f4b63f"/>
+  <circle cx="49" cy="15" r="2.2" fill="#f4b63f"/>
+</svg>

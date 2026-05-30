@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vivah | Wedding Operating System</title>
+  <link rel="icon" href="assets/icons/favicon.ico" sizes="any">
+  <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+  <link rel="manifest" href="site.webmanifest">
+  <meta name="theme-color" content="#6f1730">
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <div class="wedding-card-loader" id="weddingCardLoader" aria-hidden="true">
+    <div class="wedding-card-stage">
+      <div class="wedding-card">
+        <div class="card-panel card-panel-left">
+          <span class="card-border"></span>
+        </div>
+        <div class="card-panel card-panel-right">
+          <span class="card-border"></span>
+        </div>
+        <div class="card-inner">
+          <img src="assets/icons/logo-mark.svg" alt="" width="68" height="68">
+          <span>Vivah</span>
+          <small>Wedding OS</small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Primary navigation">
+      <a class="brand" href="#dashboard" aria-label="Vivah dashboard">
+        <img class="brand-mark" src="assets/icons/logo-mark.svg" alt="" width="42" height="42">
+        <span>
+          <strong>Vivah</strong>
+          <small>Wedding OS</small>
+        </span>
+      </a>
+      <nav class="nav-list" id="appNav">
+        <a href="#dashboard" data-route="dashboard" class="active">Dashboard</a>
+        <a href="#functions" data-route="functions">Functions</a>
+        <a href="#guests" data-route="guests">Guests</a>
+        <a href="#invitation" data-route="invitation">Invitation</a>
+        <a href="#vendors" data-route="vendors">Vendors</a>
+        <a href="#accommodation" data-route="accommodation">Accommodation</a>
+        <a href="#travel" data-route="travel">Travel</a>
+        <a href="#rituals" data-route="rituals">Rituals</a>
+        <a href="#responsibilities" data-route="responsibilities">Responsibilities</a>
+        <a href="#finance" data-route="finance">Finance</a>
+      </nav>
+      <section class="sidebar-card">
+        <span class="eyebrow">Wedding Date</span>
+        <strong>25 November</strong>
+        <small>Vadodara, Gujarat</small>
+      </section>
+    </aside>
+
+    <main class="main-panel">
+      <header class="topbar">
+        <div>
+          <span class="eyebrow">Traditional Bihari Wedding</span>
+          <h1 id="pageTitle">Dashboard</h1>
+        </div>
+        <div class="topbar-actions">
+          <button class="icon-button" id="themeToggle" type="button" aria-label="Switch wedding theme">◐</button>
+          <button class="primary-button" type="button" id="exportButton">Export CSV</button>
+        </div>
+      </header>
+
+      <section id="alertStrip" class="alert-strip" aria-live="polite"></section>
+      <section id="app" class="content-grid" aria-label="Vivah workspace"></section>
+    </main>
+  </div>
+
+  <template id="statCardTemplate">
+    <article class="stat-card">
+      <span class="stat-label"></span>
+      <strong class="stat-value"></strong>
+      <small class="stat-context"></small>
+    </article>
+  </template>
+
+  <script type="module" src="assets/js/app.js"></script>
+</body>
+</html>

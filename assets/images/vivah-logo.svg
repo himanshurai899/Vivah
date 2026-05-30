@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 220" role="img" aria-labelledby="title desc">
+  <title id="title">Vivah logo</title>
+  <desc id="desc">Royal Indian wedding planning logo with a maroon and gold mandap-inspired mark.</desc>
+  <defs>
+    <linearGradient id="gold" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#fff4b8"/>
+      <stop offset="0.38" stop-color="#d8a328"/>
+      <stop offset="1" stop-color="#8e5d12"/>
+    </linearGradient>
+    <linearGradient id="maroon" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#8b1e35"/>
+      <stop offset="1" stop-color="#4d0f22"/>
+    </linearGradient>
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="10" flood-color="#3f0d1d" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+
+  <rect width="720" height="220" rx="28" fill="#fffaf0"/>
+  <g transform="translate(44 30)" filter="url(#softShadow)">
+    <rect x="0" y="0" width="160" height="160" rx="36" fill="url(#maroon)"/>
+    <path d="M32 130V78c0-27 21-48 48-48s48 21 48 48v52" fill="none" stroke="url(#gold)" stroke-width="10" stroke-linecap="round"/>
+    <path d="M48 132h64" stroke="#fff4d6" stroke-width="8" stroke-linecap="round"/>
+    <path d="M57 62c10-12 22-18 23-18s13 6 23 18" fill="none" stroke="#fff4d6" stroke-width="7" stroke-linecap="round"/>
+    <path d="M55 78l25 50 25-50" fill="none" stroke="url(#gold)" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="30" cy="32" r="6" fill="#f4b63f"/>
+    <circle cx="130" cy="32" r="6" fill="#f4b63f"/>
+    <circle cx="30" cy="128" r="6" fill="#f4b63f"/>
+    <circle cx="130" cy="128" r="6" fill="#f4b63f"/>
+    <g fill="#fff4d6">
+      <circle cx="80" cy="21" r="3"/>
+      <circle cx="99" cy="26" r="2.5"/>
+      <circle cx="61" cy="26" r="2.5"/>
+    </g>
+  </g>
+
+  <g transform="translate(236 69)">
+    <text x="0" y="52" fill="#4d0f22" font-family="Georgia, 'Times New Roman', serif" font-size="68" font-weight="700">Vivah</text>
+    <path d="M4 72h184" stroke="url(#gold)" stroke-width="5" stroke-linecap="round"/>
+    <text x="0" y="108" fill="#725127" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700" letter-spacing="2.8">WEDDING OS</text>
+  </g>
+
+  <g transform="translate(573 56)" fill="none" stroke="#d8a328" stroke-width="3" opacity="0.75">
+    <path d="M0 40c26-30 53-30 80 0"/>
+    <path d="M10 74c20-24 40-24 60 0"/>
+    <circle cx="40" cy="40" r="12"/>
+    <path d="M40 10v18M40 52v22M10 40h18M52 40h18"/>
+  </g>
+</svg>
