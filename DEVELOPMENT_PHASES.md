@@ -94,20 +94,24 @@
 - [ ] E2E: Finance management flow
 - [ ] E2E: Dashboard rendering
 
-### Phase 5 Remaining — Priority Feature Gaps (Ranked by Wedding Date)
+### Phase 5 Remaining — Priority Feature Gaps (Ranked by Revenue + Wedding Date)
 
-| Feature | Priority | Status | Sprint | Target |
-|---------|----------|--------|--------|--------|
-| QR code generation (check-in) | 🔴 Critical | Scaffold exists | 5.3 | Jun 30 |
-| WhatsApp variable substitution | 🔴 Critical | Template CRUD done | 5.3 | Jun 30 |
-| Reports PDF/Excel export | 🟠 High | Scaffold exists | 5.4 | Jul 15 |
-| Unit + E2E tests (≥80% coverage) | 🟠 High | Partial | 5.2–5.4 | Jul 31 |
-| Staging deployment + UAT | 🟠 High | Planned | 5.5 | Aug 31 |
-| Gallery — photo upload | 🟡 Medium | Stub only | 5.6+ | Sep 15 |
-| Command Center live refresh | 🟡 Medium | Scaffold only | 5.6+ | Sep 15 |
-| Advanced report filters | 🟡 Medium | Planned | 5.4 | Jul 31 |
-| Settings — theme/backup | 🟡 Medium | Partial | 5.5 | Aug 31 |
-| Emergency contacts CRUD | 🟡 Medium | Page exists | 5.2 | Jun 30 |
+| Feature | Priority | Status | Sprint | Target | Why |
+|---------|----------|--------|--------|--------|-----|
+| **Google Contacts import** | 🔴 Critical | Planning | 5.2 | Jun 15 | Phase 6 differentiator; couple retention |
+| **Task delegation** (family/team) | 🔴 Critical | Planning | 5.2 | Jun 20 | Nov 25 retention + planner mode foundation |
+| **Playbook save/clone** | 🔴 Critical | Planning | 5.2–5.3 | Jul 15 | Enables couple→planner graduation path |
+| QR code generation (check-in) | 🔴 Critical | Scaffold exists | 5.3 | Jun 30 | Phase 3 carryover; Nov 25 critical |
+| WhatsApp variable substitution | 🔴 Critical | Template CRUD done | 5.3 | Jun 30 | Phase 3 carryover; Nov 25 critical |
+| **Planner mode toggle** | 🟠 High | Planning | 5.3 | Jul 31 | Revenue unlock (invoicing + team mgmt) |
+| Reports PDF/Excel export | 🟠 High | Scaffold exists | 5.4 | Jul 15 | Couple + planner reporting |
+| Unit + E2E tests (≥80% coverage) | 🟠 High | Partial | 5.2–5.4 | Jul 31 | Quality gate for staging |
+| Staging deployment + UAT | 🟠 High | Planned | 5.5 | Aug 31 | Pre-Nov 25 validation |
+| Advanced report filters | 🟡 Medium | Planned | 5.4 | Jul 31 | Planner reporting nicety |
+| Gallery — photo upload | 🟡 Medium | Stub only | 5.6+ | Sep 15 | Post-wedding value-add |
+| Command Center live refresh | 🟡 Medium | Scaffold only | 5.6+ | Sep 15 | Wedding day ops (deferred) |
+| Settings — theme/backup | 🟡 Medium | Partial | 5.5 | Aug 31 | Data portability for SaaS |
+| Emergency contacts CRUD | 🟡 Medium | Page exists | 5.2 | Jun 30 | Wedding day safety net |
 
 ### DevOps & Infrastructure (Phase 5.2 — Ongoing) 📋 Planned
 
@@ -180,6 +184,15 @@ The following Phase 3 Vanilla JS features are deferred; they will be implemented
   - CI/CD: GitHub Actions pipeline setup
   - Monitoring: Vercel Analytics + Sentry integration
   - Phase timeline: Prep (Jun 1–30), Staging (Jul 1–Aug 31), Go-live (Sep 1)
+- [x] **Playbook System — BA Complete** (NEW — Phase 6 revenue differentiator) 🚀
+  - ✅ [PLAYBOOK_SYSTEM_MVP.md](PLAYBOOK_SYSTEM_MVP.md) — Full spec with 4 user stories + Gherkin scenarios
+  - 🔄 System Architect: Schema design + API routes (next)
+  - 🔄 SSDT: Failing tests
+  - 🔄 SSDE: Implementation
+  - Sprint 5.2 Phase 1: Google Contacts import + Task delegation + Save as template
+  - Sprint 5.3 Phase 2: Playbook browser + Planner mode + Customization
+  - Phase 6: Marketplace + Planner profiles + Commission system
+  - **Rationale**: Turns couples into planners, creates network effects, 15–20% commission revenue
 - [ ] Test coverage — Unit + E2E tests for critical paths
 - [ ] QR code check-in generation
 - [ ] WhatsApp template variable substitution

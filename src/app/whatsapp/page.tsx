@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/Badge"
 import { Modal } from "@/components/ui/Modal"
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog"
 import { PageLoader } from "@/components/ui/Spinner"
+import { substituteVars, normalizePhone, isPersonalVar, filterGuestsForBatch, type BatchFilter } from "@/lib/utils/whatsapp"
 
 type Template = { id: string; name: string; category: string; message: string; variables: string[]; active: boolean }
 type Guest = { id: string; name: string; mobile?: string; familyName: string; side: string; rsvpStatus: string }
@@ -24,31 +25,21 @@ const CAT_COLORS: Record<string, "purple" | "blue" | "green" | "orange" | "gray"
   INVITATION: "purple", REMINDER: "orange", CONFIRMATION: "green", TRAVEL_UPDATE: "blue", GENERAL: "gray",
 }
 
-function substituteVars(message: string, vars: Record<string, string>) {
-  return message.replace(/\{\{(\w+)\}\}/g, (_, key) => vars[key] ?? `[${key}]`)
-}
-
 function BatchSendModal({ template, guests, onClose }: { template: Template; guests: Guest[]; onClose: () => void }) {
   const [globalVars, setGlobalVars] = useState<Record<string, string>>({})
   const [sent, setSent] = useState<Set<string>>(new Set())
-  const [filter, setFilter] = useState<"ALL" | "GROOM" | "BRIDE" | "PENDING_RSVP">("ALL")
+  const [filter, setFilter] = useState<BatchFilter>("ALL")
 
-  const nonPersonalVars = template.variables.filter(v => !["GuestName", "Name", "guestName", "name"].includes(v))
-  const hasNameVar = template.variables.some(v => ["GuestName", "Name", "guestName", "name"].includes(v))
+  const nonPersonalVars = template.variables.filter(v => !isPersonalVar(v))
+  const hasNameVar = template.variables.some(v => isPersonalVar(v))
 
-  const filtered = guests.filter(g => {
-    if (!g.mobile) return false
-    if (filter === "GROOM") return g.side === "GROOM"
-    if (filter === "BRIDE") return g.side === "BRIDE"
-    if (filter === "PENDING_RSVP") return g.rsvpStatus === "PENDING"
-    return true
-  })
+  const filtered = filterGuestsForBatch(guests, filter)
 
   const sendToGuest = (guest: Guest) => {
     const vars = { ...globalVars }
     if (hasNameVar) { vars["GuestName"] = guest.name; vars["Name"] = guest.name; vars["guestName"] = guest.name; vars["name"] = guest.name }
     const message = encodeURIComponent(substituteVars(template.message, vars))
-    const phone = guest.mobile!.replace(/[^0-9]/g, "").replace(/^0/, "91")
+    const phone = normalizePhone(guest.mobile!)
     window.open(`https://wa.me/${phone}?text=${message}`, "_blank")
     setSent(s => new Set([...s, guest.id]))
   }
@@ -125,8 +116,7 @@ function SendModal({
   const preview = substituteVars(template.message, vars)
 
   const sendWhatsApp = () => {
-    const clean = phone.replace(/[^0-9]/g, "").replace(/^0/, "91")
-    window.open(`https://wa.me/${clean}?text=${encodeURIComponent(preview)}`, "_blank")
+    window.open(`https://wa.me/${normalizePhone(phone)}?text=${encodeURIComponent(preview)}`, "_blank")
   }
 
   const copyMessage = () => navigator.clipboard.writeText(preview)

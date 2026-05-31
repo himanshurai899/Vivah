@@ -10,6 +10,7 @@ import { Modal } from "@/components/ui/Modal"
 import { PageLoader } from "@/components/ui/Spinner"
 import { formatDateTime } from "@/lib/utils/date"
 import QRCode from "qrcode"
+import { buildQrPayload, calculateCheckInStats } from "@/lib/utils/checkin"
 
 type CheckIn = {
   id: string
@@ -28,7 +29,7 @@ function QRModal({ record, onClose }: { record: CheckIn; onClose: () => void }) 
 
   useEffect(() => {
     if (!canvasRef.current) return
-    const payload = JSON.stringify({ id: record.id, guest: record.guestName, event: record.eventName })
+    const payload = buildQrPayload(record)
     QRCode.toCanvas(canvasRef.current, payload, { width: 240, margin: 2, color: { dark: "#0F0612", light: "#FAFAF8" } })
   }, [record])
 
@@ -132,10 +133,7 @@ export default function CheckInPage() {
     const win = window.open("", "_blank")
     if (!win) return
 
-    const labels = pending.map(r => {
-      const payload = JSON.stringify({ id: r.id, guest: r.guestName, event: r.eventName })
-      return { record: r, payload }
-    })
+    const labels = pending.map(r => ({ record: r, payload: buildQrPayload(r) }))
 
     win.document.write(`
       <html><head><title>QR Labels — All Pending</title>
@@ -171,12 +169,7 @@ export default function CheckInPage() {
     win.document.close()
   }
 
-  const totals = {
-    total: records.length,
-    checkedIn: records.filter(r => r.status === "CHECKED_IN").length,
-    pending: records.filter(r => r.status === "PENDING").length,
-    absent: records.filter(r => r.status === "ABSENT").length,
-  }
+  const totals = calculateCheckInStats(records)
 
   const eventOpts = events.map(e => ({ value: e.id, label: e.name }))
   const statusOpts = [
