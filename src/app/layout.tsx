@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     template: "%s | Vivah",
   },
   description:
-    "Complete wedding planning platform for Himanshu & Savitri's traditional Bihari wedding on 25 November 2026 in Vadodara, Gujarat. Manage guests, vendors, rituals, finance, and more.",
+    "Complete wedding planning platform for Himanshu & Samiksha's traditional Bihari wedding on 25 November 2026 in Vadodara, Gujarat. Manage guests, vendors, rituals, finance, and more.",
   keywords: ["wedding planning", "Bihari wedding", "Vadodara", "Indian wedding", "vivah"],
   authors: [{ name: "Himanshu" }],
   creator: "Vivah Platform",

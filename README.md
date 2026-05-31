@@ -1,7 +1,7 @@
 # Vivah — Wedding Planning Platform
 
 > **One platform to plan the entire wedding journey.**
-> Himanshu & Savitri · 25 November 2026 · Vadodara, Gujarat · Traditional Bihari Wedding
+> Himanshu & Samiksha · 25 November 2026 · Vadodara, Gujarat · Traditional Bihari Wedding
 
 ---
 
@@ -36,25 +36,26 @@ Vivah is a full-featured wedding planning web application covering every aspect 
 
 | Module | Route | Status |
 | ------ | ----- | ------ |
-| Dashboard | `/dashboard` | Phase 1 ✅ |
-| Wedding Functions | `/functions` | Phase 1 ✅ |
-| Guest Management | `/guests` | Phase 1 ✅ |
-| Vendor Management | `/vendors` | Phase 1 ✅ |
-| Finance & Budget | `/finance` | Phase 1 ✅ |
-| Task Kanban | `/tasks` | Phase 1 ✅ |
-| Accommodation | `/accommodation` | Phase 2 ✅ |
-| Travel Management | `/travel` | Phase 2 ✅ |
-| Ritual Planner | `/rituals` | Phase 2 ✅ |
-| Family Responsibilities | `/responsibilities` | Phase 2 ✅ |
-| Invitation Builder | `/invitation` | Phase 2 ✅ |
-| Reports & Analytics | `/reports` | Phase 3 ✅ |
-| Command Center | `/command-center` | Phase 3 ✅ |
-| Alerts System | `/alerts` | Phase 3 ✅ |
-| Guest Check-In | `/checkin` | Phase 3 ✅ |
-| WhatsApp Templates | `/whatsapp` | Phase 3 ✅ |
-| Emergency Contacts | `/emergency` | Phase 3 ✅ |
-| Gallery | `/gallery` | Phase 3 🔄 |
-| Settings | `/settings` | Phase 3 ✅ |
+| Dashboard | `/dashboard` | ✅ Complete |
+| Wedding Functions | `/functions` | ✅ Complete |
+| Guest Management | `/guests` | ✅ Complete |
+| Vendor Management | `/vendors` | ✅ Complete |
+| Finance & Budget | `/finance` | ✅ Complete |
+| Task Kanban | `/tasks` | ✅ Complete |
+| Accommodation | `/accommodation` | ✅ Complete |
+| Travel Management | `/travel` | ✅ Complete |
+| Ritual Planner | `/rituals` | ✅ Complete |
+| Family Responsibilities | `/responsibilities` | ✅ Complete |
+| Invitation Builder | `/invitation` | ✅ Complete |
+| Reports & Analytics | `/reports` | ✅ Complete |
+| Command Center | `/command-center` | ✅ Complete |
+| Alerts System | `/alerts` | ✅ Complete |
+| Guest Check-In | `/checkin` | ✅ Complete |
+| WhatsApp Templates | `/whatsapp` | ✅ Complete |
+| Emergency Contacts | `/emergency` | ✅ Complete |
+| Gallery | `/gallery` | 🔄 Scaffold (upload pending) |
+| Settings | `/settings` | ✅ Complete |
+| Login / Auth | `/login` | ✅ Complete (NextAuth.js v5) |
 
 ---
 
@@ -299,24 +300,32 @@ vivah/
 │   ├── app/                       # Next.js App Router pages + API routes
 │   │   ├── layout.tsx             # Root layout — fonts, metadata, skip nav
 │   │   ├── globals.css            # Design tokens, typography, animations
-│   │   ├── dashboard/             # Live stats, charts, countdown
-│   │   ├── guests/                # Full CRUD with CSV export
-│   │   ├── vendors/               # 20 Vadodara vendors pre-loaded
-│   │   ├── finance/               # Budget categories + expense ledger
-│   │   ├── tasks/                 # Kanban board (Pending/In Progress/Done/Blocked)
-│   │   ├── functions/             # 17 wedding functions grouped by type
-│   │   ├── accommodation/         # 4 hotels, room allocation tracking
-│   │   ├── travel/                # Pickup coordination, transport types
-│   │   ├── rituals/               # 9 Bihari rituals with full samagri lists
-│   │   ├── responsibilities/      # Family responsibility matrix
-│   │   ├── invitation/            # Sectioned invitation builder + preview
-│   │   ├── reports/               # Charts, budget breakdown, city distribution
-│   │   ├── command-center/        # Live wedding-day ops dashboard
-│   │   ├── alerts/                # Alert system with read/dismiss
-│   │   ├── checkin/               # Event check-in with progress tracker
-│   │   ├── whatsapp/              # Template library with variable substitution
-│   │   ├── emergency/             # Vadodara emergency contacts
-│   │   ├── settings/              # Wedding details editor + re-seed
+│   │   ├── login/                 # NextAuth.js v5 login page
+│   │   ├── (dashboard)/           # Route group: overview
+│   │   │   └── dashboard/         # Live stats, charts, countdown
+│   │   ├── (management)/          # Route group: guest & vendor management
+│   │   │   ├── guests/            # Full CRUD with CSV export
+│   │   │   ├── vendors/           # 20 Vadodara vendors pre-loaded
+│   │   │   └── finance/           # Budget categories + expense ledger
+│   │   ├── (planning)/            # Route group: pre-wedding planning
+│   │   │   ├── tasks/             # Kanban board (Pending/In Progress/Done/Blocked)
+│   │   │   ├── functions/         # 17 wedding functions grouped by type
+│   │   │   ├── accommodation/     # 4 hotels, room allocation tracking
+│   │   │   ├── travel/            # Pickup coordination, transport types
+│   │   │   ├── rituals/           # 9 Bihari rituals with full samagri lists
+│   │   │   ├── responsibilities/  # Family responsibility matrix
+│   │   │   └── invitation/        # Sectioned invitation builder + preview
+│   │   ├── (operations)/          # Route group: day-of operations
+│   │   │   ├── command-center/    # Live wedding-day ops dashboard
+│   │   │   ├── alerts/            # Alert system with read/dismiss
+│   │   │   ├── checkin/           # Event check-in with progress tracker
+│   │   │   ├── whatsapp/          # Template library with variable substitution
+│   │   │   └── emergency/         # Vadodara emergency contacts
+│   │   ├── (execution)/           # Route group: reports & analytics
+│   │   │   ├── reports/           # Charts, budget breakdown, city distribution
+│   │   │   └── gallery/           # Photo management (scaffold — upload pending)
+│   │   ├── (settings)/            # Route group: configuration
+│   │   │   └── settings/          # Wedding details editor + re-seed
 │   │   └── api/                   # REST handlers for all modules
 │   │
 │   ├── components/
@@ -332,7 +341,10 @@ vivah/
 │       ├── utils/cn.ts            # Tailwind class merge
 │       └── validations/           # Zod schemas (guest, vendor, finance...)
 │
-├── __tests__/unit/                # Vitest unit tests (27 tests, all passing)
+├── __tests__/
+│   ├── unit/                      # Vitest unit tests (lib, validations, hooks, utils)
+│   ├── integration/               # API route integration tests
+│   └── e2e/                       # Playwright end-to-end tests
 ├── Dockerfile                     # Multi-stage production image
 ├── docker-compose.yml             # App + PostgreSQL + pgAdmin
 ├── .dockerignore
@@ -397,11 +409,27 @@ npm run test:watch        # Watch mode
 npm run test:coverage     # With coverage report
 ```
 
-Current suite (27 tests, all passing):
+Current suite (132 tests across 12 files, all passing):
 
-- `currency.test.ts` — `formatINR`, `parseINR`, `calcOverrunPct` (11 tests)
-- `date.test.ts` — `daysUntil`, `formatDate`, `isOverdue` (7 tests)
-- `guest.test.ts` — Zod schema validation, enum values (9 tests)
+**Unit — lib**
+- `lib/currency.test.ts` — `formatINR`, `parseINR`, `calcOverrunPct`
+- `lib/date.test.ts` — `daysUntil`, `formatDate`, `formatShortDate`, `isOverdue`
+
+**Unit — validations (Zod schemas)**
+- `validations/guest.test.ts` — GuestSchema, GuestSide, RsvpStatus
+- `validations/vendor.test.ts` — VendorSchema, VendorCategory, VendorStatus
+- `validations/event.test.ts` — EventSchema, EventType, EventStatus
+- `validations/task.test.ts` — TaskSchema, TaskPriority, TaskStatus
+- `validations/expense.test.ts` — ExpenseSchema, PaymentMode
+
+**Unit — hooks & utils**
+- `useCrud.test.ts` — stale editId bug, POST/PUT routing, error states
+- `useToast.test.ts` — add/dismiss, auto-dismiss timer, error toast
+- `utils/checkin.test.ts` — check-in status helpers
+- `utils/whatsapp.test.ts` — template variable substitution
+
+**Integration**
+- `integration/checkin-api.test.ts` — GET/POST/PUT/DELETE `/api/checkin`
 
 ---
 
@@ -409,11 +437,13 @@ Current suite (27 tests, all passing):
 
 | Phase | Status | Scope |
 | ----- | ------ | ----- |
-| Phase 1 | ✅ Complete | Dashboard, Guests, Vendors, Finance, Tasks, Functions |
-| Phase 2 | ✅ Complete | Accommodation, Travel, Rituals, Responsibilities, Invitation |
-| Phase 3 | ✅ Complete | Reports, Command Center, Alerts, Check-In, WhatsApp |
-| Phase 4 | 📋 Planned | Authentication, multi-user collaboration, AI assistant |
-| Phase 5 | 🔄 Active | Next.js 15 migration (this branch) |
+| Phase 1–3 | ✅ Complete (Vanilla JS) | Core foundation → operations (all modules shipped) |
+| Phase 4 | ✅ Complete | NextAuth.js v5, PWA, role-based access (PLANNER/VIEWER/ADMIN) |
+| Phase 5 | 🔄 Active (`feature/code-gen-claude`) | Full Next.js 15 + TypeScript + PostgreSQL rewrite — TDD-first |
+| Phase 5.2 | 🔄 In Progress | UI enhancements, deployment infra (Vercel + Neon), test coverage |
+| Phase 5.3 | 📋 Next | QR check-in UX, WhatsApp variable substitution, report exports |
+| Phase 5.5 | 📋 Planned | Staging deploy + UAT (target Aug 2026) |
+| Phase 5.6 | 📋 Planned | Production launch → Nov 25 wedding day operations |
 | Phase 6 | 🌐 Future | Multi-tenant SaaS — open to all Indian wedding organizers |
 
 ---
@@ -450,5 +480,5 @@ docker compose exec app npx tsx prisma/seed.ts
 
 ## License
 
-Private — personal wedding planning project for Himanshu & Savitri, 25 November 2026, Vadodara.
+Private — personal wedding planning project for Himanshu & Samiksha, 25 November 2026, Vadodara.
 Phase 6 will open as a SaaS platform for professional Indian wedding organizers.

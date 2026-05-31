@@ -79,20 +79,37 @@
 - [x] User registration API — `/api/auth/register` with ADMIN_SECRET gate
 - [x] PWA — `@ducanh2912/next-pwa`, `manifest.json`, shortcuts (Dashboard, Guests, Vendors, Check-In)
 
-### Testing ⚠️ Partial (Sprint 5.1 delivered schemas; component + API tests pending)
-- [x] Unit: `currency.test.ts` — formatINR utility
-- [x] Unit: `date.test.ts` — daysUntil, formatDate
-- [x] Unit: `guest.test.ts` — Zod schema validation
+### Testing ✅ 132 tests passing (12 unit/integration files + 3 e2e specs)
+
+**Unit — lib** (2 files)
+- [x] `lib/currency.test.ts` — formatINR, parseINR, calcOverrunPct
+- [x] `lib/date.test.ts` — daysUntil, formatDate, formatShortDate, isOverdue
+
+**Unit — validations** (5 files)
+- [x] `validations/guest.test.ts` — GuestSchema, GuestSide, RsvpStatus
+- [x] `validations/vendor.test.ts` — VendorSchema, VendorCategory, VendorStatus
+- [x] `validations/event.test.ts` — EventSchema, EventType, EventStatus
+- [x] `validations/task.test.ts` — TaskSchema, TaskPriority, TaskStatus
+- [x] `validations/expense.test.ts` — ExpenseSchema, PaymentMode
+
+**Unit — hooks & utils** (4 files)
+- [x] `useCrud.test.ts` — stale editId bug, POST/PUT routing, error/loading states
+- [x] `useToast.test.ts` — add/dismiss, auto-dismiss, error toast no-auto-dismiss
+- [x] `utils/checkin.test.ts` — check-in status helpers
+- [x] `utils/whatsapp.test.ts` — template variable substitution
+
+**Integration** (1 file)
+- [x] `integration/checkin-api.test.ts` — GET/POST/PUT/DELETE `/api/checkin`, 404 guards, weddingId scoping
+
+**E2E (Playwright)** (3 specs)
+- [x] `e2e/checkin.spec.ts` — check-in page flow
+- [x] `e2e/whatsapp.spec.ts` — WhatsApp template page flow
+- [x] `e2e/crud-editId-reset.spec.ts` — editId stale state regression
+
+**Still pending (≥80% coverage target)**
 - [ ] Unit: Component tests (Button, Badge, Modal, Input, Select)
-- [ ] Unit: Vendor schema validation
-- [ ] Integration: Guest API route tests
-- [ ] Integration: Vendor API route tests
-- [ ] Integration: Finance API route tests
-- [ ] Integration: All remaining API route tests
-- [ ] E2E: Guest management flow (Playwright)
-- [ ] E2E: Vendor management flow
-- [ ] E2E: Finance management flow
-- [ ] E2E: Dashboard rendering
+- [ ] Integration: Guest, Vendor, Finance API route tests
+- [ ] E2E: Guest CRUD, Vendor CRUD, Finance, Dashboard rendering
 
 ### Phase 5 Remaining — Priority Feature Gaps (Ranked by Revenue + Wedding Date)
 
@@ -101,17 +118,14 @@
 | **Google Contacts import** | 🔴 Critical | Planning | 5.2 | Jun 15 | Phase 6 differentiator; couple retention |
 | **Task delegation** (family/team) | 🔴 Critical | Planning | 5.2 | Jun 20 | Nov 25 retention + planner mode foundation |
 | **Playbook save/clone** | 🔴 Critical | Planning | 5.2–5.3 | Jul 15 | Enables couple→planner graduation path |
-| QR code generation (check-in) | 🔴 Critical | Scaffold exists | 5.3 | Jun 30 | Phase 3 carryover; Nov 25 critical |
-| WhatsApp variable substitution | 🔴 Critical | Template CRUD done | 5.3 | Jun 30 | Phase 3 carryover; Nov 25 critical |
 | **Planner mode toggle** | 🟠 High | Planning | 5.3 | Jul 31 | Revenue unlock (invoicing + team mgmt) |
 | Reports PDF/Excel export | 🟠 High | Scaffold exists | 5.4 | Jul 15 | Couple + planner reporting |
-| Unit + E2E tests (≥80% coverage) | 🟠 High | Partial | 5.2–5.4 | Jul 31 | Quality gate for staging |
+| Unit + E2E tests (≥80% coverage) | 🟠 High | 132 tests / partial | 5.2–5.4 | Jul 31 | Quality gate for staging |
 | Staging deployment + UAT | 🟠 High | Planned | 5.5 | Aug 31 | Pre-Nov 25 validation |
 | Advanced report filters | 🟡 Medium | Planned | 5.4 | Jul 31 | Planner reporting nicety |
 | Gallery — photo upload | 🟡 Medium | Stub only | 5.6+ | Sep 15 | Post-wedding value-add |
 | Command Center live refresh | 🟡 Medium | Scaffold only | 5.6+ | Sep 15 | Wedding day ops (deferred) |
 | Settings — theme/backup | 🟡 Medium | Partial | 5.5 | Aug 31 | Data portability for SaaS |
-| Emergency contacts CRUD | 🟡 Medium | Page exists | 5.2 | Jun 30 | Wedding day safety net |
 
 ### DevOps & Infrastructure (Phase 5.2 — Ongoing) 📋 Planned
 
@@ -151,14 +165,14 @@ The following Phase 3 Vanilla JS features are deferred; they will be implemented
 
 | Feature | Vanilla JS % | Next.js Status |
 |---------|-------------|----------------|
-| Reports Enhancement | 60% | Scaffold exists, export missing |
-| Wedding Day Command Center | 30% | Scaffold exists, live data missing |
-| Alerts Enhancement | 50% | Basic list exists, thresholds missing |
-| QR Check-In | 20% | Data model exists, QR generation missing |
-| WhatsApp Integration | 30% | Templates CRUD done, send links missing |
-| Gallery Module | 0% | Stub page exists, upload missing |
-| Settings Module | 0% | Stub page exists, config save missing |
-| Emergency Module | 0% | Page exists, CRUD missing |
+| Reports Enhancement | 60% | ✅ Tabs + filters shipped; PDF/Excel export pending (Sprint 5.4) |
+| Wedding Day Command Center | 30% | ✅ Scaffold shipped; live data/refresh pending (Sprint 5.6+) |
+| Alerts Enhancement | 50% | ✅ Alert feed with read/dismiss shipped; thresholds pending |
+| QR Check-In | 20% | ✅ Check-in CRUD + tests shipped (Sprint 5.1) |
+| WhatsApp Integration | 30% | ✅ Templates CRUD + variable substitution shipped (Sprint 5.1) |
+| Gallery Module | 0% | 🔄 Stub page exists; photo upload pending (Sprint 5.6+) |
+| Settings Module | 0% | ✅ Wedding config save to DB + seed/wipe shipped |
+| Emergency Module | 0% | ✅ Full DB-backed CRUD shipped (Sprint 5.1) |
 
 ---
 
@@ -193,9 +207,9 @@ The following Phase 3 Vanilla JS features are deferred; they will be implemented
   - Sprint 5.3 Phase 2: Playbook browser + Planner mode + Customization
   - Phase 6: Marketplace + Planner profiles + Commission system
   - **Rationale**: Turns couples into planners, creates network effects, 15–20% commission revenue
-- [ ] Test coverage — Unit + E2E tests for critical paths
-- [ ] QR code check-in generation
-- [ ] WhatsApp template variable substitution
+- [ ] Test coverage — component + API integration tests (≥80% target)
+- [x] QR code check-in — check-in CRUD + Playwright e2e spec shipped
+- [x] WhatsApp template variable substitution — shipped + e2e spec
 
 ### 📋 Upcoming (Sprint 5.3–5.4)
 1. **Sprint 5.3 — QR Check-In & WhatsApp** (Jun 16–30)
