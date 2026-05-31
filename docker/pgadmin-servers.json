@@ -1,0 +1,15 @@
+{
+  "Servers": {
+    "1": {
+      "Name": "Vivah PostgreSQL",
+      "Group": "Servers",
+      "Host": "postgres",
+      "Port": 5432,
+      "MaintenanceDB": "vivah",
+      "Username": "vivah",
+      "Password": "vivah",
+      "SSLMode": "prefer",
+      "SavePassword": true
+    }
+  }
+}

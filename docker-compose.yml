@@ -1,0 +1,116 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Vivah — Docker Compose
+#
+# Services:
+#   app       → Next.js application (built from Dockerfile)
+#   postgres  → PostgreSQL 16 database
+#   pgadmin   → Web-based PostgreSQL GUI  (optional, comment out if not needed)
+#
+# Quick start:
+#   docker compose up --build
+#
+# First-time database setup (in a separate terminal after containers are up):
+#   docker compose exec app npx prisma migrate deploy
+#   docker compose exec app npx tsx prisma/seed.ts
+#
+# App:     http://localhost:3000
+# pgAdmin: http://localhost:5050  (admin@vivah.local / admin)
+# ─────────────────────────────────────────────────────────────────────────────
+
+name: vivah
+
+services:
+
+  # ── Application ──────────────────────────────────────────────────────────
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        # Pass PostgreSQL URL at build time so Prisma can generate the client
+        DATABASE_URL: "postgresql://vivah:vivah@postgres:5432/vivah"
+    container_name: vivah-app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: "postgresql://vivah:vivah@postgres:5432/vivah"
+      WEDDING_ID: "vivah-2026"
+      # Add production secrets here or via .env file:
+      # NEXTAUTH_SECRET: ""
+      # NEXTAUTH_URL: "http://localhost:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - vivah-network
+    volumes:
+      # Persist Prisma migrations between restarts
+      - ./prisma:/app/prisma
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/api/wedding"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+
+  # ── PostgreSQL 16 ─────────────────────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: vivah-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: vivah
+      POSTGRES_PASSWORD: vivah
+      POSTGRES_DB: vivah
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      # Expose on localhost only — do NOT expose in production
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - vivah-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U vivah -d vivah"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  # ── pgAdmin — PostgreSQL GUI (optional) ───────────────────────────────────
+  # Comment out this entire block if you don't need a DB GUI.
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: vivah-pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@vivah.local
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False"
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+      # Auto-connect to the Postgres server on first launch
+      - ./docker/pgadmin-servers.json:/pgadmin4/servers.json:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - vivah-network
+
+# ── Volumes ───────────────────────────────────────────────────────────────────
+volumes:
+  postgres-data:
+    name: vivah-postgres-data
+  pgadmin-data:
+    name: vivah-pgadmin-data
+
+# ── Networks ──────────────────────────────────────────────────────────────────
+networks:
+  vivah-network:
+    name: vivah-network
+    driver: bridge

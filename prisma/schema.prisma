@@ -1,0 +1,356 @@
+// Vivah — Wedding Planning Platform
+// Local dev: SQLite (zero setup) | Production: PostgreSQL 16
+// Switch provider to "postgresql" and update DATABASE_URL for production
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Wedding {
+  id        String   @id @default(cuid())
+  name      String
+  date      DateTime
+  venue     String
+  groomName String
+  brideName String
+  city      String   @default("Vadodara")
+  state     String   @default("Gujarat")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  guests            Guest[]
+  vendors           Vendor[]
+  events            Event[]
+  tasks             Task[]
+  hotels            Hotel[]
+  roomAllocations   RoomAllocation[]
+  travelRecords     TravelRecord[]
+  rituals           Ritual[]
+  responsibilities  Responsibility[]
+  budgetCategories  BudgetCategory[]
+  expenses          Expense[]
+  alerts            Alert[]
+  checkIns          CheckIn[]
+  whatsappTemplates WhatsAppTemplate[]
+  invitationBlocks  InvitationBlock[]
+
+  @@map("weddings")
+}
+
+model Guest {
+  id                  String   @id @default(cuid())
+  weddingId           String
+  wedding             Wedding  @relation(fields: [weddingId], references: [id], onDelete: Cascade)
+  name                String
+  familyName          String
+  mobile              String?
+  city                String?
+  state               String?
+  relationship        String?
+  side                String   // GROOM | BRIDE
+  guestCount          Int      @default(1)
+  accommodationNeeded Boolean  @default(false)
+  pickupNeeded        Boolean  @default(false)
+  invitationSent      Boolean  @default(false)
+  rsvpStatus          String   @default("PENDING") // PENDING | CONFIRMED | DECLINED
+  giftReceived        Boolean  @default(false)
+  notes               String?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  checkIns      CheckIn[]
+  travelRecords TravelRecord[]
+
+  @@index([weddingId])
+  @@index([side])
+  @@index([rsvpStatus])
+  @@map("guests")
+}
+
+model Vendor {
+  id               String   @id @default(cuid())
+  weddingId        String
+  wedding          Wedding  @relation(fields: [weddingId], references: [id], onDelete: Cascade)
+  name             String
+  category         String
+  contactPerson    String?
+  phone            String?
+  email            String?
+  quotation        Float?
+  negotiatedAmount Float?
+  finalAmount      Float?
+  advancePaid      Float    @default(0)
+  contractNotes    String?
+  status           String   @default("SHORTLISTED") // SHORTLISTED | NEGOTIATING | FINALIZED | REJECTED
+  rating           Int?
+  notes            String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([weddingId])
+  @@index([status])
+  @@map("vendors")
+}
+
+model Event {
+  id          String   @id @default(cuid())
+  weddingId   String
+  wedding     Wedding  @relation(fields: [weddingId], references: [id], onDelete: Cascade)
+  name        String
+  eventType   String   @default("WEDDING") // PRE_WEDDING | WEDDING | POST_WEDDING
+  date        DateTime?
+  venue       String?
+  startTime   String?
+  endTime     String?
+  coordinator String?
+  budget      Float?
+  checklist   String   @default("[]") // JSON array string
+  notes       String?
+  status      String   @default("PLANNED") // PLANNED | IN_PROGRESS | COMPLETED | CANCELLED
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  checkIns CheckIn[]
+
+  @@index([weddingId])
+  @@map("events")
+}
+
+model Task {
+  id        String    @id @default(cuid())
+  weddingId String
+  wedding   Wedding   @relation(fields: [weddingId], references: [id], onDelete: Cascade)
+  name      String
+  owner     String?
+  deadline  DateTime?
+  priority  String    @default("MEDIUM") // LOW | MEDIUM | HIGH | CRITICAL
+  status    String    @default("PENDING") // PENDING | IN_PROGRESS | COMPLETED | BLOCKED
+  notes     String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([weddingId])
+  @@index([status])
+  @@map("tasks")
+}
+
+model Hotel {
+  id             String    @id @default(cuid())
+  weddingId      String
+  wedding        Wedding   @relation(fields: [weddingId], references: [id], onDelete: Cascade)
+  name           String
+  type           String    @default("HOTEL") // HOTEL | GUEST_HOUSE | RELATIVE_HOME | RESORT
+  address        String?
+  contactPerson  String?
+  phone          String?
+  roomsAvailable Int       @default(0)
+  roomsAllocated Int       @default(0)
+  checkInDate    DateTime?
+  checkOutDate   DateTime?
+  costPerNight   Float?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  roomAllocations RoomAllocation[]
+
+  @@index([weddingId])
+  @@map("hotels")
+}
+
+model RoomAllocation {
+  id             String    @id @default(cuid())
+  weddingId      String
+  wedding        Wedding   @relation(fields: [weddingId], references: [id], onDelete: Cascade)
+  hotelId        String
+  hotel          Hotel     @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+  roomNumber     String
+  assignedGuests String    @default("[]") // JSON array string
+  checkInDate    DateTime?
+  checkOutDate   DateTime?
+  status         String    @default("PENDING") // PENDING | CONFIRMED | COMPLETED
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@index([weddingId])
+  @@map("room_allocations")
+}
+
+model TravelRecord {
+  id                String    @id @default(cuid())
+  weddingId         String
+  wedding           Wedding   @relation(fields: [weddingId], references: [id], onDelete: Cascade)
+  guestId           String?
+  guest             Guest?    @relation(fields: [guestId], references: [id])
+  guestName         String
+  arrivalDate       DateTime?
+  arrivalTime       String?
+  transportType     String    @default("TRAIN") // FLIGHT | TRAIN | BUS | CAB | PRIVATE_VEHICLE
+  pnrBookingId      String?
+  pickupNeeded      Boolean   @default(false)
+  pickupCoordinator String?
+  vehicleNumber     String?
+  status            String    @default("PENDING") // PENDING | CONFIRMED | DELAYED | COMPLETED
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@index([weddingId])
+  @@map("travel_records")
+}
+
+model Ritual {
+  id                String    @id @default(cuid())
+  weddingId         String
+  wedding           Wedding   @relation(fields: [weddingId], references: [id], onDelete: Cascade)
+  name              String
+  description       String?
+  requiredItems     String    @default("[]") // JSON array string
+  responsiblePerson String?
+  budget            Float?
+  status            String    @default("PENDING") // PENDING | IN_PROGRESS | COMPLETED
+  scheduledDate     DateTime?
+  scheduledTime     String?
+  priestNotes       String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@index([weddingId])
+  @@map("rituals")
+}
+
+model Responsibility {
+  id           String    @id @default(cuid())
+  weddingId    String
+  wedding      Wedding   @relation(fields: [weddingId], references: [id], onDelete: Cascade)
+  task         String
+  owner        String?
+  backupPerson String?
+  deadline     DateTime?
+  priority     String    @default("MEDIUM") // LOW | MEDIUM | HIGH | CRITICAL
+  status       String    @default("PENDING") // PENDING | IN_PROGRESS | COMPLETED
+  notes        String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@index([weddingId])
+  @@map("responsibilities")
+}
+
+model BudgetCategory {
+  id            String   @id @default(cuid())
+  weddingId     String
+  wedding       Wedding  @relation(fields: [weddingId], references: [id], onDelete: Cascade)
+  category      String
+  plannedBudget Float    @default(0)
+  actualCost    Float    @default(0)
+  paidAmount    Float    @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  expenses Expense[]
+
+  @@unique([weddingId, category])
+  @@index([weddingId])
+  @@map("budget_categories")
+}
+
+model Expense {
+  id               String   @id @default(cuid())
+  weddingId        String
+  wedding          Wedding  @relation(fields: [weddingId], references: [id], onDelete: Cascade)
+  budgetCategoryId String?
+  budgetCategory   BudgetCategory? @relation(fields: [budgetCategoryId], references: [id])
+  date             DateTime @default(now())
+  category         String
+  description      String
+  paidTo           String?
+  amount           Float
+  paidAmount       Float    @default(0)
+  paymentMode      String   @default("CASH") // CASH | UPI | CARD | BANK_TRANSFER | CHEQUE
+  receipt          String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([weddingId])
+  @@index([category])
+  @@map("expenses")
+}
+
+model Alert {
+  id         String    @id @default(cuid())
+  weddingId  String
+  wedding    Wedding   @relation(fields: [weddingId], references: [id], onDelete: Cascade)
+  type       String    @default("INFO") // INFO | WARNING | CRITICAL | SUCCESS
+  title      String
+  message    String
+  active     Boolean   @default(true)
+  isRead     Boolean   @default(false)
+  threshold  Float?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@index([weddingId])
+  @@map("alerts")
+}
+
+model CheckIn {
+  id          String    @id @default(cuid())
+  weddingId   String
+  wedding     Wedding   @relation(fields: [weddingId], references: [id], onDelete: Cascade)
+  guestId     String?
+  guest       Guest?    @relation(fields: [guestId], references: [id])
+  guestName   String
+  familyName  String?
+  eventId     String?
+  event       Event?    @relation(fields: [eventId], references: [id])
+  eventName   String
+  status      String    @default("PENDING") // PENDING | CHECKED_IN | ABSENT
+  arrivalTime DateTime?
+  qrCode      String?
+  notes       String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([weddingId])
+  @@index([status])
+  @@map("check_ins")
+}
+
+model WhatsAppTemplate {
+  id        String   @id @default(cuid())
+  weddingId String
+  wedding   Wedding  @relation(fields: [weddingId], references: [id], onDelete: Cascade)
+  name      String
+  category  String   @default("GENERAL") // INVITATION | REMINDER | CONFIRMATION | TRAVEL_UPDATE | GENERAL
+  message   String
+  variables String   @default("[]") // JSON array of variable names
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([weddingId])
+  @@map("whatsapp_templates")
+}
+
+model InvitationBlock {
+  id          String    @id @default(cuid())
+  weddingId   String
+  wedding     Wedding   @relation(fields: [weddingId], references: [id], onDelete: Cascade)
+  section     String    // HEADER | COUPLE | FAMILY | EVENT | FOOTER | CUSTOM
+  title       String
+  primaryText String?
+  description String?
+  date        DateTime?
+  time        String?
+  contact     String?
+  sortOrder   Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([weddingId])
+  @@map("invitation_blocks")
+}

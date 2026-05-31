@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir -p \"c:/Users/himan/.claude/projects/c--Himanshu-Projects-Vivah/memory\")",
+      "Skill(update-config)",
+      "Skill(update-config:*)",
+      "WebSearch",
+      "Bash(npm install *)",
+      "Bash(DATABASE_URL=\"file:./dev.db\" npx prisma db push)",
+      "Bash(DATABASE_URL=\"file:./dev.db\" npx tsx prisma/seed.ts)",
+      "Bash(DATABASE_URL=\"file:./dev.db\" npx tsc --noEmit)",
+      "Bash(DATABASE_URL=\"file:./dev.db\" npx vitest run)",
+      "Bash(find c:/Himanshu -name \"*.pdf\" 2>/dev/null | head -10)",
+      "Read(//c/Himanshu/**)",
+      "Bash(python3 \"c:\\\\Himanshu\\\\Projects\\\\Vivah\\\\.claude\\\\skills\\\\ui-ux-pro-max\\\\scripts\\\\search.py\" \"bihari traditional wedding elegant gold purple ceremony\" --design-system -p \"Vivah Wedding Platform\")",
+      "Bash(python \"c:\\\\Himanshu\\\\Projects\\\\Vivah\\\\.claude\\\\skills\\\\ui-ux-pro-max\\\\scripts\\\\search.py\" \"bihari traditional wedding elegant gold purple ceremony\" --design-system -p \"Vivah Wedding Platform\")",
+      "Bash(findstr -i \"gsap\\\\|dependencies\")"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\himan\\.claude\\projects\\c--Himanshu-Projects-Vivah"
+    ]
+  }
+}

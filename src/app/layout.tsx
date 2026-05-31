@@ -1,0 +1,83 @@
+import type { Metadata, Viewport } from "next"
+import { Cormorant_Garamond, DM_Sans } from "next/font/google"
+import "./globals.css"
+import { Navbar } from "@/components/layout/Navbar"
+import { VivahFooter } from "@/components/ui/motion-footer"
+import { ToastProvider } from "@/components/ui/Toast"
+import { NavigationProgress } from "@/components/ui/NavigationProgress"
+
+// #02 Typography: paired display + body — neither Inter nor Roboto
+const cormorant = Cormorant_Garamond({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-cormorant",
+  display: "swap",
+})
+
+const dmSans = DM_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  variable: "--font-dm-sans",
+  display: "swap",
+})
+
+// #08 Invisible expensive stuff — real meta tags
+export const metadata: Metadata = {
+  title: {
+    default: "Vivah — Wedding Planning Platform",
+    template: "%s | Vivah",
+  },
+  description:
+    "Complete wedding planning platform for Himanshu & Savitri's traditional Bihari wedding on 25 November 2026 in Vadodara, Gujarat. Manage guests, vendors, rituals, finance, and more.",
+  keywords: ["wedding planning", "Bihari wedding", "Vadodara", "Indian wedding", "vivah"],
+  authors: [{ name: "Himanshu" }],
+  creator: "Vivah Platform",
+  robots: { index: false, follow: false },
+  icons: {
+    icon: [
+      { url: "/icons/favicon.svg", type: "image/svg+xml" },
+    ],
+    apple: "/icons/favicon.svg",
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_IN",
+    title: "Vivah — Wedding Planning Platform",
+    description: "One platform to plan the entire wedding journey.",
+    siteName: "Vivah",
+  },
+}
+
+// #08 viewport — prevent FOUC on mobile
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: "#7C3AED",
+}
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en" className={`${cormorant.variable} ${dmSans.variable}`}>
+      <body>
+        {/* #08 Skip nav — keyboard accessibility */}
+        <NavigationProgress />
+        <a href="#main-content" className="skip-nav">
+          Skip to main content
+        </a>
+        <Navbar />
+        <ToastProvider>
+        <main
+          id="main-content"
+          className="app-main"
+        >
+          <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 py-6">
+            {children}
+          </div>
+        </main>
+        </ToastProvider>
+        <VivahFooter />
+      </body>
+    </html>
+  )
+}

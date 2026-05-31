@@ -1,0 +1,65 @@
+# ── Node ──────────────────────────────────────────────────────────────────────
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ── Next.js build output ──────────────────────────────────────────────────────
+.next
+out
+
+# ── Database files (do not bake into image) ───────────────────────────────────
+prisma/dev.db
+prisma/dev.db-journal
+prisma/migrations
+
+# ── Environment files (never bake secrets into an image) ──────────────────────
+.env
+.env.local
+.env.*.local
+.env.development
+.env.test
+.env.production
+
+# ── Test and coverage output ──────────────────────────────────────────────────
+coverage
+__tests__
+playwright-report
+test-results
+
+# ── Development tools ─────────────────────────────────────────────────────────
+.vscode
+.idea
+*.swp
+*.swo
+
+# ── Git ───────────────────────────────────────────────────────────────────────
+.git
+.gitignore
+.gitattributes
+
+# ── Docs and metadata (not needed in runtime image) ───────────────────────────
+README.md
+CLAUDE.md
+LICENSE
+*.md
+"Application Creation Prompt.md"
+
+# ── CI/CD ─────────────────────────────────────────────────────────────────────
+.github
+.gitlab-ci.yml
+.circleci
+
+# ── Netlify (legacy) ──────────────────────────────────────────────────────────
+.netlify
+netlify.toml
+
+# ── macOS ─────────────────────────────────────────────────────────────────────
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+
+# ── TypeScript build info ─────────────────────────────────────────────────────
+tsconfig.tsbuildinfo
+*.tsbuildinfo
