@@ -124,7 +124,9 @@ export default function DashboardPage() {
                 className="flex items-start gap-3 px-4 py-3 rounded-xl"
                 style={{
                   background: bg,
-                  border: `1px solid ${bdClr}`,
+                  borderTop: `1px solid ${bdClr}`,
+                  borderRight: `1px solid ${bdClr}`,
+                  borderBottom: `1px solid ${bdClr}`,
                   borderLeft: `3px solid ${cfg.accent}`,
                 }}
               >

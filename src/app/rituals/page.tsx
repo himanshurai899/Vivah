@@ -94,28 +94,28 @@ export default function RitualsPage() {
       <Modal open={!!selected} onClose={() => setSelected(null)} title={selected?.name ?? ""} size="lg">
         {selected && (
           <div className="space-y-4">
-            {selected.description && <p className="text-sm text-gray-600">{selected.description}</p>}
-            <div className="grid grid-cols-2 gap-3 text-sm">
-              {selected.scheduledDate && <div><span className="font-medium text-gray-700">Date: </span>{formatDate(selected.scheduledDate)}</div>}
-              {selected.scheduledTime && <div><span className="font-medium text-gray-700">Time: </span>{selected.scheduledTime}</div>}
-              {selected.responsiblePerson && <div><span className="font-medium text-gray-700">Person: </span>{selected.responsiblePerson}</div>}
-              {selected.budget && <div><span className="font-medium text-gray-700">Budget: </span>{formatINR(selected.budget)}</div>}
+            {selected.description && <p className="text-sm" style={{ color: "var(--text-muted)" }}>{selected.description}</p>}
+            <div className="grid grid-cols-2 gap-3 text-sm" style={{ color: "var(--ink)" }}>
+              {selected.scheduledDate && <div><span className="font-medium" style={{ color: "var(--text-muted)" }}>Date: </span>{formatDate(selected.scheduledDate)}</div>}
+              {selected.scheduledTime && <div><span className="font-medium" style={{ color: "var(--text-muted)" }}>Time: </span>{selected.scheduledTime}</div>}
+              {selected.responsiblePerson && <div><span className="font-medium" style={{ color: "var(--text-muted)" }}>Person: </span>{selected.responsiblePerson}</div>}
+              {selected.budget && <div><span className="font-medium" style={{ color: "var(--text-muted)" }}>Budget: </span>{formatINR(selected.budget)}</div>}
             </div>
             <div>
-              <h4 className="font-semibold text-gray-800 mb-2">📦 Required Samagri ({selected.requiredItems.length} items)</h4>
+              <h4 className="font-semibold mb-2" style={{ color: "var(--ink)" }}>📦 Required Samagri ({selected.requiredItems.length} items)</h4>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-1">
                 {selected.requiredItems.map((item, i) => (
-                  <div key={i} className="flex items-center gap-2 text-sm text-gray-700">
-                    <div className="w-1.5 h-1.5 rounded-full bg-violet-400 shrink-0" />
+                  <div key={i} className="flex items-center gap-2 text-sm" style={{ color: "var(--ink)" }}>
+                    <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: "var(--purple)" }} />
                     {item}
                   </div>
                 ))}
               </div>
             </div>
             {selected.priestNotes && (
-              <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
-                <h4 className="text-xs font-semibold text-amber-700 mb-1">🙏 Priest Notes</h4>
-                <p className="text-sm text-amber-800">{selected.priestNotes}</p>
+              <div className="rounded-lg p-3 border" style={{ background: "var(--gold-muted)", borderColor: "var(--gold-border)" }}>
+                <h4 className="text-xs font-semibold mb-1" style={{ color: "var(--gold)" }}>🙏 Priest Notes</h4>
+                <p className="text-sm" style={{ color: "var(--ink)" }}>{selected.priestNotes}</p>
               </div>
             )}
           </div>

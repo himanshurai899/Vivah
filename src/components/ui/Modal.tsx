@@ -35,7 +35,7 @@ export function Modal({ open, onClose, title, children, size = "md" }: ModalProp
         className={cn(
           "relative rounded-2xl shadow-2xl w-full",
           "bg-white dark:bg-[#1A0F2E]",
-          "border border-transparent dark:border-[rgba(201,168,76,0.14)]",
+          "border border-gray-200 dark:border-[rgba(201,168,76,0.14)]",
           sizes[size],
         )}
       >
@@ -48,6 +48,7 @@ export function Modal({ open, onClose, title, children, size = "md" }: ModalProp
           <button
             type="button"
             onClick={onClose}
+            aria-label="Close modal"
             className="p-1.5 rounded-lg transition-colors text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:text-[#7D6E99] dark:hover:text-[#B8A8D4] dark:hover:bg-[#2A1842]"
           >
             <X size={18} />

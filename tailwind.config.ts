@@ -3,6 +3,7 @@ import type { Config } from "tailwindcss"
 // $10K Checklist — #03 Restrained color system (4 tokens, no rainbow)
 // #02 Typography: Cormorant Garamond + DM Sans via CSS variables
 const config: Config = {
+  darkMode: "class",
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",

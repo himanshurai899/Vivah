@@ -1,19 +1,20 @@
 # Vivah — Development Phases Tracker
 
-> Last updated: 2026-05-31 | Active branch: `feature/code-gen-claude`
+> Last updated: 2026-05-31 (17:45 UTC) | Active branch: `feature/code-gen-claude` | Sprint: 5.2 (UI Enhancements & Deployment Planning)
 
 ---
 
 ## Overview
 
-| Phase | Description | Stack | Status |
-|-------|-------------|-------|--------|
-| Phase 1 | Core foundation (Dashboard, Guests, Vendors, Finance, Functions, Tasks) | Vanilla JS | ✅ Complete |
-| Phase 2 | Operations (Accommodation, Travel, Rituals, Responsibilities, Invitation) | Vanilla JS | ✅ Complete |
-| Phase 3 | Execution (Reports, Command Center, Alerts, Check-In, WhatsApp) | Vanilla JS | 🔄 40% Complete |
-| Phase 4 | Auth + AI + Analytics + PWA | Vanilla JS → Next.js | 📋 Planned (merged into Phase 5) |
-| Phase 5 | Full Next.js 15 + TypeScript + PostgreSQL migration (TDD-first) | Next.js 15 | 🔄 In Progress |
-| Phase 6 | Multi-tenant SaaS platform for wedding organizers | Next.js 15 + RLS | 🏗️ Architecture |
+| Phase | Description | Stack | Status | Completion |
+|-------|-------------|-------|--------|------------|
+| Phase 1 | Core foundation (Dashboard, Guests, Vendors, Finance, Functions, Tasks) | Vanilla JS | ✅ Complete | 100% |
+| Phase 2 | Operations (Accommodation, Travel, Rituals, Responsibilities, Invitation) | Vanilla JS | ✅ Complete | 100% |
+| Phase 3 | Execution (Reports, Command Center, Alerts, Check-In, WhatsApp) | Vanilla JS | 🔄 Migrating | 40% (Next.js) |
+| Phase 4 | Auth + PWA + Analytics | Vanilla JS → Next.js | ✅ Complete | 100% |
+| Phase 5 | Full Next.js 15 + TypeScript + PostgreSQL migration (TDD-first) | Next.js 15 | 🔄 In Progress | 75% |
+| Phase 5.2 | UI Enhancements + Deployment Planning | Next.js 15 | 🔄 In Progress | 50% |
+| Phase 6 | Multi-tenant SaaS platform for wedding organizers | Next.js 15 + RLS | 🏗️ Planning | 5% |
 
 ---
 
@@ -24,6 +25,7 @@
 - [x] Tailwind CSS 4 + shadcn/ui design system
 - [x] Cormorant Garamond + DM Sans font pair (Agni-Jal Editorial)
 - [x] CSS design tokens (`--ink`, `--purple`, `--gold`, `--ivory`)
+- [x] **Dark mode support** with theme toggle (added May 31)
 - [x] Prisma schema — all 14 entities modelled
 - [x] SQLite (dev) / PostgreSQL (prod) dual config
 - [x] Database seed script with full sample data
@@ -32,7 +34,7 @@
 - [x] Shared UI components (Button, Badge, Modal, Input, Select, ConfirmDialog, Spinner, Toast)
 - [x] Utility libraries (currency INR, date helpers, cn, api client)
 - [x] Hooks (useCrud, useDelete, useToast)
-- [x] Zod schemas (guest, vendor)
+- [x] Zod schemas (guest, vendor, event, task, expense)
 
 ### Core Pages ✅ Complete
 - [x] Dashboard — countdown, budget stats, guest stats, vendor stats, charts
@@ -92,17 +94,50 @@
 - [ ] E2E: Finance management flow
 - [ ] E2E: Dashboard rendering
 
-### Phase 5 Remaining — Feature Gaps
-- [ ] QR code generation for guest check-in (Phase 3 carryover)
-- [ ] WhatsApp click-to-send links with variable substitution
-- [ ] Reports PDF/Excel export
-- [ ] Advanced report filters (family-wise, RSVP breakdown, city breakdown)
-- [ ] Command Center live refresh / real-time mode
-- [ ] Gallery — photo upload with Cloudinary/Vercel Blob
-- [ ] Settings — theme toggle, export/import backup
-- [ ] Emergency contacts — full CRUD (currently static)
-- [ ] Authentication (NextAuth.js v5) — multi-user collaboration
-- [ ] Zod schemas for all remaining entities (events, tasks, finance, rituals, etc.)
+### Phase 5 Remaining — Priority Feature Gaps (Ranked by Wedding Date)
+
+| Feature | Priority | Status | Sprint | Target |
+|---------|----------|--------|--------|--------|
+| QR code generation (check-in) | 🔴 Critical | Scaffold exists | 5.3 | Jun 30 |
+| WhatsApp variable substitution | 🔴 Critical | Template CRUD done | 5.3 | Jun 30 |
+| Reports PDF/Excel export | 🟠 High | Scaffold exists | 5.4 | Jul 15 |
+| Unit + E2E tests (≥80% coverage) | 🟠 High | Partial | 5.2–5.4 | Jul 31 |
+| Staging deployment + UAT | 🟠 High | Planned | 5.5 | Aug 31 |
+| Gallery — photo upload | 🟡 Medium | Stub only | 5.6+ | Sep 15 |
+| Command Center live refresh | 🟡 Medium | Scaffold only | 5.6+ | Sep 15 |
+| Advanced report filters | 🟡 Medium | Planned | 5.4 | Jul 31 |
+| Settings — theme/backup | 🟡 Medium | Partial | 5.5 | Aug 31 |
+| Emergency contacts CRUD | 🟡 Medium | Page exists | 5.2 | Jun 30 |
+
+### DevOps & Infrastructure (Phase 5.2 — Ongoing) 📋 Planned
+
+**Owner**: `/devops` agent  
+**Status**: Planning phase (DEPLOYMENT.md + DEPLOYMENT_PLAN.md created)
+
+**Key Deliverables**:
+- [ ] **Phase 1 — Preparation** (Jun 1–30)
+  - [ ] Neon PostgreSQL prod setup
+  - [ ] Vercel project + auto-deploy from GitHub
+  - [ ] Environment variables & secrets management
+  - [ ] Schema validation for production
+  - [ ] GitHub Actions CI/CD pipeline
+  - [ ] Backup & recovery runbooks
+
+- [ ] **Phase 2 — Staging** (Jul 1–Aug 31)
+  - [ ] Staging deployment with preview builds
+  - [ ] Load testing (50 concurrent users)
+  - [ ] User acceptance testing (UAT sign-off)
+  - [ ] Security audit (OWASP Top 10)
+  - [ ] Disaster recovery drill
+
+- [ ] **Phase 3 — Production** (Sep 1–Nov 25)
+  - [ ] Production deployment to https://vivah.vercel.app
+  - [ ] Monitoring (Vercel Analytics + Sentry)
+  - [ ] Wedding day operations (Nov 25–26, 24/7 on-call)
+  - [ ] Post-mortem + Phase 6 learnings
+
+**Estimated Effort**: 120 hours across 5 months  
+**Budget**: Free tier (Vercel + Neon) = ₹0–500/mo
 
 ---
 
@@ -123,33 +158,50 @@ The following Phase 3 Vanilla JS features are deferred; they will be implemented
 
 ---
 
-## Sprint Planning — Phase 5 Next Sprint
+## Sprint Planning — Phase 5 Active Sprint
 
-**Goal**: Achieve TDD compliance (≥ 80% test coverage) + complete Phase 3 carryover features.
+**Current Sprint: 5.2 — UI Enhancements & Deployment Planning**  
+**Status**: In Progress  
+**Target Completion**: 2026-06-15
 
-### Sprint 5.1 — Test Foundation (Current Priority)
-1. `/ssdt` — Write failing tests for all existing API routes (guests, vendors, finance)
-2. `/ssdt` — Write failing E2E tests for 3 critical user flows
-3. `/ssde` — Fix any regressions surfaced by tests
-4. `/ssde` — Add Zod validation to all remaining API routes
+### ✅ Completed (Sprint 5.1–5.2)
+- [x] Dark mode support + Tailwind dark mode config
+- [x] Slug generation refactored with slugify function
+- [x] Page UI updates: Dashboard, Guests, Rituals, Layout refinements
+- [x] Modal component accessibility improvements
+- [x] Zod schemas for all core entities (guest, vendor, event, task, expense)
+- [x] All API routes (CRUD) for Phases 1–3 complete
+- [x] NextAuth.js v5 — credentials provider, JWT, role-based access
+- [x] PWA manifest and shortcuts configured
 
-### Sprint 5.2 — QR Check-In & WhatsApp
-1. `/ba` — Acceptance criteria for QR check-in flow
-2. `/system-architect` — QR code data structure and generation approach
-3. `/ssdt` — Failing tests for QR generation and check-in workflow
-4. `/ssde` — QR check-in implementation
-5. `/ssde` — WhatsApp click-to-send with variable substitution
+### 🔄 In Progress (Sprint 5.2)
+- [ ] **Deployment Planning** — DEPLOYMENT.md + DEPLOYMENT_PLAN.md created (ready for `/devops` review)
+  - Infrastructure: Vercel + Neon PostgreSQL (free tier strategy)
+  - CI/CD: GitHub Actions pipeline setup
+  - Monitoring: Vercel Analytics + Sentry integration
+  - Phase timeline: Prep (Jun 1–30), Staging (Jul 1–Aug 31), Go-live (Sep 1)
+- [ ] Test coverage — Unit + E2E tests for critical paths
+- [ ] QR code check-in generation
+- [ ] WhatsApp template variable substitution
 
-### Sprint 5.3 — Reports & Export
-1. `/ba` — Acceptance criteria for PDF/Excel export
-2. `/ssdt` — Failing tests for report generation
-3. `/ssde` — PDF export (react-pdf or server-side)
-4. `/ssde` — Excel export (xlsx library)
+### 📋 Upcoming (Sprint 5.3–5.4)
+1. **Sprint 5.3 — QR Check-In & WhatsApp** (Jun 16–30)
+   - `/ssdt` — QR generation + check-in workflow tests
+   - `/ssde` — QR endpoint + template variable substitution
+   
+2. **Sprint 5.4 — Reports & Export** (Jul 1–15)
+   - `/ssdt` — Report generation tests
+   - `/ssde` — PDF/Excel export implementation
 
-### Sprint 5.4 — Authentication
-1. `/system-architect` — NextAuth.js v5 RBAC design
-2. `/ssdt` — Auth flow tests
-3. `/ssde` — NextAuth integration, login/logout, role-based route guards
+3. **Sprint 5.5 — Staging & UAT** (Jul 16–Aug 31)
+   - `/devops` — Deploy to staging environment
+   - `/ba` + `/cse` — User acceptance testing
+   - Load testing & security audit
+
+4. **Sprint 5.6 — Production Launch** (Sep 1 onwards)
+   - `/devops` — Production deployment
+   - 24/7 monitoring & on-call setup
+   - Wedding day operations (Nov 25–26)
 
 ---
 

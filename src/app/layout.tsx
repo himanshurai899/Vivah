@@ -59,7 +59,7 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${cormorant.variable} ${dmSans.variable}`} suppressHydrationWarning>
-      <body>
+      <body suppressHydrationWarning>
         <AuthProvider>
         <ThemeProvider>
           <ToastProvider>

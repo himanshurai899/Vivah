@@ -210,7 +210,7 @@ export default function GuestsPage() {
               ["invitationSent", "Invitation Sent"],
               ["giftReceived", "Gift Received"],
             ] as const).map(([key, label]) => (
-              <label key={key} className="flex items-center gap-2 text-sm cursor-pointer">
+              <label key={key} className="flex items-center gap-2 text-sm cursor-pointer" style={{ color: "var(--ink)" }}>
                 <input type="checkbox"
                   checked={(crud.form as Record<string, unknown>)[key] as boolean ?? false}
                   onChange={e => crud.setForm(p => ({ ...p, [key]: e.target.checked }))}
