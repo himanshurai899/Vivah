@@ -5,6 +5,9 @@ import { CheckCircle, XCircle, Loader2, X } from "lucide-react"
 import { useToast, type Toast, type ToastApi } from "@/lib/hooks/useToast"
 import { cn } from "@/lib/utils/cn"
 
+// Re-export so other modules can type the toast fn without importing useToast directly
+export type { ToastApi as ToastContextValue }
+
 // ── Context ───────────────────────────────────────────────────────────────────
 const ToastContext = createContext<ToastApi | null>(null)
 

@@ -50,9 +50,9 @@ async function main() {
 
   for (const event of events) {
     await prisma.event.upsert({
-      where: { id: `event-${event.name.toLowerCase().replace(/\s+/g, "-")}` },
+      where: { id: `event-${slugify(event.name)}` },
       update: {},
-      create: { id: `event-${event.name.toLowerCase().replace(/\s+/g, "-")}`, weddingId: wedding.id, ...event },
+      create: { id: `event-${slugify(event.name)}`, weddingId: wedding.id, ...event },
     })
   }
   console.log(`✅ ${events.length} events/functions seeded`)
@@ -153,9 +153,9 @@ async function main() {
 
   for (const ritual of rituals) {
     await prisma.ritual.upsert({
-      where: { id: `ritual-${ritual.name.toLowerCase().replace(/[\s()]/g, "-")}` },
+      where: { id: `ritual-${slugify(ritual.name)}` },
       update: {},
-      create: { id: `ritual-${ritual.name.toLowerCase().replace(/[\s()]/g, "-")}`, weddingId: wedding.id, ...ritual },
+      create: { id: `ritual-${slugify(ritual.name)}`, weddingId: wedding.id, ...ritual },
     })
   }
   console.log(`✅ ${rituals.length} Bihari rituals seeded with full samagri lists`)
@@ -186,9 +186,9 @@ async function main() {
 
   for (const vendor of vendors) {
     await prisma.vendor.upsert({
-      where: { id: `vendor-${vendor.name.toLowerCase().replace(/[\s+&]/g, "-")}` },
+      where: { id: `vendor-${slugify(vendor.name)}` },
       update: {},
-      create: { id: `vendor-${vendor.name.toLowerCase().replace(/[\s+&]/g, "-")}`, weddingId: wedding.id, ...vendor },
+      create: { id: `vendor-${slugify(vendor.name)}`, weddingId: wedding.id, ...vendor },
     })
   }
   console.log(`✅ ${vendors.length} Vadodara vendors seeded`)
@@ -230,9 +230,9 @@ async function main() {
 
   for (const hotel of hotels) {
     await prisma.hotel.upsert({
-      where: { id: `hotel-${hotel.name.toLowerCase().replace(/\s+/g, "-")}` },
+      where: { id: `hotel-${slugify(hotel.name)}` },
       update: {},
-      create: { id: `hotel-${hotel.name.toLowerCase().replace(/\s+/g, "-")}`, weddingId: wedding.id, ...hotel },
+      create: { id: `hotel-${slugify(hotel.name)}`, weddingId: wedding.id, ...hotel },
     })
   }
   console.log(`✅ ${hotels.length} hotels seeded`)
@@ -263,9 +263,9 @@ async function main() {
 
   for (const task of tasks) {
     await prisma.task.upsert({
-      where: { id: `task-${task.name.toLowerCase().substring(0, 40).replace(/[\s+&—]/g, "-")}` },
+      where: { id: `task-${slugify(task.name).substring(0, 40)}` },
       update: {},
-      create: { id: `task-${task.name.toLowerCase().substring(0, 40).replace(/[\s+&—]/g, "-")}`, weddingId: wedding.id, ...task },
+      create: { id: `task-${slugify(task.name).substring(0, 40)}`, weddingId: wedding.id, ...task },
     })
   }
   console.log(`✅ ${tasks.length} tasks seeded`)
@@ -288,9 +288,9 @@ async function main() {
 
   for (const resp of responsibilities) {
     await prisma.responsibility.upsert({
-      where: { id: `resp-${resp.task.toLowerCase().substring(0, 40).replace(/\s+/g, "-")}` },
+      where: { id: `resp-${slugify(resp.task).substring(0, 40)}` },
       update: {},
-      create: { id: `resp-${resp.task.toLowerCase().substring(0, 40).replace(/\s+/g, "-")}`, weddingId: wedding.id, ...resp },
+      create: { id: `resp-${slugify(resp.task).substring(0, 40)}`, weddingId: wedding.id, ...resp },
     })
   }
   console.log(`✅ ${responsibilities.length} family responsibilities seeded`)
@@ -309,9 +309,9 @@ async function main() {
 
   for (const template of templates) {
     await prisma.whatsAppTemplate.upsert({
-      where: { id: `wa-${template.name.toLowerCase().replace(/[\s—&]/g, "-").substring(0, 40)}` },
+      where: { id: `wa-${slugify(template.name).substring(0, 40)}` },
       update: {},
-      create: { id: `wa-${template.name.toLowerCase().replace(/[\s—&]/g, "-").substring(0, 40)}`, weddingId: wedding.id, ...template },
+      create: { id: `wa-${slugify(template.name).substring(0, 40)}`, weddingId: wedding.id, ...template },
     })
   }
   console.log(`✅ ${templates.length} WhatsApp templates seeded`)

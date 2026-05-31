@@ -68,9 +68,9 @@ export function Spinner({ size = 48 }: { size?: number }) {
 
 export function PageLoader() {
   return (
-    <div className="flex items-center justify-center h-64">
+    <div style={{ minHeight: "80vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
       <div className="flex flex-col items-center gap-4">
-        <Spinner size={80} />
+        <Spinner size={96} />
         <p className="text-sm" style={{ color: "var(--text-muted)", fontFamily: "var(--font-dm-sans)" }}>
           Loading…
         </p>

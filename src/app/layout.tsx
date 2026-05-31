@@ -61,22 +61,22 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`${cormorant.variable} ${dmSans.variable}`}>
       <body>
         {/* #08 Skip nav — keyboard accessibility */}
-        <NavigationProgress />
-        <a href="#main-content" className="skip-nav">
-          Skip to main content
-        </a>
-        <Navbar />
         <ToastProvider>
-        <main
-          id="main-content"
-          className="app-main"
-        >
-          <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 py-6">
-            {children}
-          </div>
-        </main>
+          <NavigationProgress />
+          <a href="#main-content" className="skip-nav">
+            Skip to main content
+          </a>
+          <Navbar />
+          <main
+            id="main-content"
+            className="app-main"
+          >
+            <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 py-6">
+              {children}
+            </div>
+          </main>
+          <VivahFooter />
         </ToastProvider>
-        <VivahFooter />
       </body>
     </html>
   )

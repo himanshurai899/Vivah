@@ -1,6 +1,6 @@
-"use client"
+﻿"use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback } from "react"
 import { Plus, Calendar } from "lucide-react"
 import { Button } from "@/components/ui/Button"
 import { Input } from "@/components/ui/Input"
@@ -17,13 +17,13 @@ import { EVENT_TYPES } from "@/lib/constants"
 
 type Event = {
   id: string; name: string; eventType: string; date?: string; venue?: string
-  startTime?: string; endTime?: string; coordinator?: string; budget?: number; notes?: string; status: string
+  startTime?: string; endTime?: string; coordinator?: string; budget?: number
+  notes?: string; status: string
 }
 
-const emptyEvent = (): Partial<Event> => ({ eventType: "WEDDING", status: "PLANNED" })
-
+const EMPTY: Partial<Event> = { eventType: "WEDDING", status: "PLANNED" }
 const typeColors: Record<string, "blue" | "purple" | "green"> = {
-  PRE_WEDDING: "blue", WEDDING: "purple", POST_WEDDING: "green"
+  PRE_WEDDING: "blue", WEDDING: "purple", POST_WEDDING: "green",
 }
 
 export default function FunctionsPage() {
@@ -33,34 +33,26 @@ export default function FunctionsPage() {
   const [deleting, setDeleting] = useState(false)
 
   const { toast } = useToastContext()
-  const crud = useCrud<Partial<Event>>(emptyEvent())
+  const crud = useCrud<Partial<Event>>(EMPTY)
 
-  const load = async () => {
-    try {
-      const res = await fetch("/api/events")
-      const data = await res.json()
-      setEvents(data)
-    } catch {
-      toast({ message: "Failed to load functions", variant: "error" })
-    } finally {
-      setLoading(false)
-    }
-  }
+  const load = useCallback(() =>
+    fetch("/api/events").then(r => r.json()).then(setEvents).finally(() => setLoading(false))
+  , [])
 
-  useEffect(() => { load() }, [])
+  useEffect(() => { load() }, [load])
 
   const grouped = Object.entries(EVENT_TYPES).map(([type, label]) => ({
-    type, label,
-    events: events.filter(e => e.eventType === type),
+    type, label, events: events.filter(e => e.eventType === type),
   }))
 
   const handleSave = async () => {
+    const isEdit = !!crud.editId
     try {
       await crud.save("/api/events")
-      toast({ message: crud.editId ? "Function updated" : "Function added", variant: "success" })
       await load()
+      toast({ message: isEdit ? "Function updated" : "Function added", variant: "success" })
     } catch (e) {
-      toast({ message: e instanceof Error ? e.message : "Save failed", variant: "error" })
+      toast({ message: e instanceof Error ? e.message : "Failed to save", variant: "error" })
     }
   }
 
@@ -68,11 +60,14 @@ export default function FunctionsPage() {
     if (!deleteId) return
     setDeleting(true)
     try {
-      const res = await fetch(`/api/events/${deleteId}`, { method: "DELETE" })
-      if (!res.ok) throw new Error("Delete failed")
-      toast({ message: "Function deleted", variant: "success" })
+      const res = await fetch(`/api/events/${encodeURIComponent(deleteId)}`, { method: "DELETE" })
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({})) as { error?: string }
+        throw new Error(body.error ?? "Delete failed")
+      }
       setDeleteId(null)
       await load()
+      toast({ message: "Function deleted", variant: "success" })
     } catch (e) {
       toast({ message: e instanceof Error ? e.message : "Delete failed", variant: "error" })
     } finally {
@@ -86,24 +81,24 @@ export default function FunctionsPage() {
     <div className="space-y-5">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="page-title flex items-center gap-2"><Calendar size={20} /> Wedding Functions</h1>
+          <h1 className="page-title"><Calendar size={22} aria-hidden /> Wedding Functions</h1>
           <p className="page-subtitle">{events.length} functions across pre-wedding, wedding, and post-wedding</p>
         </div>
-        <Button onClick={() => { crud.openAdd() }}>
-          <Plus size={15} /> Add Function
-        </Button>
+        <Button onClick={crud.openAdd}><Plus size={15} /> Add Function</Button>
       </div>
 
       {grouped.map(({ type, label, events: grpEvents }) => (
         <div key={type}>
           <h2 className="text-sm font-semibold uppercase tracking-wider mb-3 flex items-center gap-2"
             style={{ color: "var(--text-muted)" }}>
-            <div className={`w-2 h-2 rounded-full ${type === "PRE_WEDDING" ? "bg-blue-500" : type === "WEDDING" ? "bg-violet-500" : "bg-green-500"}`} />
+            <div className={`w-2 h-2 rounded-full ${
+              type === "PRE_WEDDING" ? "bg-blue-500" : type === "WEDDING" ? "bg-violet-500" : "bg-green-500"
+            }`} />
             {label} ({grpEvents.length})
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 mb-6">
             {grpEvents.map(ev => (
-              <div key={ev.id} className="card p-4 hover:border-violet-200 transition-colors">
+              <div key={ev.id} className="card p-4">
                 <div className="flex items-start justify-between mb-2">
                   <h3 className="font-semibold" style={{ color: "var(--ink)" }}>{ev.name}</h3>
                   <Badge color={typeColors[ev.eventType]}>{EVENT_TYPES[ev.eventType]}</Badge>
@@ -111,21 +106,18 @@ export default function FunctionsPage() {
                 <div className="space-y-1 text-sm" style={{ color: "var(--text-muted)" }}>
                   {ev.date && <div>📅 {formatDate(ev.date)}</div>}
                   {ev.venue && <div>📍 {ev.venue}</div>}
-                  {ev.startTime && <div>🕐 {ev.startTime}{ev.endTime ? ` – ${ev.endTime}` : ""}</div>}
+                  {ev.startTime && <div>🕐 {ev.startTime}{ev.endTime ? ` - ${ev.endTime}` : ""}</div>}
                   {ev.coordinator && <div>👤 {ev.coordinator}</div>}
-                  {ev.budget && <div>💰 {formatINR(ev.budget)}</div>}
+                  {ev.budget != null && <div>💰 {formatINR(ev.budget)}</div>}
                   {ev.notes && <div className="text-xs opacity-60 mt-2 line-clamp-2">{ev.notes}</div>}
                 </div>
                 <div className="flex justify-end gap-2 mt-3 pt-3 border-t" style={{ borderColor: "var(--border)" }}>
-                  <button type="button"
-                    onClick={() => crud.openEdit(ev)}
-                    className="text-xs font-medium hover:underline cursor-pointer"
-                    style={{ color: "var(--purple)" }}>
+                  <button type="button" onClick={() => crud.openEdit(ev)}
+                    className="text-xs cursor-pointer hover:underline" style={{ color: "var(--purple)" }}>
                     Edit
                   </button>
-                  <button type="button"
-                    onClick={() => setDeleteId(ev.id)}
-                    className="text-xs font-medium hover:underline cursor-pointer text-red-500">
+                  <button type="button" onClick={() => setDeleteId(ev.id)}
+                    className="text-xs text-red-500 cursor-pointer hover:underline">
                     Delete
                   </button>
                 </div>
@@ -133,7 +125,7 @@ export default function FunctionsPage() {
             ))}
             {grpEvents.length === 0 && (
               <div className="col-span-full text-center py-6 rounded-xl border border-dashed text-sm"
-                style={{ background: "var(--surface-2)", borderColor: "var(--border)", color: "var(--text-faint)" }}>
+                style={{ borderColor: "var(--border)", color: "var(--text-faint)", background: "var(--surface-2)" }}>
                 No {label.toLowerCase()} functions yet
               </div>
             )}
@@ -160,7 +152,7 @@ export default function FunctionsPage() {
             onChange={e => crud.setForm(p => ({ ...p, endTime: e.target.value }))} />
           <Input label="Coordinator" value={crud.form.coordinator ?? ""}
             onChange={e => crud.setForm(p => ({ ...p, coordinator: e.target.value }))} />
-          <Input label="Budget (₹)" type="number" value={crud.form.budget ?? ""}
+          <Input label="Budget (Rs)" type="number" value={crud.form.budget ?? ""}
             onChange={e => crud.setForm(p => ({ ...p, budget: parseFloat(e.target.value) || undefined }))} />
         </div>
         <div className="mt-3">
@@ -172,13 +164,13 @@ export default function FunctionsPage() {
         <div className="flex justify-end gap-3 mt-5">
           <Button variant="secondary" onClick={crud.closeForm}>Cancel</Button>
           <Button onClick={handleSave} loading={crud.saving}>
-            {crud.saving ? "Saving…" : "Save Function"}
+            {crud.editId ? "Update Function" : "Save Function"}
           </Button>
         </div>
       </Modal>
 
       <ConfirmDialog open={!!deleteId} onClose={() => setDeleteId(null)} onConfirm={handleDelete}
-        title="Delete Function" message="Remove this wedding function?"
+        title="Delete Function" message="Remove this wedding function? This cannot be undone."
         loading={deleting} />
     </div>
   )
