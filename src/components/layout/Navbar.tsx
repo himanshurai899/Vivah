@@ -10,6 +10,7 @@ import {
   Command, Bell, QrCode, MessageCircle, Image, Phone, Settings,
   ChevronDown, Menu, X, MoreHorizontal,
 } from "lucide-react"
+import { SkyToggle } from "@/components/ui/sky-toggle"
 
 const navGroups = [
   {
@@ -176,8 +177,11 @@ export function Navbar() {
             })}
           </nav>
 
-          <div className="ml-auto flex items-center gap-2">
+          <div className="ml-auto flex items-center gap-3">
             <span className="nav-tag hidden md:block">Vivah 2026 · Vadodara</span>
+            <div className="sky-toggle-wrap">
+              <SkyToggle />
+            </div>
             <button
               type="button"
               className="nav-toggle lg:hidden"

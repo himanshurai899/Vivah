@@ -7,38 +7,108 @@
 /* Typography: Cormorant Garamond (display) + DM Sans (body)                */
 /* NOT Inter, NOT Roboto — chosen with intent                               */
 
+/* ── LIGHT mode (default) ─────────────────────────────────────────────── */
 :root {
-  /* ── Core 4-token system (PM-approved, no additions without sign-off) ── */
-  --ink:     #0F0612;   /* deep purple-black — primary text          */
-  --purple:  #7C3AED;   /* brand violet — CTAs, accents              */
-  --gold:    #C9A84C;   /* Agni/fire — hierarchy marker, premium     */
-  --ivory:   #FAFAF8;   /* warm white — page background              */
+  --ink:     #0F0612;
+  --purple:  #7C3AED;
+  --gold:    #C9A84C;
+  --ivory:   #FAFAF8;
 
-  /* ── Bihari wedding derived palette (all derived, not new tokens) ── */
-  --saffron:      #E2813F;   /* marigold/sindoor — warm fire accent  */
-  --gold-light:   #E8C56A;   /* lighter gold for shimmer highlights  */
-  --gold-muted:   rgba(201,168,76,0.12);   /* gold wash surfaces    */
-  --gold-border:  rgba(201,168,76,0.22);   /* gold hairline borders */
-  --purple-soft:  rgba(124,58,237,0.07);   /* purple wash surfaces  */
+  --saffron:      #E2813F;
+  --gold-light:   #E8C56A;
+  --gold-muted:   rgba(201,168,76,0.12);
+  --gold-border:  rgba(201,168,76,0.22);
+  --purple-soft:  rgba(124,58,237,0.07);
 
-  /* ── Derived surfaces ── */
   --surface:      #FFFFFF;
-  --surface-2:    #F5F3F7;
-  --border:       rgba(15,6,18,0.08);
+  --surface-2:    #F3F0F8;
+  --border:       rgba(15,6,18,0.09);
   --border-focus: #7C3AED;
   --text-muted:   #5B4A6E;
   --text-faint:   #9987AE;
 
-  /* ── Motion — whispers, not shouts ── */
+  /* light-mode page background */
+  --page-bg: var(--ivory);
+
+  /* page title color on light background */
+  --title-color:    var(--ink);
+  --title-shadow:   none;
+  --subtitle-color: var(--text-muted);
+
+  /* nav */
+  --nav-bg:          rgba(250,250,248,0.88);
+  --nav-border:      rgba(15,6,18,0.09);
+  --nav-text:        var(--text-muted);
+  --nav-text-active: var(--purple);
+  --nav-hover-bg:    var(--surface-2);
+  --nav-active-bg:   rgba(124,58,237,0.06);
+  --nav-toggle-color: var(--text-muted);
+  --nav-toggle-hover: var(--surface-2);
+
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
   --duration-fast: 150ms;
   --duration: 220ms;
   --duration-slow: 400ms;
 
-  /* ── Logo paths ── */
   --logo-icon: url('/icons/favicon.svg');
   --logo-full: url('/icons/vivah-logo.svg');
 }
+
+/* ── DARK mode overrides ──────────────────────────────────────────────── */
+.dark {
+  /* Card surfaces — deep amethyst, elevated from the gradient bg */
+  --surface:      #1A0F2E;
+  --surface-2:    #2A1842;
+  --border:       rgba(201,168,76,0.14);
+  --border-focus: #C9A84C;
+
+  /* Typography inside cards & elevated surfaces */
+  --ink:          #F0EBF7;    /* near-white with warm lavender tint    */
+  --text-muted:   #B8A8D4;   /* muted lavender — labels, secondary    */
+  --text-faint:   #7D6E99;   /* faintest — hints, metadata            */
+  --purple-soft:  rgba(124,58,237,0.15);
+  --gold-muted:   rgba(201,168,76,0.14);
+  --gold-border:  rgba(201,168,76,0.22);
+
+  /* Override ivory so the footer background goes dark too */
+  --ivory:        #0E0820;
+
+  /* Page-level (outside cards, on gradient) */
+  --page-bg:        transparent;
+  --title-color:    #F0EBF7;
+  --title-shadow:   0 1px 16px rgba(0,0,0,0.5);
+  --subtitle-color: #B8A8D4;
+
+  /* Frosted dark nav */
+  --nav-bg:           rgba(12, 6, 24, 0.78);
+  --nav-border:       rgba(201,168,76,0.13);
+  --nav-text:         rgba(240,235,247,0.60);
+  --nav-text-active:  #F0EBF7;
+  --nav-hover-bg:     rgba(255,255,255,0.06);
+  --nav-active-bg:    rgba(201,168,76,0.09);
+  --nav-toggle-color: rgba(240,235,247,0.60);
+  --nav-toggle-hover: rgba(255,255,255,0.07);
+}
+
+/* ── Global dark-mode Tailwind gray overrides ─────────────────────────── */
+/* Catches any third-party or legacy text-gray-* that wasn't individually updated */
+.dark .text-gray-900 { color: #F0EBF7 !important; }
+.dark .text-gray-800 { color: #E4DCF5 !important; }
+.dark .text-gray-700 { color: #B8A8D4 !important; }
+.dark .text-gray-600 { color: #9A87C0 !important; }
+.dark .text-gray-500 { color: #7D6E99 !important; }
+.dark .text-gray-400 { color: #6B5D88 !important; }
+
+/* bg-gray-50/100 inside cards in dark mode */
+.dark .bg-gray-50  { background-color: #2A1842 !important; }
+.dark .bg-gray-100 { background-color: #2A1842 !important; }
+.dark .bg-white    { background-color: #1A0F2E !important; }
+
+/* Recharts SVG wrapper — prevent white bleed */
+.dark .recharts-wrapper,
+.dark .recharts-surface { background: transparent !important; }
+.dark .recharts-cartesian-grid-horizontal line,
+.dark .recharts-cartesian-grid-vertical line { stroke: rgba(240,235,247,0.06) !important; }
 
 @layer base {
   *, *::before, *::after {
@@ -53,7 +123,7 @@
   }
 
   body {
-    background: var(--ivory);
+    background: transparent;
     color: var(--ink);
     font-family: var(--font-dm-sans), 'DM Sans', system-ui, sans-serif;
     font-size: 15px;
@@ -66,6 +136,7 @@
     font-weight: 600;
     line-height: 1.2;
     letter-spacing: -0.01em;
+    color: var(--ink);
   }
 
   h1 { font-size: clamp(1.75rem, 4vw, 2.5rem); }
@@ -125,21 +196,38 @@
     border-radius: 16px;
     border: 1px solid var(--border);
     box-shadow:
-      0 1px 2px rgba(15,6,18,0.04),
-      0 4px 12px rgba(15,6,18,0.05);
+      0 1px 2px rgba(0,0,0,0.06),
+      0 4px 16px rgba(0,0,0,0.08);
     transition:
       box-shadow var(--duration) var(--ease),
       transform var(--duration) var(--ease),
-      border-color var(--duration) var(--ease);
+      border-color var(--duration) var(--ease),
+      background var(--duration) var(--ease);
+  }
+
+  /* Dark-mode cards get deeper shadow to pop off gradient */
+  .dark .card {
+    box-shadow:
+      0 1px 2px rgba(0,0,0,0.20),
+      0 4px 20px rgba(0,0,0,0.30),
+      0 0 0 1px rgba(201,168,76,0.06);
   }
 
   /* Motion #06 — whispers */
   .card:hover {
     box-shadow:
-      0 2px 4px rgba(15,6,18,0.06),
-      0 8px 24px rgba(124,58,237,0.10);
+      0 2px 4px rgba(0,0,0,0.10),
+      0 8px 24px rgba(124,58,237,0.12);
     transform: translateY(-2px);
-    border-color: rgba(124,58,237,0.20);
+    border-color: rgba(124,58,237,0.18);
+  }
+
+  .dark .card:hover {
+    box-shadow:
+      0 2px 4px rgba(0,0,0,0.24),
+      0 12px 32px rgba(0,0,0,0.35),
+      0 0 0 1px rgba(201,168,76,0.15);
+    border-color: rgba(201,168,76,0.20);
   }
 
   .stat-card {
@@ -279,21 +367,23 @@
     font-family: var(--font-cormorant), 'Cormorant Garamond', Georgia, serif;
     font-size: 1.875rem;
     font-weight: 600;
-    color: var(--ink);
+    color: var(--title-color);
     letter-spacing: -0.01em;
     display: flex;
     align-items: center;
     gap: 0.75rem;
+    text-shadow: var(--title-shadow);
+    transition: color var(--duration) var(--ease);
   }
-  /* Gold dot prefix on every page title icon */
   .page-title > svg:first-child {
     color: var(--gold);
-    opacity: 0.85;
+    opacity: 0.9;
   }
   .page-subtitle {
     font-size: 0.875rem;
-    color: var(--text-muted);
+    color: var(--subtitle-color);
     margin-top: 0.25rem;
+    transition: color var(--duration) var(--ease);
   }
 
   /* ── Bihari ornamental classes ── */
@@ -340,7 +430,7 @@
     transform: translate(-50%, -50%);
     font-size: 0.6rem;
     color: var(--gold);
-    background: var(--ivory);
+    background: transparent;
     padding: 0 0.5rem;
     opacity: 0.7;
   }
@@ -436,10 +526,14 @@
 
 /* ── Navbar ─────────────────────────────────────────────────────────────── */
 .nav-header {
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-  /* Subtle gold shimmer at very top — temple-arch motif */
-  box-shadow: inset 0 1px 0 0 rgba(201,168,76,0.18);
+  background: var(--nav-bg);
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  backdrop-filter: blur(16px) saturate(1.4);
+  border-bottom: 1px solid var(--nav-border);
+  box-shadow:
+    inset 0 1px 0 0 var(--nav-border),
+    0 2px 16px rgba(0,0,0,0.08);
+  transition: background var(--duration) var(--ease), border-color var(--duration) var(--ease);
 }
 .nav-brand-text {
   font-family: var(--font-cormorant), 'Cormorant Garamond', serif;
@@ -456,15 +550,14 @@
   border-radius: 0.5rem;
   font-size: 0.875rem;
   font-weight: 500;
-  color: var(--text-muted);
+  color: var(--nav-text);
   background: transparent;
   border: none;
   cursor: pointer;
   transition: color var(--duration-fast) var(--ease), background var(--duration-fast) var(--ease);
 }
-.nav-group-btn:hover,
-.nav-group-btn.active { color: var(--ink); background: var(--surface-2); }
-.nav-group-btn.active { color: var(--purple); background: rgba(124,58,237,0.06); }
+.nav-group-btn:hover { color: var(--nav-text-active); background: var(--nav-hover-bg); }
+.nav-group-btn.active { color: var(--nav-text-active); background: var(--nav-active-bg); }
 .nav-dropdown {
   position: absolute;
   top: calc(100% + 0.5rem);
@@ -519,13 +612,13 @@
 .nav-toggle {
   padding: 0.5rem;
   border-radius: 0.5rem;
-  color: var(--text-muted);
+  color: var(--nav-toggle-color);
   background: transparent;
   border: none;
   cursor: pointer;
-  transition: background var(--duration-fast);
+  transition: background var(--duration-fast), color var(--duration-fast);
 }
-.nav-toggle:hover { background: var(--surface-2); }
+.nav-toggle:hover { background: var(--nav-toggle-hover); }
 
 /* Drawer */
 .nav-drawer {
@@ -594,7 +687,7 @@
 .app-main {
   padding-top: 3.5rem; /* 56px nav height */
   min-height: 100vh;
-  background: var(--ivory);
+  background: transparent;
 }
 
 /* ── Mobile bottom nav — designed, not shrunk (#07) ── */
@@ -634,5 +727,197 @@
     background: rgba(124,58,237,0.08);
   }
   main { padding-bottom: 5rem !important; }
+}
+
+/* ── Sky Toggle — day/night theme switch ─────────────────────────────────── */
+/* Wrapper gives the toggle visual separation in both themes */
+.sky-toggle-wrap {
+  display: flex;
+  align-items: center;
+  padding: 2px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(201, 168, 76, 0.22);
+  box-shadow: 0 0 5px rgba(201, 168, 76, 0.10);
+  flex-shrink: 0;
+  overflow: hidden;        /* clips the circle-container overflow */
+  line-height: 0;          /* remove inline-block gap */
+}
+
+.sky-switch {
+  --toggle-size: 14px;
+  --container-width: 5.625em;
+  --container-height: 2.5em;
+  --container-radius: 6.25em;
+  --container-light-bg: #3D7EAE;
+  --container-night-bg: #252840;
+  --circle-container-diameter: 3.375em;
+  --sun-moon-diameter: 2.125em;
+  --sun-bg: #ECCA2F;
+  --moon-bg: #C4C9D1;
+  --spot-color: #959DB1;
+  --circle-container-offset: calc((var(--circle-container-diameter) - var(--container-height)) / 2 * -1);
+  --stars-color: #fff;
+  --clouds-color: #F3FDFF;
+  --back-clouds-color: #AACADF;
+  --transition: 0.5s cubic-bezier(0, -0.02, 0.4, 1.25);
+  --circle-transition: 0.3s cubic-bezier(0, -0.02, 0.35, 1.17);
+  cursor: pointer;
+  display: inline-block;
+}
+
+.sky-switch, .sky-switch *, .sky-switch *::before, .sky-switch *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-size: var(--toggle-size);
+}
+
+.sky-switch__checkbox { display: none; }
+
+.sky-switch__container {
+  width: var(--container-width);
+  height: var(--container-height);
+  background-color: var(--container-light-bg);
+  border-radius: var(--container-radius);
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: 0em -0.062em 0.062em rgba(0,0,0,0.25), 0em 0.062em 0.125em rgba(255,255,255,0.94);
+  transition: var(--transition);
+  position: relative;
+}
+
+.sky-switch__container::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  box-shadow: 0em 0.05em 0.187em rgba(0,0,0,0.25) inset;
+  border-radius: var(--container-radius);
+}
+
+.sky-switch__circle-container {
+  width: var(--circle-container-diameter);
+  height: var(--circle-container-diameter);
+  background-color: rgba(255,255,255,0.1);
+  position: absolute;
+  left: var(--circle-container-offset);
+  top: var(--circle-container-offset);
+  border-radius: var(--container-radius);
+  box-shadow:
+    inset 0 0 0 3.375em rgba(255,255,255,0.1),
+    0 0 0 0.625em rgba(255,255,255,0.1),
+    0 0 0 1.25em rgba(255,255,255,0.1);
+  display: flex;
+  transition: var(--circle-transition);
+  pointer-events: none;
+}
+
+.sky-switch__sun-moon-container {
+  pointer-events: auto;
+  position: relative;
+  z-index: 2;
+  width: var(--sun-moon-diameter);
+  height: var(--sun-moon-diameter);
+  margin: auto;
+  border-radius: var(--container-radius);
+  background-color: var(--sun-bg);
+  box-shadow:
+    0.062em 0.062em 0.062em 0em rgba(254,255,239,0.61) inset,
+    0em -0.062em 0.062em 0em #a1872a inset;
+  filter: drop-shadow(0.062em 0.125em 0.125em rgba(0,0,0,0.25));
+  overflow: hidden;
+  transition: var(--transition);
+}
+
+.sky-switch__moon {
+  transform: translateX(100%);
+  width: 100%;
+  height: 100%;
+  background-color: var(--moon-bg);
+  border-radius: inherit;
+  box-shadow:
+    0.062em 0.062em 0.062em 0em rgba(254,255,239,0.61) inset,
+    0em -0.062em 0.062em 0em #969696 inset;
+  transition: var(--transition);
+  position: relative;
+}
+
+.sky-switch__spot {
+  position: absolute;
+  top: 0.75em;
+  left: 0.312em;
+  width: 0.75em;
+  height: 0.75em;
+  border-radius: var(--container-radius);
+  background-color: var(--spot-color);
+  box-shadow: 0em 0.0312em 0.062em rgba(0,0,0,0.25) inset;
+}
+.sky-switch__spot:nth-of-type(2) { width: 0.375em; height: 0.375em; top: 0.937em; left: 1.375em; }
+.sky-switch__spot:nth-last-of-type(3) { width: 0.25em; height: 0.25em; top: 0.312em; left: 0.812em; }
+
+.sky-switch__clouds {
+  width: 1.25em;
+  height: 1.25em;
+  background-color: var(--clouds-color);
+  border-radius: var(--container-radius);
+  position: absolute;
+  bottom: -0.625em;
+  left: 0.312em;
+  box-shadow:
+    0.937em 0.312em var(--clouds-color),
+    -0.312em -0.312em var(--back-clouds-color),
+    1.437em 0.375em var(--clouds-color),
+    0.5em -0.125em var(--back-clouds-color),
+    2.187em 0 var(--clouds-color),
+    1.25em -0.062em var(--back-clouds-color),
+    2.937em 0.312em var(--clouds-color),
+    2em -0.312em var(--back-clouds-color),
+    3.625em -0.062em var(--clouds-color),
+    2.625em 0em var(--back-clouds-color),
+    4.5em -0.312em var(--clouds-color),
+    3.375em -0.437em var(--back-clouds-color),
+    4.625em -1.75em 0 0.437em var(--clouds-color),
+    4em -0.625em var(--back-clouds-color),
+    4.125em -2.125em 0 0.437em var(--back-clouds-color);
+  transition: 0.5s cubic-bezier(0, -0.02, 0.4, 1.25);
+}
+
+.sky-switch__stars-container {
+  position: absolute;
+  color: var(--stars-color);
+  top: -100%;
+  left: 0.312em;
+  width: 2.75em;
+  height: auto;
+  transition: var(--transition);
+}
+
+/* ── Checked = night/dark mode ── */
+.sky-switch__checkbox:checked + .sky-switch__container {
+  background-color: var(--container-night-bg);
+  box-shadow:
+    0 0 0 1px rgba(201,168,76,0.35),
+    0 0 8px rgba(201,168,76,0.18),
+    0em -0.062em 0.062em rgba(0,0,0,0.4) inset;
+}
+.sky-switch__checkbox:checked + .sky-switch__container .sky-switch__circle-container {
+  left: calc(100% - var(--circle-container-offset) - var(--circle-container-diameter));
+}
+.sky-switch__checkbox:checked + .sky-switch__container .sky-switch__circle-container:hover {
+  left: calc(100% - var(--circle-container-offset) - var(--circle-container-diameter) - 0.187em);
+}
+.sky-switch__circle-container:hover {
+  left: calc(var(--circle-container-offset) + 0.187em);
+}
+.sky-switch__checkbox:checked + .sky-switch__container .sky-switch__moon {
+  transform: translate(0);
+}
+.sky-switch__checkbox:checked + .sky-switch__container .sky-switch__clouds {
+  bottom: -4.062em;
+}
+.sky-switch__checkbox:checked + .sky-switch__container .sky-switch__stars-container {
+  top: 50%;
+  transform: translateY(-50%);
 }
 

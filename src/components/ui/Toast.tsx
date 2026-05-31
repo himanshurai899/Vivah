@@ -62,22 +62,25 @@ function ToastItem({ toast, onDismiss }: { toast: Toast; onDismiss: () => void }
     <div
       className={cn(
         "flex items-start gap-3 rounded-xl px-4 py-3",
-        "bg-white/90 backdrop-blur-md shadow-lg border border-[--border] border-l-4",
+        "backdrop-blur-md shadow-xl border border-l-4",
+        /* light */
+        "bg-white border-[rgba(15,6,18,0.09)]",
+        /* dark */
+        "dark:bg-[#1E1230] dark:border-[rgba(201,168,76,0.15)]",
         BORDER[toast.variant],
         "animate-in slide-in-from-right-4 fade-in duration-200",
       )}
       style={{ fontFamily: "var(--font-dm-sans)" }}
     >
       {ICON[toast.variant]}
-      <p className="flex-1 text-sm font-medium" style={{ color: "var(--ink)" }}>
+      <p className="flex-1 text-sm font-medium text-[#0F0612] dark:text-[#F0EBF7]">
         {toast.message}
       </p>
       <button
         type="button"
         onClick={onDismiss}
         aria-label="Dismiss notification"
-        className="shrink-0 p-0.5 rounded opacity-40 hover:opacity-70 transition-opacity"
-        style={{ color: "var(--ink)" }}
+        className="shrink-0 p-0.5 rounded opacity-40 hover:opacity-70 transition-opacity text-[#0F0612] dark:text-[#F0EBF7]"
       >
         <X size={13} />
       </button>

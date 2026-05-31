@@ -23,23 +23,45 @@ if (typeof window !== "undefined") {
 
 // ── Agni-Jal + Bihari wedding ornament token bridge ───────────────────────
 const STYLES = `
+/* ── Light mode pill tokens ── */
 .vivah-footer-wrapper {
   font-family: var(--font-dm-sans), 'DM Sans', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
 
-  /* Saffron-infused glass pill tokens */
-  --pill-bg-1:           rgba(15,6,18,0.04);
-  --pill-bg-2:           rgba(15,6,18,0.02);
-  --pill-shadow:         rgba(15,6,18,0.10);
-  --pill-highlight:      rgba(201,168,76,0.15);
-  --pill-inset-shadow:   rgba(250,250,248,0.60);
-  --pill-border:         rgba(201,168,76,0.12);
+  --pill-bg-1:            rgba(15,6,18,0.06);
+  --pill-bg-2:            rgba(15,6,18,0.03);
+  --pill-shadow:          rgba(15,6,18,0.14);
+  --pill-highlight:       rgba(201,168,76,0.18);
+  --pill-inset-shadow:    rgba(250,250,248,0.70);
+  --pill-border:          rgba(15,6,18,0.14);
+  --pill-text:            #0F0612;
+  --pill-text-muted:      #5B4A6E;
+  --pill-text-faint:      #9987AE;
 
-  --pill-bg-1-hover:     rgba(124,58,237,0.08);
-  --pill-bg-2-hover:     rgba(124,58,237,0.04);
-  --pill-border-hover:   rgba(124,58,237,0.30);
-  --pill-shadow-hover:   rgba(124,58,237,0.18);
-  --pill-highlight-hover: rgba(201,168,76,0.25);
+  --pill-bg-1-hover:      rgba(124,58,237,0.10);
+  --pill-bg-2-hover:      rgba(124,58,237,0.05);
+  --pill-border-hover:    rgba(124,58,237,0.35);
+  --pill-shadow-hover:    rgba(124,58,237,0.20);
+  --pill-highlight-hover: rgba(201,168,76,0.28);
+}
+
+/* ── Dark mode pill tokens ── */
+.dark .vivah-footer-wrapper {
+  --pill-bg-1:            rgba(240,235,247,0.07);
+  --pill-bg-2:            rgba(240,235,247,0.03);
+  --pill-shadow:          rgba(0,0,0,0.35);
+  --pill-highlight:       rgba(201,168,76,0.18);
+  --pill-inset-shadow:    rgba(255,255,255,0.06);
+  --pill-border:          rgba(201,168,76,0.20);
+  --pill-text:            #F0EBF7;
+  --pill-text-muted:      #B8A8D4;
+  --pill-text-faint:      #7D6E99;
+
+  --pill-bg-1-hover:      rgba(124,58,237,0.18);
+  --pill-bg-2-hover:      rgba(124,58,237,0.10);
+  --pill-border-hover:    rgba(201,168,76,0.40);
+  --pill-shadow-hover:    rgba(201,168,76,0.15);
+  --pill-highlight-hover: rgba(201,168,76,0.30);
 }
 
 /* ── Keyframes ── */
@@ -411,7 +433,8 @@ export function VivahFooter() {
             style={{
               borderTop: "1px solid rgba(201,168,76,0.12)",
               borderBottom: "1px solid rgba(201,168,76,0.12)",
-              background: "rgba(250,250,248,0.80)",
+              background: "var(--ivory)",
+              opacity: 0.9,
               backdropFilter: "blur(12px)",
             }}
           >
@@ -472,7 +495,7 @@ export function VivahFooter() {
                     as={Link}
                     href={href}
                     className="vivah-glass-pill px-5 py-2.5 rounded-full font-medium text-xs md:text-sm flex items-center gap-2 group"
-                    style={{ color: "var(--ink)" }}
+                    style={{ color: "var(--pill-text)" }}
                   >
                     <Icon
                       size={13}
@@ -492,7 +515,7 @@ export function VivahFooter() {
                     as={Link}
                     href={href}
                     className="vivah-glass-pill px-4 py-2 rounded-full text-[0.68rem] md:text-xs font-medium"
-                    style={{ color: "var(--text-muted)" }}
+                    style={{ color: "var(--pill-text-muted)" }}
                   >
                     {label}
                   </Magnetic>
@@ -511,7 +534,7 @@ export function VivahFooter() {
               {/* Copyright */}
               <p
                 className="text-[0.6rem] md:text-[0.68rem] font-semibold tracking-widest uppercase order-2 md:order-1"
-                style={{ color: "var(--text-faint)" }}
+                style={{ color: "var(--pill-text-faint)" }}
               >
                 © 2026 Vivah Platform · All rights reserved
               </p>
@@ -522,7 +545,7 @@ export function VivahFooter() {
               >
                 <span
                   className="text-[0.6rem] md:text-[0.68rem] font-semibold tracking-widest uppercase"
-                  style={{ color: "var(--text-faint)" }}
+                  style={{ color: "var(--pill-text-faint)" }}
                 >
                   Crafted with
                 </span>
@@ -535,7 +558,7 @@ export function VivahFooter() {
                 />
                 <span
                   className="text-[0.6rem] md:text-[0.68rem] font-semibold tracking-widest uppercase"
-                  style={{ color: "var(--text-faint)" }}
+                  style={{ color: "var(--pill-text-faint)" }}
                 >
                   for
                 </span>
@@ -554,7 +577,7 @@ export function VivahFooter() {
                 onClick={scrollToTop}
                 aria-label="Back to top"
                 className="vivah-glass-pill w-11 h-11 rounded-full flex items-center justify-center order-3 group"
-                style={{ color: "var(--text-muted)" }}
+                style={{ color: "var(--pill-text-muted)" }}
               >
                 <ArrowUp
                   size={17}

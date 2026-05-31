@@ -5,8 +5,11 @@ import { Navbar } from "@/components/layout/Navbar"
 import { VivahFooter } from "@/components/ui/motion-footer"
 import { ToastProvider } from "@/components/ui/Toast"
 import { NavigationProgress } from "@/components/ui/NavigationProgress"
+import { GradientBackground } from "@/components/ui/gradient-background"
+import { ThemeProvider } from "@/components/ui/ThemeProvider"
+import { AuthProvider } from "@/components/layout/AuthProvider"
+import { ArkToastRegion } from "@/components/ui/basic-toast"
 
-// #02 Typography: paired display + body — neither Inter nor Roboto
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
@@ -21,7 +24,6 @@ const dmSans = DM_Sans({
   display: "swap",
 })
 
-// #08 Invisible expensive stuff — real meta tags
 export const metadata: Metadata = {
   title: {
     default: "Vivah — Wedding Planning Platform",
@@ -34,11 +36,10 @@ export const metadata: Metadata = {
   creator: "Vivah Platform",
   robots: { index: false, follow: false },
   icons: {
-    icon: [
-      { url: "/icons/favicon.svg", type: "image/svg+xml" },
-    ],
-    apple: "/icons/favicon.svg",
+    icon: [{ url: "/icons/favicon.svg", type: "image/svg+xml" }],
+    apple: "/icons/apple-touch-icon.png",
   },
+  manifest: "/manifest.json",
   openGraph: {
     type: "website",
     locale: "en_IN",
@@ -48,7 +49,6 @@ export const metadata: Metadata = {
   },
 }
 
-// #08 viewport — prevent FOUC on mobile
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
@@ -58,25 +58,28 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${cormorant.variable} ${dmSans.variable}`}>
+    <html lang="en" className={`${cormorant.variable} ${dmSans.variable}`} suppressHydrationWarning>
       <body>
-        {/* #08 Skip nav — keyboard accessibility */}
-        <ToastProvider>
-          <NavigationProgress />
-          <a href="#main-content" className="skip-nav">
-            Skip to main content
-          </a>
-          <Navbar />
-          <main
-            id="main-content"
-            className="app-main"
-          >
-            <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 py-6">
-              {children}
-            </div>
-          </main>
-          <VivahFooter />
-        </ToastProvider>
+        <AuthProvider>
+        <ThemeProvider>
+          <ToastProvider>
+            <ArkToastRegion />
+            <NavigationProgress />
+            <GradientBackground className="min-h-screen">
+              <a href="#main-content" className="skip-nav">
+                Skip to main content
+              </a>
+              <Navbar />
+              <main id="main-content" className="app-main">
+                <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 py-6">
+                  {children}
+                </div>
+              </main>
+              <VivahFooter />
+            </GradientBackground>
+          </ToastProvider>
+        </ThemeProvider>
+        </AuthProvider>
       </body>
     </html>
   )

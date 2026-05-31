@@ -1,7 +1,7 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { MessageCircle, Plus, Send, Copy } from "lucide-react"
+import { useEffect, useState, useCallback } from "react"
+import { MessageCircle, Plus, Send, Copy, Users, ChevronDown, ChevronUp, Check } from "lucide-react"
 import { Button } from "@/components/ui/Button"
 import { Input } from "@/components/ui/Input"
 import { Select } from "@/components/ui/Select"
@@ -11,141 +11,321 @@ import { ConfirmDialog } from "@/components/ui/ConfirmDialog"
 import { PageLoader } from "@/components/ui/Spinner"
 
 type Template = { id: string; name: string; category: string; message: string; variables: string[]; active: boolean }
+type Guest = { id: string; name: string; mobile?: string; familyName: string; side: string; rsvpStatus: string }
 
-const catOpts = [
-  { value: "INVITATION", label: "Invitation" }, { value: "REMINDER", label: "Reminder" },
-  { value: "CONFIRMATION", label: "Confirmation" }, { value: "TRAVEL_UPDATE", label: "Travel Update" }, { value: "GENERAL", label: "General" },
+const CAT_OPTS = [
+  { value: "INVITATION", label: "Invitation" },
+  { value: "REMINDER", label: "Reminder" },
+  { value: "CONFIRMATION", label: "Confirmation" },
+  { value: "TRAVEL_UPDATE", label: "Travel Update" },
+  { value: "GENERAL", label: "General" },
 ]
-const catColors: Record<string, "purple" | "blue" | "green" | "orange" | "gray"> = {
+const CAT_COLORS: Record<string, "purple" | "blue" | "green" | "orange" | "gray"> = {
   INVITATION: "purple", REMINDER: "orange", CONFIRMATION: "green", TRAVEL_UPDATE: "blue", GENERAL: "gray",
+}
+
+function substituteVars(message: string, vars: Record<string, string>) {
+  return message.replace(/\{\{(\w+)\}\}/g, (_, key) => vars[key] ?? `[${key}]`)
+}
+
+function BatchSendModal({ template, guests, onClose }: { template: Template; guests: Guest[]; onClose: () => void }) {
+  const [globalVars, setGlobalVars] = useState<Record<string, string>>({})
+  const [sent, setSent] = useState<Set<string>>(new Set())
+  const [filter, setFilter] = useState<"ALL" | "GROOM" | "BRIDE" | "PENDING_RSVP">("ALL")
+
+  const nonPersonalVars = template.variables.filter(v => !["GuestName", "Name", "guestName", "name"].includes(v))
+  const hasNameVar = template.variables.some(v => ["GuestName", "Name", "guestName", "name"].includes(v))
+
+  const filtered = guests.filter(g => {
+    if (!g.mobile) return false
+    if (filter === "GROOM") return g.side === "GROOM"
+    if (filter === "BRIDE") return g.side === "BRIDE"
+    if (filter === "PENDING_RSVP") return g.rsvpStatus === "PENDING"
+    return true
+  })
+
+  const sendToGuest = (guest: Guest) => {
+    const vars = { ...globalVars }
+    if (hasNameVar) { vars["GuestName"] = guest.name; vars["Name"] = guest.name; vars["guestName"] = guest.name; vars["name"] = guest.name }
+    const message = encodeURIComponent(substituteVars(template.message, vars))
+    const phone = guest.mobile!.replace(/[^0-9]/g, "").replace(/^0/, "91")
+    window.open(`https://wa.me/${phone}?text=${message}`, "_blank")
+    setSent(s => new Set([...s, guest.id]))
+  }
+
+  return (
+    <Modal open onClose={onClose} title={`Batch Send — ${template.name}`} size="lg">
+      <div className="space-y-4">
+        {nonPersonalVars.length > 0 && (
+          <div className="bg-amber-50 border border-amber-100 rounded-xl p-4 space-y-3">
+            <p className="text-sm font-medium text-amber-800">Fill shared variables (same for all guests):</p>
+            {nonPersonalVars.map(v => (
+              <Input key={v} label={`{{${v}}}`} value={globalVars[v] ?? ""} onChange={e => setGlobalVars(p => ({ ...p, [v]: e.target.value }))} />
+            ))}
+          </div>
+        )}
+
+        <div className="flex items-center justify-between gap-3 flex-wrap">
+          <div className="flex gap-2">
+            {(["ALL", "GROOM", "BRIDE", "PENDING_RSVP"] as const).map(f => (
+              <button
+                key={f}
+                type="button"
+                onClick={() => setFilter(f)}
+                className={`text-xs px-3 py-1.5 rounded-full font-medium transition-colors ${filter === f ? "bg-violet-600 text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}
+              >
+                {f === "PENDING_RSVP" ? "Pending RSVP" : f === "ALL" ? `All (${guests.filter(g => g.mobile).length})` : f}
+              </button>
+            ))}
+          </div>
+          <span className="text-xs text-gray-400">{sent.size} sent</span>
+        </div>
+
+        <div className="max-h-72 overflow-y-auto space-y-2 pr-1">
+          {filtered.length === 0 && (
+            <p className="text-center py-8 text-sm text-gray-400">No guests with mobile numbers in this group.</p>
+          )}
+          {filtered.map(g => (
+            <div key={g.id} className={`flex items-center justify-between p-3 rounded-xl border transition-colors ${sent.has(g.id) ? "border-green-200 bg-green-50" : "border-gray-100 bg-white"}`}>
+              <div>
+                <p className="font-medium text-sm text-gray-900">{g.name} <span className="text-xs text-gray-400">({g.familyName})</span></p>
+                <p className="text-xs text-gray-400">{g.mobile} · {g.side}</p>
+              </div>
+              {sent.has(g.id) ? (
+                <span className="flex items-center gap-1 text-xs text-green-600 font-medium"><Check size={13} /> Sent</span>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => sendToGuest(g)}
+                  className="flex items-center gap-1 text-xs text-green-700 bg-green-100 hover:bg-green-200 px-3 py-1.5 rounded-full font-medium transition-colors"
+                >
+                  <Send size={12} /> Send
+                </button>
+              )}
+            </div>
+          ))}
+        </div>
+
+        <div className="flex justify-end">
+          <Button variant="secondary" onClick={onClose}>Done</Button>
+        </div>
+      </div>
+    </Modal>
+  )
+}
+
+function SendModal({
+  template, onClose,
+}: { template: Template; onClose: () => void }) {
+  const [phone, setPhone] = useState("")
+  const [vars, setVars] = useState<Record<string, string>>(() =>
+    Object.fromEntries(template.variables.map(v => [v, ""]))
+  )
+
+  const preview = substituteVars(template.message, vars)
+
+  const sendWhatsApp = () => {
+    const clean = phone.replace(/[^0-9]/g, "").replace(/^0/, "91")
+    window.open(`https://wa.me/${clean}?text=${encodeURIComponent(preview)}`, "_blank")
+  }
+
+  const copyMessage = () => navigator.clipboard.writeText(preview)
+
+  return (
+    <Modal open onClose={onClose} title={`Send — ${template.name}`} size="lg">
+      <div className="space-y-4">
+        <Input label="WhatsApp Number" value={phone} onChange={e => setPhone(e.target.value)} placeholder="+91 XXXXX XXXXX" />
+        {template.variables.map(v => (
+          <Input key={v} label={`{{${v}}}`} value={vars[v] ?? ""} onChange={e => setVars(p => ({ ...p, [v]: e.target.value }))} />
+        ))}
+        <div>
+          <p className="text-sm font-medium text-gray-700 mb-1">Preview</p>
+          <div className="bg-green-50 border border-green-200 rounded-xl p-4 text-sm text-gray-800 whitespace-pre-wrap leading-relaxed">
+            {preview}
+          </div>
+        </div>
+        <div className="flex justify-end gap-2">
+          <Button variant="secondary" onClick={copyMessage}><Copy size={14} /> Copy</Button>
+          <Button onClick={sendWhatsApp} className="bg-green-600 hover:bg-green-700 text-white">
+            <Send size={14} /> Open WhatsApp
+          </Button>
+        </div>
+      </div>
+    </Modal>
+  )
 }
 
 export default function WhatsAppPage() {
   const [templates, setTemplates] = useState<Template[]>([])
+  const [guests, setGuests] = useState<Guest[]>([])
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
   const [form, setForm] = useState<Partial<Template & { variablesText: string }>>({ category: "GENERAL", active: true })
   const [editId, setEditId] = useState<string | null>(null)
   const [deleteId, setDeleteId] = useState<string | null>(null)
   const [sendModal, setSendModal] = useState<Template | null>(null)
-  const [phone, setPhone] = useState("")
-  const [previewVars, setPreviewVars] = useState<Record<string, string>>({})
+  const [batchModal, setBatchModal] = useState<Template | null>(null)
+  const [expandedVars, setExpandedVars] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
 
-  const load = () => fetch("/api/whatsapp").then(r => r.json()).then(setTemplates).finally(() => setLoading(false))
-  useEffect(() => { load() }, [])
+  const load = useCallback(() => {
+    Promise.all([
+      fetch("/api/whatsapp").then(r => r.json()),
+      fetch("/api/guests").then(r => r.json()),
+    ]).then(([t, g]) => {
+      setTemplates(Array.isArray(t) ? t : [])
+      setGuests(Array.isArray(g) ? g : [])
+    }).finally(() => setLoading(false))
+  }, [])
+
+  useEffect(() => { load() }, [load])
 
   const save = async () => {
     setSaving(true)
     const variables = (form.variablesText ?? "").split(",").map(s => s.trim()).filter(Boolean)
     const url = editId ? `/api/whatsapp/${editId}` : "/api/whatsapp"
-    await fetch(url, { method: editId ? "PUT" : "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...form, variables }) })
-    setShowForm(false); load(); setSaving(false)
+    await fetch(url, {
+      method: editId ? "PUT" : "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ...form, variables }),
+    })
+    setShowForm(false)
+    load()
+    setSaving(false)
   }
 
   const remove = async () => {
     if (!deleteId) return
-    await fetch(`/api/whatsapp/${deleteId}`, { method: "DELETE" }); setDeleteId(null); load()
+    await fetch(`/api/whatsapp/${deleteId}`, { method: "DELETE" })
+    setDeleteId(null)
+    load()
   }
 
-  const getPreview = (template: Template) => {
-    let msg = template.message
-    template.variables.forEach(v => { msg = msg.replace(new RegExp(`\\{\\{${v}\\}\\}`, "g"), previewVars[v] ?? `[${v}]`) })
-    return msg
-  }
-
-  const openSend = (t: Template) => {
-    setSendModal(t)
-    const vars: Record<string, string> = {}
-    t.variables.forEach(v => { vars[v] = "" })
-    setPreviewVars(vars)
-    setPhone("")
-  }
-
-  const sendWhatsApp = () => {
-    if (!sendModal) return
-    const message = encodeURIComponent(getPreview(sendModal))
-    const cleanPhone = phone.replace(/[^0-9]/g, "")
-    window.open(`https://wa.me/${cleanPhone}?text=${message}`, "_blank")
-  }
-
-  const copyMessage = () => {
-    if (!sendModal) return
-    navigator.clipboard.writeText(getPreview(sendModal))
+  const openEdit = (t: Template) => {
+    setForm({ ...t, variablesText: t.variables.join(", ") })
+    setEditId(t.id)
+    setShowForm(true)
   }
 
   if (loading) return <PageLoader />
 
+  const guestsWithPhone = guests.filter(g => g.mobile)
+
   return (
     <div className="space-y-5">
-      <div className="flex items-center justify-between flex-wrap gap-3">
+      {/* Header */}
+      <div className="flex items-start justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-xl font-bold text-gray-900 flex items-center gap-2"><MessageCircle size={20} className="text-violet-600" /> WhatsApp Templates</h1>
-          <p className="text-sm text-gray-500">{templates.length} templates · Click Send to open WhatsApp</p>
+          <h1 className="page-title flex items-center gap-2">
+            <MessageCircle size={24} className="text-violet-600" /> WhatsApp Templates
+          </h1>
+          <p className="text-sm text-gray-500 mt-0.5">
+            {templates.length} templates · {guestsWithPhone.length} guests with mobile numbers
+          </p>
         </div>
         <Button onClick={() => { setForm({ category: "GENERAL", active: true, variablesText: "" }); setEditId(null); setShowForm(true) }}>
           <Plus size={15} /> Add Template
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {templates.map(t => (
-          <div key={t.id} className="bg-white rounded-xl border border-gray-100 shadow-sm p-4">
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center gap-2">
-                <Badge color={catColors[t.category] ?? "gray"}>{t.category.replace("_", " ")}</Badge>
-                <h3 className="font-semibold text-gray-900 text-sm">{t.name}</h3>
+      {/* Template grid */}
+      {templates.length === 0 ? (
+        <div className="card text-center py-16 text-gray-400">
+          <MessageCircle size={32} className="mx-auto mb-3 opacity-30" />
+          <p>No templates yet. Create your first WhatsApp message template.</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {templates.map(t => (
+            <div key={t.id} className="card p-4 flex flex-col gap-3">
+              <div className="flex items-start justify-between gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <Badge color={CAT_COLORS[t.category] ?? "gray"}>{t.category.replace("_", " ")}</Badge>
+                  <span className="font-semibold text-gray-900 text-sm">{t.name}</span>
+                </div>
+                {!t.active && <span className="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">Inactive</span>}
               </div>
-            </div>
-            <div className="bg-gray-50 rounded-lg p-3 text-sm text-gray-700 whitespace-pre-wrap font-mono text-xs leading-relaxed mb-3 max-h-24 overflow-y-auto">
-              {t.message}
-            </div>
-            {t.variables.length > 0 && (
-              <div className="flex flex-wrap gap-1 mb-3">
-                {t.variables.map(v => <span key={v} className="text-xs bg-violet-100 text-violet-700 px-2 py-0.5 rounded-full">{`{{${v}}}`}</span>)}
-              </div>
-            )}
-            <div className="flex justify-end gap-2">
-              <button onClick={() => { setForm({ ...t, variablesText: t.variables.join(", ") }); setEditId(t.id); setShowForm(true) }} className="text-xs text-gray-500 hover:underline">Edit</button>
-              <button onClick={() => setDeleteId(t.id)} className="text-xs text-red-500 hover:underline">Del</button>
-              <Button size="sm" onClick={() => openSend(t)}><Send size={12} /> Send</Button>
-            </div>
-          </div>
-        ))}
-      </div>
 
-      {/* Send Modal */}
-      <Modal open={!!sendModal} onClose={() => setSendModal(null)} title={`Send: ${sendModal?.name}`} size="lg">
-        {sendModal && (
-          <div className="space-y-4">
-            <Input label="WhatsApp Number (with country code)" value={phone} onChange={e => setPhone(e.target.value)} placeholder="+91XXXXXXXXXX" />
-            {sendModal.variables.map(v => (
-              <Input key={v} label={`{{${v}}}`} value={previewVars[v] ?? ""} onChange={e => setPreviewVars(p => ({ ...p, [v]: e.target.value }))} />
-            ))}
-            <div>
-              <label className="text-sm font-medium text-gray-700">Preview</label>
-              <div className="mt-1 bg-green-50 border border-green-200 rounded-xl p-4 text-sm text-gray-800 whitespace-pre-wrap font-sans">
-                {getPreview(sendModal)}
+              <div className="bg-gray-50 rounded-lg p-3 text-xs text-gray-700 font-mono leading-relaxed max-h-20 overflow-y-auto whitespace-pre-wrap">
+                {t.message}
+              </div>
+
+              {t.variables.length > 0 && (
+                <div>
+                  <button
+                    type="button"
+                    onClick={() => setExpandedVars(expandedVars === t.id ? null : t.id)}
+                    className="flex items-center gap-1 text-xs text-gray-500 hover:text-gray-700"
+                  >
+                    {expandedVars === t.id ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
+                    {t.variables.length} variable{t.variables.length > 1 ? "s" : ""}
+                  </button>
+                  {expandedVars === t.id && (
+                    <div className="flex flex-wrap gap-1 mt-2">
+                      {t.variables.map(v => (
+                        <span key={v} className="text-xs bg-violet-100 text-violet-700 px-2 py-0.5 rounded-full">{`{{${v}}}`}</span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              <div className="flex justify-end gap-2 pt-1 border-t border-gray-50">
+                <button type="button" onClick={() => openEdit(t)} className="text-xs text-gray-500 hover:underline">Edit</button>
+                <button type="button" onClick={() => setDeleteId(t.id)} className="text-xs text-red-500 hover:underline">Delete</button>
+                {guestsWithPhone.length > 0 && (
+                  <Button size="sm" variant="secondary" onClick={() => setBatchModal(t)}>
+                    <Users size={12} /> Batch
+                  </Button>
+                )}
+                <Button size="sm" onClick={() => setSendModal(t)}>
+                  <Send size={12} /> Send
+                </Button>
               </div>
             </div>
-            <div className="flex justify-end gap-2">
-              <Button variant="outline" onClick={copyMessage}><Copy size={14} /> Copy</Button>
-              <Button onClick={sendWhatsApp} className="bg-green-600 hover:bg-green-700"><Send size={14} /> Open WhatsApp</Button>
-            </div>
-          </div>
-        )}
-      </Modal>
+          ))}
+        </div>
+      )}
 
-      {/* Template Form */}
-      <Modal open={showForm} onClose={() => setShowForm(false)} title={editId ? "Edit Template" : "Add Template"} size="lg">
+      {/* Send single */}
+      {sendModal && <SendModal template={sendModal} onClose={() => setSendModal(null)} />}
+
+      {/* Batch send */}
+      {batchModal && (
+        <BatchSendModal template={batchModal} guests={guests} onClose={() => setBatchModal(null)} />
+      )}
+
+      {/* Template form */}
+      <Modal open={showForm} onClose={() => setShowForm(false)} title={editId ? "Edit Template" : "New Template"} size="lg">
         <div className="space-y-4">
-          <Input label="Template Name *" value={form.name ?? ""} onChange={e => setForm(p => ({ ...p, name: e.target.value }))} />
-          <Select label="Category" value={form.category ?? "GENERAL"} onChange={e => setForm(p => ({ ...p, category: e.target.value }))} options={catOpts} />
+          <Input
+            label="Template Name *"
+            value={form.name ?? ""}
+            onChange={e => setForm(p => ({ ...p, name: e.target.value }))}
+          />
+          <Select
+            label="Category"
+            value={form.category ?? "GENERAL"}
+            onChange={e => setForm(p => ({ ...p, category: e.target.value }))}
+            options={CAT_OPTS}
+          />
           <div>
-            <label className="text-sm font-medium text-gray-700">Message * (use {"{{VarName}}"} for variables)</label>
-            <textarea value={form.message ?? ""} onChange={e => setForm(p => ({ ...p, message: e.target.value }))} rows={6} className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm font-mono focus:ring-2 focus:ring-violet-500" />
+            <label className="text-sm font-medium text-gray-700 block mb-1">
+              Message <span className="text-gray-400 font-normal">— use <code className="bg-gray-100 px-1 rounded">{`{{VarName}}`}</code> for dynamic values</span>
+            </label>
+            <textarea
+              value={form.message ?? ""}
+              onChange={e => setForm(p => ({ ...p, message: e.target.value }))}
+              rows={6}
+              className="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm font-mono focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none resize-none"
+            />
           </div>
-          <Input label="Variables (comma separated)" value={form.variablesText ?? ""} onChange={e => setForm(p => ({ ...p, variablesText: e.target.value }))} hint="e.g. GuestName, Date, Venue" />
+          <Input
+            label="Variables (comma-separated)"
+            value={form.variablesText ?? ""}
+            onChange={e => setForm(p => ({ ...p, variablesText: e.target.value }))}
+            placeholder="GuestName, Date, Venue"
+          />
         </div>
         <div className="flex justify-end gap-3 mt-5">
           <Button variant="secondary" onClick={() => setShowForm(false)}>Cancel</Button>
@@ -153,7 +333,13 @@ export default function WhatsAppPage() {
         </div>
       </Modal>
 
-      <ConfirmDialog open={!!deleteId} onClose={() => setDeleteId(null)} onConfirm={remove} title="Delete Template" message="Remove this WhatsApp template?" />
+      <ConfirmDialog
+        open={!!deleteId}
+        onClose={() => setDeleteId(null)}
+        onConfirm={remove}
+        title="Delete Template"
+        message="Remove this WhatsApp template? This cannot be undone."
+      />
     </div>
   )
 }

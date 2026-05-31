@@ -13,11 +13,16 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variants: Record<Variant, string> = {
-  primary: "bg-violet-600 text-white hover:bg-violet-700 focus:ring-violet-500",
-  secondary: "bg-gray-100 text-gray-700 hover:bg-gray-200 focus:ring-gray-400",
-  danger: "bg-red-600 text-white hover:bg-red-700 focus:ring-red-500",
-  ghost: "text-gray-600 hover:bg-gray-100 focus:ring-gray-400",
-  outline: "border border-violet-600 text-violet-600 hover:bg-violet-50 focus:ring-violet-500",
+  primary:
+    "bg-violet-600 text-white hover:bg-violet-700 focus:ring-violet-500 dark:bg-violet-500 dark:hover:bg-violet-600",
+  secondary:
+    "bg-[#F0EBF7] text-[#5B4A6E] hover:bg-[#E5DEF0] focus:ring-violet-300 dark:bg-[#2A1842] dark:text-[#B8A8D4] dark:hover:bg-[#3A2458] dark:focus:ring-violet-700",
+  danger:
+    "bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 dark:bg-red-700 dark:hover:bg-red-800",
+  ghost:
+    "text-[#5B4A6E] hover:bg-[#F0EBF7] focus:ring-violet-300 dark:text-[#B8A8D4] dark:hover:bg-[#2A1842] dark:focus:ring-violet-700",
+  outline:
+    "border border-violet-600 text-violet-600 hover:bg-violet-50 focus:ring-violet-500 dark:border-violet-400 dark:text-violet-300 dark:hover:bg-violet-900/30 dark:focus:ring-violet-600",
 }
 
 const sizes: Record<Size, string> = {
@@ -30,10 +35,12 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = "primary", size = "md", loading, disabled, children, ...props }, ref) => (
     <button
       ref={ref}
+      type="button"
       disabled={disabled || loading}
       className={cn(
-        "inline-flex items-center gap-2 rounded-lg font-medium transition-colors",
+        "inline-flex items-center gap-2 rounded-lg font-medium transition-colors duration-150",
         "focus:outline-none focus:ring-2 focus:ring-offset-1",
+        "dark:focus:ring-offset-[#1A0F2E]",
         "disabled:opacity-50 disabled:cursor-not-allowed",
         variants[variant],
         sizes[size],

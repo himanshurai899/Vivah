@@ -1,0 +1,23 @@
+{
+  "name": "Vivah — Wedding Planning",
+  "short_name": "Vivah",
+  "description": "Complete wedding planning platform for the big day",
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "background_color": "#FAFAF8",
+  "theme_color": "#7C3AED",
+  "orientation": "portrait-primary",
+  "icons": [
+    { "src": "/icons/favicon.svg",        "sizes": "any",     "type": "image/svg+xml", "purpose": "any maskable" },
+    { "src": "/icons/icon-192.png",       "sizes": "192x192", "type": "image/png" },
+    { "src": "/icons/icon-512.png",       "sizes": "512x512", "type": "image/png" },
+    { "src": "/icons/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }
+  ],
+  "categories": ["lifestyle", "productivity", "utilities"],
+  "shortcuts": [
+    { "name": "Dashboard",  "url": "/dashboard",  "description": "Wedding overview" },
+    { "name": "Guests",     "url": "/guests",     "description": "Manage guest list" },
+    { "name": "Vendors",    "url": "/vendors",    "description": "Vendor management" },
+    { "name": "Check-In",   "url": "/checkin",    "description": "Wedding day check-in" }
+  ]
+}
