@@ -1,11 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="S and H favicon">
   <defs>
-    <linearGradient id="red" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#ff1b2d"/>
-      <stop offset="100%" stop-color="#b80023"/>
+    <linearGradient id="goldFav" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#d4ad6e"/>
+      <stop offset="100%" stop-color="#a88860"/>
     </linearGradient>
   </defs>
-  <rect width="64" height="64" rx="16" fill="#0b0b0b"/>
-  <rect x="6" y="6" width="52" height="52" rx="14" fill="#111"/>
-  <text x="32" y="44" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="36" font-weight="900" fill="url(#red)">SH</text>
+  <rect width="64" height="64" rx="13" fill="#8b7d6b"/>
+  
+  <g transform="translate(32, 32)" text-anchor="middle" dominant-baseline="central">
+    <text x="-10" y="0" font-family="Didot, 'Times New Roman', serif" font-size="42" font-weight="300" fill="url(#goldFav)">S</text>
+    <text x="10" y="0" font-family="Didot, 'Times New Roman', serif" font-size="42" font-weight="300" fill="url(#goldFav)">H</text>
+  </g>
+  
+  <title>S and H favicon</title>
+  <desc>Compact favicon with S and H initials.</desc>
 </svg>

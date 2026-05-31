@@ -186,4 +186,4 @@ Future architecture notes:
 - Keep module boundaries aligned with the current data folders so Phase 1 and Phase 2 can migrate cleanly.
 
 
-All the pages should have CRUD funcationality. Logos should have Bride and groom intials in logos.
+All the pages should have CRUD functionality. Logos now use a refined monogram with the bride and groom initials `S` and `H` rendered as a modern gold serif monogram for a traditional-album feel.

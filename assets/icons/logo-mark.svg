@@ -1,11 +1,19 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="S and H initials logo">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="S and H monogram">
   <defs>
-    <linearGradient id="red" x1="0" x2="1" y1="0" y2="1">
-      <stop offset="0%" stop-color="#ff1b2d"/>
-      <stop offset="100%" stop-color="#b80023"/>
+    <linearGradient id="goldMark" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#d4ad6e"/>
+      <stop offset="100%" stop-color="#a88860"/>
     </linearGradient>
   </defs>
-  <rect width="256" height="256" rx="56" fill="#0d0d0d"/>
-  <rect x="24" y="24" width="208" height="208" rx="44" fill="#141414"/>
-  <text x="128" y="160" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-size="96" font-weight="900" fill="url(#red)">SH</text>
+  <!-- Rounded square background -->
+  <rect width="256" height="256" rx="52" fill="#8b7d6b"/>
+  
+  <!-- S and H elegant serif monogram -->
+  <g transform="translate(128, 128)" text-anchor="middle" dominant-baseline="central">
+    <text x="-28" y="0" font-family="Didot, 'Times New Roman', serif" font-size="140" font-weight="300" fill="url(#goldMark)" letter-spacing="4">S</text>
+    <text x="28" y="0" font-family="Didot, 'Times New Roman', serif" font-size="140" font-weight="300" fill="url(#goldMark)" letter-spacing="4">H</text>
+  </g>
+  
+  <title>S and H monogram</title>
+  <desc>Elegant serif S and H initials on a neutral background.</desc>
 </svg>

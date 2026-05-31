@@ -66,6 +66,30 @@ Then open:
 http://localhost:8080
 ```
 
+## Branding
+
+- Logos and favicon: updated to a gold `S`/`H` monogram (see `assets/images/vivah-logo.svg` and `assets/icons/favicon.svg`).
+
+## Deploy to Netlify
+
+There is a simple deploy script that uses the Netlify CLI. Set the `NETLIFY_AUTH_TOKEN` environment variable and run the platform-appropriate script.
+
+Bash/macOS/Linux:
+
+```bash
+export NETLIFY_AUTH_TOKEN=YOUR_TOKEN
+scripts/deploy-netlify.sh
+```
+
+Windows (PowerShell/CMD):
+
+```powershell
+setx NETLIFY_AUTH_TOKEN "YOUR_TOKEN"
+scripts\deploy-netlify.cmd
+```
+
+The script deploys the repository to the Netlify site name `vivah-wedding-os`. It uses `npx netlify-cli` so no global install is required.
+
 ## Data Policy
 
 The repository includes starter data for a traditional Bihari wedding. CRUD operations save back to the matching JSON files under `data/` when the app is served through `node dev-server.mjs`.
