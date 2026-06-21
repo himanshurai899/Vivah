@@ -29,6 +29,7 @@ export async function POST(req: Request) {
         budget: body.budget ? Number(body.budget) : null,
         checklist: body.checklist ? JSON.stringify(body.checklist) : "[]",
         notes: body.notes,
+        isMainFunction: body.isMainFunction ?? false,
         status: body.status ?? "PLANNED",
       },
     })

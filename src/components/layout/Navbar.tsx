@@ -8,7 +8,7 @@ import {
   LayoutDashboard, Users, Store, DollarSign, CheckSquare, Calendar,
   Hotel, Plane, ScrollText, UserCheck, Mail, BarChart2,
   Command, Bell, QrCode, MessageCircle, Image, Phone, Settings,
-  ChevronDown, Menu, X, MoreHorizontal,
+  ChevronDown, Menu, X, MoreHorizontal, ListFilter,
 } from "lucide-react"
 import { SkyToggle } from "@/components/ui/sky-toggle"
 
@@ -50,6 +50,12 @@ const navGroups = [
     ],
   },
   {
+    group: "Tools",
+    items: [
+      { href: "/guest-sorter", label: "Guest Sorter", icon: ListFilter },
+    ],
+  },
+  {
     group: "Settings",
     items: [
       { href: "/gallery", label: "Gallery", icon: Image },
@@ -84,8 +90,7 @@ export function Navbar() {
           <Link href="/dashboard" className="flex items-center gap-2.5 shrink-0 group" aria-label="Vivah home">
             {/* SVG favicon mark */}
             <div
-              className="w-8 h-8 rounded-lg overflow-hidden shadow-sm flex items-center justify-center transition-transform duration-200 group-hover:scale-105"
-              style={{ background: "var(--ivory)", border: "1px solid var(--gold-border)" }}
+              className="nav-logo-wrap w-8 h-8 rounded-lg overflow-hidden shadow-sm flex items-center justify-center transition-transform duration-200 group-hover:scale-105"
               aria-hidden="true"
             >
               {/* Inline Agni-Jal mark — no external image flash */}
@@ -119,21 +124,10 @@ export function Navbar() {
             </div>
             {/* Brand wordmark */}
             <div className="hidden sm:flex flex-col leading-none">
-              <span
-                className="nav-brand-text"
-                style={{
-                  background: "linear-gradient(120deg, var(--ink) 0%, var(--purple) 55%, var(--gold) 100%)",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                  backgroundClip: "text",
-                }}
-              >
+              <span className="nav-brand-text">
                 Vivah
               </span>
-              <span
-                className="text-[0.55rem] font-semibold tracking-[0.18em] uppercase"
-                style={{ color: "var(--gold)", opacity: 0.75, lineHeight: 1 }}
-              >
+              <span className="nav-brand-subtitle text-[0.55rem] font-semibold tracking-[0.18em] uppercase">
                 शुभ विवाह
               </span>
             </div>
@@ -187,7 +181,7 @@ export function Navbar() {
               className="nav-toggle lg:hidden"
               onClick={() => setDrawerOpen(true)}
               aria-label="Open navigation menu"
-              aria-expanded={drawerOpen ? "true" : "false"}
+              aria-expanded={drawerOpen}
               aria-controls="mobile-drawer"
             >
               <Menu size={20} />

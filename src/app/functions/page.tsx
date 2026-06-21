@@ -1,7 +1,7 @@
 ﻿"use client"
 
 import { useEffect, useState, useCallback } from "react"
-import { Plus, Calendar } from "lucide-react"
+import { Plus, Calendar, Star } from "lucide-react"
 import { Button } from "@/components/ui/Button"
 import { Input } from "@/components/ui/Input"
 import { Select } from "@/components/ui/Select"
@@ -18,10 +18,10 @@ import { EVENT_TYPES } from "@/lib/constants"
 type Event = {
   id: string; name: string; eventType: string; date?: string; venue?: string
   startTime?: string; endTime?: string; coordinator?: string; budget?: number
-  notes?: string; status: string
+  notes?: string; isMainFunction?: boolean; status: string
 }
 
-const EMPTY: Partial<Event> = { eventType: "WEDDING", status: "PLANNED" }
+const EMPTY: Partial<Event> = { eventType: "WEDDING", status: "PLANNED", isMainFunction: false }
 const typeColors: Record<string, "blue" | "purple" | "green"> = {
   PRE_WEDDING: "blue", WEDDING: "purple", POST_WEDDING: "green",
 }
@@ -100,8 +100,20 @@ export default function FunctionsPage() {
             {grpEvents.map(ev => (
               <div key={ev.id} className="card p-4">
                 <div className="flex items-start justify-between mb-2">
-                  <h3 className="font-semibold" style={{ color: "var(--ink)" }}>{ev.name}</h3>
-                  <Badge color={typeColors[ev.eventType]}>{EVENT_TYPES[ev.eventType]}</Badge>
+                  <div className="flex items-center gap-1.5">
+                    {ev.isMainFunction && (
+                      <Star size={13} className="text-amber-500 fill-amber-400 shrink-0" aria-label="Main function" />
+                    )}
+                    <h3 className="font-semibold text-vivah-ink">{ev.name}</h3>
+                  </div>
+                  <div className="flex items-center gap-1.5 shrink-0 ml-2">
+                    {ev.isMainFunction && (
+                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-700 border border-amber-200">
+                        MAIN
+                      </span>
+                    )}
+                    <Badge color={typeColors[ev.eventType]}>{EVENT_TYPES[ev.eventType]}</Badge>
+                  </div>
                 </div>
                 <div className="space-y-1 text-sm" style={{ color: "var(--text-muted)" }}>
                   {ev.date && <div>📅 {formatDate(ev.date)}</div>}
@@ -161,6 +173,32 @@ export default function FunctionsPage() {
             onChange={e => crud.setForm(p => ({ ...p, notes: e.target.value }))}
             rows={3} className="field-input mt-1" />
         </div>
+        <button
+          type="button"
+          onClick={() => crud.setForm(p => ({ ...p, isMainFunction: !p.isMainFunction }))}
+          className={`mt-4 flex items-center gap-2.5 px-4 py-2.5 rounded-lg border transition-all w-full ${
+            crud.form.isMainFunction
+              ? "border-amber-300 bg-amber-50 text-amber-800"
+              : "border-gray-200 bg-gray-50 text-gray-500 hover:border-gray-300"
+          }`}
+          aria-pressed={!!crud.form.isMainFunction}
+        >
+          <Star
+            size={15}
+            className={crud.form.isMainFunction ? "text-amber-500 fill-amber-400" : "text-gray-400"}
+            aria-hidden
+          />
+          <span className="text-sm font-medium">
+            {crud.form.isMainFunction ? "Main function — highlighted in Guest Sorter" : "Mark as main function (Tilak, Baraat, etc.)"}
+          </span>
+          <div className={`ml-auto w-9 h-5 rounded-full transition-colors relative ${
+            crud.form.isMainFunction ? "bg-amber-400" : "bg-gray-300"
+          }`}>
+            <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow-sm transition-transform ${
+              crud.form.isMainFunction ? "translate-x-4" : "translate-x-0.5"
+            }`} />
+          </div>
+        </button>
         <div className="flex justify-end gap-3 mt-5">
           <Button variant="secondary" onClick={crud.closeForm}>Cancel</Button>
           <Button onClick={handleSave} loading={crud.saving}>

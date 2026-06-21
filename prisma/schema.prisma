@@ -111,7 +111,8 @@ model Event {
   coordinator String?
   budget      Float?
   checklist   String   @default("[]") // JSON array string
-  notes       String?
+  notes          String?
+  isMainFunction Boolean  @default(false)
   status      String   @default("PLANNED") // PLANNED | IN_PROGRESS | COMPLETED | CANCELLED
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt

@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vivaah Guest Sorter — Himanshu &amp; Samiksha</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* ─── Design Tokens ─────────────────────────────────── */
+    :root {
+      --cream:       #FBF4E8;
+      --cream-dark:  #EFE2CB;
+      --marigold:    #D97706;
+      --marigold-bg: #FEF3C7;
+      --saffron:     #EA580C;
+      --saffron-bg:  #FFF4EE;
+      --purple:      #7C3AED;
+      --purple-bg:   #EDE9FE;
+      --purple-dark: #5B21B6;
+      --green:       #15803D;
+      --green-bg:    #DCFCE7;
+      --gold:        #B45309;
+      --ink:         #1A0A2E;
+      --ink-2:       #4B3F6B;
+      --ink-3:       #7C6F99;
+      --white:       #FFFFFF;
+      --border:      #DDD0F2;
+      --border-soft: #EDE9FE;
+      --radius:      10px;
+      --radius-sm:   6px;
+      --radius-lg:   16px;
+      --shadow-sm:   0 1px 3px rgba(26,10,46,.07);
+      --shadow:      0 4px 12px rgba(26,10,46,.10);
+      --ease:        cubic-bezier(0.4, 0, 0.2, 1);
+      --dur:         180ms;
+    }
+
+    /* ─── Reset ─────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; -webkit-text-size-adjust: 100%; }
+    body {
+      font-family: 'DM Sans', system-ui, sans-serif;
+      background: var(--cream);
+      color: var(--ink);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+    button { font-family: inherit; cursor: pointer; }
+    input, textarea { font-family: inherit; }
+    a { color: inherit; }
+
+    /* ─── App Shell ──────────────────────────────────────── */
+    .app-shell {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* ─── Header ─────────────────────────────────────────── */
+    .app-header {
+      background: var(--ink);
+      color: var(--white);
+      padding: 0 24px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      min-height: 64px;
+      flex-wrap: wrap;
+    }
+    .header-brand {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+    .header-title {
+      font-family: 'Great Vibes', cursive;
+      font-size: 1.75rem;
+      color: var(--cream);
+      line-height: 1;
+      letter-spacing: 0.01em;
+    }
+    .header-title span {
+      color: #C9A84C;
+    }
+    .header-subtitle {
+      font-size: 0.72rem;
+      font-weight: 500;
+      color: var(--ink-3);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .header-stats {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-left: auto;
+      flex-wrap: wrap;
+      padding: 8px 0;
+    }
+    .stat-chip {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      font-size: 0.78rem;
+      font-weight: 500;
+    }
+    .stat-chip .sn {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .stat-chip.c-total  .sn { color: #E2D9F3; }
+    .stat-chip.c-sel    .sn { color: #A5B4FC; }
+    .stat-chip.c-tilak  .sn { color: #C4B5FD; }
+    .stat-chip.c-wed    .sn { color: #FCA5A1; }
+    .stat-chip.c-both   .sn { color: #86EFAC; }
+    .stat-chip.c-none   .sn { color: #FCD34D; }
+
+    /* ─── Import Section ─────────────────────────────────── */
+    .import-section {
+      padding: 20px 24px 0;
+    }
+    .import-panel {
+      background: var(--white);
+      border: 2px dashed var(--border);
+      border-radius: var(--radius-lg);
+      padding: 28px 24px 20px;
+      transition: border-color var(--dur) var(--ease),
+                  background var(--dur) var(--ease);
+    }
+    .import-panel.drag-active {
+      border-color: var(--purple);
+      background: var(--purple-bg);
+    }
+    .import-top {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .import-icon-wrap {
+      width: 52px;
+      height: 52px;
+      background: var(--purple-bg);
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: var(--purple);
+    }
+    .import-text-block {
+      flex: 1;
+      min-width: 180px;
+    }
+    .import-text-block strong {
+      display: block;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 2px;
+    }
+    .import-text-block small {
+      font-size: 0.78rem;
+      color: var(--ink-3);
+    }
+    .format-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+    .fmt-pill {
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      border: 1.5px solid;
+      line-height: 1.6;
+    }
+    .fmt-pill.vcf    { color: #7C3AED; border-color: #7C3AED; background: #F5F3FF; }
+    .fmt-pill.json   { color: #B45309; border-color: #D97706; background: #FFFBEB; }
+    .fmt-pill.csv    { color: #0369A1; border-color: #0EA5E9; background: #F0F9FF; }
+    .fmt-pill.xlsx   { color: #15803D; border-color: #22C55E; background: #F0FDF4; }
+    .fmt-pill.google { color: #B91C1C; border-color: #EF4444; background: #FEF2F2; }
+    .import-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+
+    /* ─── Buttons ─────────────────────────────────────────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 18px;
+      height: 40px;
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      font-weight: 600;
+      border: 1.5px solid transparent;
+      transition: background var(--dur) var(--ease),
+                  color var(--dur) var(--ease),
+                  border-color var(--dur) var(--ease),
+                  transform 80ms var(--ease);
+      white-space: nowrap;
+      line-height: 1;
+    }
+    .btn:active { transform: translateY(1px); }
+    .btn:focus-visible {
+      outline: 3px solid var(--purple);
+      outline-offset: 2px;
+    }
+    .btn-primary {
+      background: var(--purple);
+      color: var(--white);
+      border-color: var(--purple);
+    }
+    .btn-primary:hover { background: var(--purple-dark); border-color: var(--purple-dark); }
+    .btn-outline {
+      background: transparent;
+      color: var(--ink);
+      border-color: var(--border);
+    }
+    .btn-outline:hover { background: var(--cream); border-color: var(--purple); color: var(--purple); }
+    .btn-ghost {
+      background: transparent;
+      color: var(--ink-2);
+      border-color: transparent;
+    }
+    .btn-ghost:hover { background: var(--cream-dark); color: var(--ink); }
+    .btn-cta {
+      background: var(--marigold);
+      color: var(--white);
+      border-color: var(--marigold);
+    }
+    .btn-cta:hover { background: #C05A05; border-color: #C05A05; }
+    .btn-sm {
+      height: 32px;
+      padding: 0 12px;
+      font-size: 0.78rem;
+    }
+    .btn-icon {
+      width: 36px;
+      height: 36px;
+      padding: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-sm);
+    }
+
+    /* ─── Toolbar ─────────────────────────────────────────── */
+    .board-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 24px 0;
+      flex-wrap: wrap;
+    }
+    .search-wrap {
+      flex: 1;
+      min-width: 200px;
+      max-width: 400px;
+      position: relative;
+    }
+    .search-wrap svg {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--ink-3);
+      pointer-events: none;
+    }
+    .search-input {
+      width: 100%;
+      height: 40px;
+      padding: 0 12px 0 36px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      background: var(--white);
+      color: var(--ink);
+      transition: border-color var(--dur) var(--ease);
+    }
+    .search-input:focus {
+      outline: none;
+      border-color: var(--purple);
+    }
+    .search-input::placeholder { color: var(--ink-3); }
+    .toolbar-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-left: auto;
+    }
+    .selected-hint {
+      font-size: 0.8rem;
+      color: var(--ink-3);
+      font-weight: 500;
+    }
+
+    /* ─── Board ───────────────────────────────────────────── */
+    .board {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      padding: 16px 24px 24px;
+      flex: 1;
+      align-items: start;
+    }
+    @media (max-width: 768px) {
+      .board { grid-template-columns: 1fr; }
+    }
+
+    /* ─── Lane ────────────────────────────────────────────── */
+    .lane {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      border: 1.5px solid var(--border-soft);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      min-height: 300px;
+      max-height: calc(100vh - 200px);
+    }
+    .lane-header {
+      padding: 14px 16px;
+      border-bottom: 1.5px solid var(--border-soft);
+      background: var(--cream);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      position: sticky;
+      top: 0;
+    }
+    .lane-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex: 1;
+    }
+    .lane-count {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 22px;
+      height: 22px;
+      padding: 0 6px;
+      border-radius: 11px;
+      background: var(--purple-bg);
+      color: var(--purple-dark);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+    .lane-hint {
+      font-size: 0.72rem;
+      color: var(--ink-3);
+      font-weight: 400;
+    }
+    .lane-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      scroll-behavior: smooth;
+    }
+    .lane-body::-webkit-scrollbar { width: 5px; }
+    .lane-body::-webkit-scrollbar-track { background: transparent; }
+    .lane-body::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 3px;
+    }
+    .lane-body.drag-over {
+      background: var(--purple-bg);
+      outline: 2px dashed var(--purple);
+      outline-offset: -4px;
+      border-radius: 8px;
+    }
+    .lane-selected .lane-header { background: var(--purple-bg); }
+    .lane-selected .lane-count {
+      background: var(--purple);
+      color: var(--white);
+    }
+
+    /* ─── Empty State ─────────────────────────────────────── */
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 40px 20px;
+      text-align: center;
+      color: var(--ink-3);
+      font-size: 0.85rem;
+      flex: 1;
+    }
+    .empty-state svg { opacity: 0.35; }
+    .empty-state strong {
+      font-size: 0.92rem;
+      color: var(--ink-2);
+      font-weight: 600;
+    }
+    .drop-placeholder {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 40px 20px;
+      color: var(--ink-3);
+      font-size: 0.82rem;
+      border: 2px dashed var(--border-soft);
+      border-radius: var(--radius);
+      margin: 4px;
+    }
+
+    /* ─── Contact Card ────────────────────────────────────── */
+    .contact-card {
+      background: var(--white);
+      border: 1.5px solid var(--border-soft);
+      border-radius: var(--radius);
+      padding: 8px 10px;
+      cursor: pointer;
+      transition: border-color var(--dur) var(--ease),
+                  box-shadow var(--dur) var(--ease),
+                  transform var(--dur) var(--ease);
+      user-select: none;
+      content-visibility: auto;
+      contain-intrinsic-size: 0 68px;
+    }
+    .contact-card:hover {
+      border-color: var(--purple);
+      box-shadow: var(--shadow-sm);
+      transform: translateY(-1px);
+    }
+    .contact-card:active { transform: translateY(0); }
+    .contact-card.dragging {
+      opacity: 0.5;
+      transform: rotate(1.5deg);
+    }
+    .contact-card.focused {
+      border-color: var(--purple);
+      box-shadow: 0 0 0 3px var(--purple-bg);
+    }
+    .selected-card {
+      background: #FAF8FF;
+      border-color: var(--border);
+      cursor: default;
+    }
+    .selected-card:hover {
+      border-color: var(--border);
+      transform: none;
+    }
+    .card-main {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .card-avatar {
+      width: 34px;
+      height: 34px;
+      background: var(--purple-bg);
+      color: var(--purple-dark);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.8rem;
+      font-weight: 700;
+      flex-shrink: 0;
+      letter-spacing: 0.03em;
+    }
+    .card-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .card-name {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--ink);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.3;
+    }
+    .card-phones {
+      font-size: 0.74rem;
+      color: var(--ink-3);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.4;
+      font-variant-numeric: tabular-nums;
+    }
+    .card-remove {
+      width: 28px;
+      height: 28px;
+      border: none;
+      background: transparent;
+      color: var(--ink-3);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: background var(--dur) var(--ease), color var(--dur) var(--ease);
+    }
+    .card-remove:hover {
+      background: #FEE2E2;
+      color: #B91C1C;
+    }
+    .card-tags {
+      display: flex;
+      gap: 5px;
+      margin-top: 7px;
+      padding-top: 7px;
+      border-top: 1px solid var(--border-soft);
+    }
+    .tag-btn {
+      flex: 1;
+      padding: 0 6px;
+      height: 26px;
+      border-radius: 4px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      border: 1.5px solid;
+      transition: all var(--dur) var(--ease);
+      line-height: 1;
+    }
+    .tag-btn[data-tag="tilak"] {
+      color: var(--purple);
+      border-color: var(--purple);
+      background: transparent;
+    }
+    .tag-btn[data-tag="tilak"].active,
+    .tag-btn[data-tag="tilak"]:hover {
+      background: var(--purple);
+      color: var(--white);
+    }
+    .tag-btn[data-tag="wedding"] {
+      color: var(--saffron);
+      border-color: var(--saffron);
+      background: transparent;
+    }
+    .tag-btn[data-tag="wedding"].active,
+    .tag-btn[data-tag="wedding"]:hover {
+      background: var(--saffron);
+      color: var(--white);
+    }
+    .tag-btn[data-tag="both"] {
+      color: var(--green);
+      border-color: var(--green);
+      background: transparent;
+    }
+    .tag-btn[data-tag="both"].active,
+    .tag-btn[data-tag="both"]:hover {
+      background: var(--green);
+      color: var(--white);
+    }
+
+    /* ─── Pagination ──────────────────────────────────────── */
+    .load-more-bar {
+      padding: 8px;
+      text-align: center;
+    }
+
+    /* ─── Modal ───────────────────────────────────────────── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(26,10,46,.55);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 20px;
+      backdrop-filter: blur(2px);
+    }
+    .modal {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 420px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .modal-header {
+      padding: 18px 20px 14px;
+      border-bottom: 1.5px solid var(--border-soft);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .modal-header h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .modal-close {
+      width: 32px;
+      height: 32px;
+      border: none;
+      background: var(--cream);
+      color: var(--ink-2);
+      border-radius: 50%;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background var(--dur) var(--ease);
+    }
+    .modal-close:hover { background: var(--cream-dark); }
+    .modal-body {
+      padding: 20px;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      margin-bottom: 14px;
+    }
+    .form-group:last-child { margin-bottom: 0; }
+    .form-group label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--ink-2);
+    }
+    .form-input {
+      height: 40px;
+      padding: 0 12px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 0.88rem;
+      color: var(--ink);
+      background: var(--white);
+      transition: border-color var(--dur) var(--ease);
+    }
+    .form-input:focus {
+      outline: none;
+      border-color: var(--purple);
+    }
+    .form-input::placeholder { color: var(--ink-3); }
+    .form-input.error { border-color: #EF4444; }
+    .modal-footer {
+      padding: 14px 20px;
+      border-top: 1.5px solid var(--border-soft);
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+
+    /* ─── Toast ───────────────────────────────────────────── */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--ink);
+      color: var(--white);
+      padding: 10px 20px;
+      border-radius: 24px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      z-index: 200;
+      transition: transform var(--dur) var(--ease), opacity var(--dur) var(--ease);
+      opacity: 0;
+      white-space: nowrap;
+      max-width: calc(100vw - 48px);
+      text-align: center;
+      white-space: normal;
+      pointer-events: none;
+    }
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+    .toast.toast-success { background: #14532D; }
+    .toast.toast-error { background: #7F1D1D; }
+
+    /* ─── Ornament ────────────────────────────────────────── */
+    .ornament {
+      color: #C9A84C;
+      margin: 0 2px;
+      opacity: 0.7;
+    }
+
+    /* ─── Form ────────────────────────────────────────────────── */
+    .required-mark { color: #EF4444; }
+
+    /* ─── Visibility helpers ─────────────────────────────────── */
+    .is-hidden { display: none !important; }
+
+    /* Elements hidden until contacts are loaded */
+    #boardToolbar,
+    #board { display: none; }
+    #boardToolbar.is-visible { display: flex; }
+    #board.is-visible { display: grid; }
+    #loadMoreBar { display: none; }
+    #loadMoreBar.is-visible { display: block; }
+    .drop-placeholder { display: flex; }
+    .drop-placeholder.is-hidden { display: none; }
+    .empty-state { display: flex; }
+    .empty-state.is-hidden { display: none; }
+
+    /* Modal starts hidden */
+    .modal-overlay { display: none; }
+    .modal-overlay.is-open { display: flex; }
+
+    /* ─── Reduced Motion ──────────────────────────────────── */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        transition-duration: 0ms !important;
+        animation-duration: 0ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="app-shell">
+
+  <!-- ── Header ─────────────────────────────────────────── -->
+  <header class="app-header" role="banner">
+    <div class="header-brand">
+      <h1 class="header-title">Vivaah <span>Guest Sorter</span></h1>
+      <span class="header-subtitle" aria-label="Wedding: Himanshu & Samiksha, November 25, 2026">
+        H &amp; S <span class="ornament">·</span> Nov 25, 2026
+      </span>
+    </div>
+    <div class="header-stats" id="headerStats" aria-label="Statistics" role="status" aria-live="polite">
+      <!-- filled by JS -->
+    </div>
+  </header>
+
+  <!-- ── Import Section ─────────────────────────────────── -->
+  <section class="import-section" aria-label="Import Contacts">
+    <div class="import-panel" id="importZone"
+         aria-label="Drop files here or click to browse. Accepts VCF, JSON, CSV, Excel, Google Contacts">
+      <div class="import-top">
+        <div class="import-icon-wrap" aria-hidden="true">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="17 8 12 3 7 8"/>
+            <line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+        </div>
+        <div class="import-text-block">
+          <strong>Drop contact files here or click to browse</strong>
+          <small>Import from phone book exports, spreadsheets, or Google Contacts</small>
+          <div class="format-pills" role="list" aria-label="Accepted file formats">
+            <span class="fmt-pill vcf" role="listitem">VCF</span>
+            <span class="fmt-pill json" role="listitem">JSON</span>
+            <span class="fmt-pill csv" role="listitem">CSV</span>
+            <span class="fmt-pill xlsx" role="listitem">Excel</span>
+            <span class="fmt-pill google" role="listitem">Google Contacts</span>
+          </div>
+        </div>
+      </div>
+      <div class="import-actions">
+        <button type="button" class="btn btn-primary" id="btnLoadPreloaded">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+          Load Phone Book
+        </button>
+        <button type="button" class="btn btn-outline" id="btnManualAdd">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+          Add Manually
+        </button>
+        <input type="file" id="fileInput" accept=".vcf,.json,.csv,.xlsx,.xls" multiple hidden aria-label="Select contact files">
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Board Toolbar ──────────────────────────────────── -->
+  <div class="board-toolbar" id="boardToolbar" role="toolbar" aria-label="Board controls">
+    <div class="search-wrap" role="search">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      <input type="search" id="searchInput" class="search-input"
+             placeholder="Search contacts by name or number…"
+             aria-label="Search contacts">
+    </div>
+    <div class="toolbar-right">
+      <span class="selected-hint" id="selectedHint" aria-live="polite"></span>
+      <button type="button" class="btn btn-ghost btn-sm" id="btnDedup" title="Merge duplicate contacts (same phone digits or same name)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M9 3H5a2 2 0 0 0-2 2v4"/><path d="M9 3h6"/><path d="M9 21h6"/><path d="M9 3v18"/><path d="M15 3h4a2 2 0 0 1 2 2v4"/><path d="M15 21h4a2 2 0 0 0 2-2v-4"/><path d="M3 9v6"/><path d="M21 9v6"/>
+        </svg>
+        Deduplicate
+      </button>
+      <button type="button" class="btn btn-ghost btn-sm" id="btnSelectAll" title="Select all visible contacts">Select All</button>
+      <button type="button" class="btn btn-ghost btn-sm" id="btnClearSelected">Clear Selected</button>
+      <button type="button" class="btn btn-cta" id="btnExport">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+          <polyline points="10 9 9 9 8 9"/>
+        </svg>
+        Export Excel
+      </button>
+    </div>
+  </div>
+
+  <!-- ── Board ──────────────────────────────────────────── -->
+  <main class="board" id="board" role="main" aria-label="Guest sorting board">
+
+    <!-- Import Lane -->
+    <section class="lane" id="importLane" aria-label="Contacts list">
+      <div class="lane-header">
+        <h2 class="lane-title">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+          </svg>
+          Contacts
+          <span class="lane-count" id="importCount" aria-label="contacts count">0</span>
+        </h2>
+        <span class="lane-hint">Click or drag →</span>
+      </div>
+      <div class="lane-body" id="importLaneBody" aria-label="Available contacts, click or drag to select">
+        <div class="empty-state" id="importEmpty">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+          <strong>No contacts yet</strong>
+          <span>Import a file or load your phone book above</span>
+        </div>
+      </div>
+      <div class="load-more-bar" id="loadMoreBar">
+        <button type="button" class="btn btn-ghost btn-sm" id="btnLoadMore">Load more…</button>
+      </div>
+    </section>
+
+    <!-- Selected Lane -->
+    <section class="lane lane-selected" id="selectedLane" aria-label="Selected guests">
+      <div class="lane-header">
+        <h2 class="lane-title">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+          Selected Guests
+          <span class="lane-count" id="selectedCount" aria-label="selected guests count">0</span>
+        </h2>
+        <span class="lane-hint">← Drag to deselect</span>
+      </div>
+      <div class="lane-body" id="selectedLaneBody" aria-label="Selected guests, drag back to deselect, assign event tags">
+        <div class="drop-placeholder" id="dropPlaceholder" aria-hidden="true">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+          <strong>Drop contacts here</strong>
+          <span>or click them in the Contacts lane</span>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+</div><!-- /.app-shell -->
+
+<!-- ── Manual Entry Modal ──────────────────────────────── -->
+<div class="modal-overlay" id="manualModal" role="dialog" aria-modal="true"
+     aria-labelledby="modalTitle">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="modalTitle">Add Contact Manually</h3>
+      <button type="button" class="modal-close" id="btnCloseModal" aria-label="Close dialog">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <form id="manualForm" novalidate>
+        <div class="form-group">
+          <label for="manualName">Full Name <span aria-hidden="true" class="required-mark">*</span></label>
+          <input type="text" id="manualName" class="form-input" required
+                 placeholder="e.g. Ramesh Kumar Sharma" autocomplete="name">
+        </div>
+        <div class="form-group">
+          <label for="manualPhone1">Phone 1</label>
+          <input type="tel" id="manualPhone1" class="form-input"
+                 placeholder="+91 98765 43210" autocomplete="tel">
+        </div>
+        <div class="form-group">
+          <label for="manualPhone2">Phone 2</label>
+          <input type="tel" id="manualPhone2" class="form-input"
+                 placeholder="+91 98765 43210" autocomplete="tel">
+        </div>
+        <div class="form-group">
+          <label for="manualPhone3">Phone 3</label>
+          <input type="tel" id="manualPhone3" class="form-input"
+                 placeholder="+91 98765 43210" autocomplete="tel">
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-ghost" id="btnCancelManual">Cancel</button>
+      <button type="button" class="btn btn-primary" id="btnSaveManual">Add Contact</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Toast ────────────────────────────────────────────── -->
+<div class="toast" id="toast" role="alert" aria-live="assertive" aria-atomic="true"></div>
+
+<!-- ── Scripts ──────────────────────────────────────────── -->
+<script src="contacts-data.js" onerror="console.warn('contacts-data.js not found — preloaded contacts unavailable')"></script>
+<script src="xlsx.full.min.js" onerror="console.warn('xlsx.full.min.js not found — Excel import/export unavailable')"></script>
+<script src="app.js"></script>
+</body>
+</html>

@@ -535,12 +535,24 @@
     0 2px 16px rgba(0,0,0,0.08);
   transition: background var(--duration) var(--ease), border-color var(--duration) var(--ease);
 }
+.nav-logo-wrap {
+  background: var(--ivory);
+  border: 1px solid var(--gold-border);
+}
 .nav-brand-text {
   font-family: var(--font-cormorant), 'Cormorant Garamond', serif;
-  color: var(--purple);
   font-size: 1.25rem;
   font-weight: 600;
   letter-spacing: -0.01em;
+  background: linear-gradient(120deg, var(--ink) 0%, var(--purple) 55%, var(--gold) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.nav-brand-subtitle {
+  color: var(--gold);
+  opacity: 0.75;
+  line-height: 1;
 }
 .nav-group-btn {
   display: flex;
@@ -920,4 +932,28 @@
   top: 50%;
   transform: translateY(-50%);
 }
+
+/* ── Guest Sorter ─────────────────────────────────────────────────────────── */
+.text-ink-dim   { color: var(--ink); opacity: 0.55; }
+.text-ink-muted { color: var(--ink); opacity: 0.50; }
+.text-ink-hint  { color: var(--ink); opacity: 0.40; }
+.text-ink-faint { color: var(--ink); opacity: 0.35; }
+.text-ink-sub   { color: var(--ink); opacity: 0.45; font-variant-numeric: tabular-nums; }
+.sorter-lane    { max-height: calc(100vh - 340px); min-height: 300px; }
+
+.sorter-avatar { background: #EDE9FE; color: #5B21B6; }
+.dark .sorter-avatar { background: rgba(124,58,237,0.25); color: #C4B5FD; }
+
+.sorter-contact-card { background: var(--surface); border-color: var(--border); }
+.sorter-sel-card     { background: var(--surface); border-color: rgba(124,58,237,0.25); }
+
+.sorter-import-hdr { border-color: var(--border); background: var(--surface-2); }
+.sorter-sel-hdr    { border-color: rgba(124,58,237,0.25); background: rgba(109,40,217,0.12); }
+.dark .sorter-sel-hdr { background: rgba(109,40,217,0.18); }
+
+.sorter-badge   { background: rgba(124,58,237,0.12); color: var(--purple); }
+.dark .sorter-badge { background: rgba(124,58,237,0.25); }
+
+.sorter-empty-sel { border-color: rgba(124,58,237,0.25); }
+.dark .sorter-empty-sel { border-color: rgba(124,58,237,0.35); }
 
