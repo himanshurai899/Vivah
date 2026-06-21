@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react"
 
 const IDLE_DELAY_MS = 3000
-const LERP = 0.09
+const LERP = 0.20  // snappy-enough glow lag
 
 const INTERACTIVE_SELECTOR = [
   "a[href]", "button", "input", "select", "textarea",
@@ -22,7 +22,7 @@ export function VivahCursor() {
   const dotRef      = useRef<HTMLDivElement>(null)
   const glowRef     = useRef<HTMLDivElement>(null)
 
-  // Only React state: enabled (set once on mount, never again)
+  // Only React state: set once on mount, never touched again
   const [enabled, setEnabled] = useState(false)
 
   useEffect(() => {
@@ -40,13 +40,17 @@ export function VivahCursor() {
     const dot      = dotRef.current!
     const glow     = glowRef.current!
 
-    // All cursor state as plain JS variables — zero React re-renders
+    // Cursor state — plain JS variables, zero React involvement
     const pos  = { x: -500, y: -500 }
     const gPos = { x: -500, y: -500 }
-    let visible   = false
-    let idle      = false
-    let over      = false
-    let moved     = false   // true when cursor moved since last RAF tick
+    let visible = false, idle = false, over = false, moved = false
+
+    // Last-written DOM values — skip write when nothing changed
+    let lastDotX = NaN, lastDotY = NaN
+    let lastGlowX = NaN, lastGlowY = NaN
+    let lastShow = false, lastIdle = false
+    let lastCursor = ""
+
     let idleTimer: ReturnType<typeof setTimeout> | null = null
     let raf: number | null = null
 
@@ -59,50 +63,72 @@ export function VivahCursor() {
       } catch { return false }
     }
 
-    const syncClasses = () => {
-      const show = visible && !over
-      dot.classList.toggle("is-shown", show)
-      dot.classList.toggle("is-idle",  show && idle)
-      glow.classList.toggle("is-shown", show)
-      glow.classList.toggle("is-idle",  show && idle)
-      document.body.style.cursor = show ? "none" : ""
-    }
-
     const tick = () => {
-      // Hit-test only when cursor actually moved — not every frame
-      if (moved) {
-        over  = checkInteractive(pos.x, pos.y)
-        moved = false
-      }
+      // Hit-test only when cursor actually moved (not every frame)
+      if (moved) { over = checkInteractive(pos.x, pos.y); moved = false }
 
-      // Lerp glow toward dot position
+      // Lerp glow toward dot
       gPos.x += (pos.x - gPos.x) * LERP
       gPos.y += (pos.y - gPos.y) * LERP
 
-      dotWrap.style.transform  = `translate(${pos.x}px,${pos.y}px)`
-      glowWrap.style.transform = `translate(${gPos.x}px,${gPos.y}px)`
+      // Write dot transform only when position changed
+      if (pos.x !== lastDotX || pos.y !== lastDotY) {
+        dotWrap.style.transform = `translate(${pos.x}px,${pos.y}px)`
+        lastDotX = pos.x; lastDotY = pos.y
+      }
 
-      syncClasses()
+      // Round glow to 1dp — stops infinite micro-float drift from generating
+      // new strings (and new composite jobs) every frame when cursor is still
+      const gx = Math.round(gPos.x * 10) / 10
+      const gy = Math.round(gPos.y * 10) / 10
+      if (gx !== lastGlowX || gy !== lastGlowY) {
+        glowWrap.style.transform = `translate(${gx}px,${gy}px)`
+        lastGlowX = gx; lastGlowY = gy
+      }
+
+      // classList.toggle only when show/idle state flips
+      const show = visible && !over
+      if (show !== lastShow || idle !== lastIdle) {
+        lastShow = show; lastIdle = idle
+        dot.classList.toggle("is-shown", show)
+        dot.classList.toggle("is-idle",  show && idle)
+        glow.classList.toggle("is-shown", show)
+        glow.classList.toggle("is-idle",  show && idle)
+      }
+
+      // body.style.cursor triggers a full cascade style-recalc if re-set every
+      // frame — only write it when the value actually changes
+      const cur = show ? "none" : ""
+      if (cur !== lastCursor) { document.body.style.cursor = cur; lastCursor = cur }
+
       raf = requestAnimationFrame(tick)
     }
 
-    // Start/stop RAF — pauses completely when cursor leaves the window
     const startRaf = () => { if (!raf) raf = requestAnimationFrame(tick) }
     const stopRaf  = () => { if (raf) { cancelAnimationFrame(raf); raf = null } }
 
     const onMove = (e: MouseEvent) => {
-      pos.x   = e.clientX
-      pos.y   = e.clientY
-      moved   = true
-      visible = true
-      idle    = false
+      pos.x = e.clientX; pos.y = e.clientY
+      moved = true; visible = true; idle = false
       if (idleTimer) clearTimeout(idleTimer)
-      idleTimer = setTimeout(() => { idle = true }, IDLE_DELAY_MS)
+      // Restart RAF on idle timer so is-idle class is applied even after RAF
+      // would have otherwise gone quiet with a stationary cursor
+      idleTimer = setTimeout(() => { idle = true; startRaf() }, IDLE_DELAY_MS)
       startRaf()
     }
 
-    const onLeave = () => { visible = false; syncClasses(); stopRaf() }
-    const onEnter = () => { visible = true;  startRaf() }
+    const onLeave = () => {
+      visible = false
+      // Flush immediately without waiting for next RAF tick
+      if (lastShow) {
+        dot.classList.remove("is-shown", "is-idle")
+        glow.classList.remove("is-shown", "is-idle")
+        lastShow = false; lastIdle = false
+      }
+      if (lastCursor) { document.body.style.cursor = ""; lastCursor = "" }
+      stopRaf()
+    }
+    const onEnter = () => { visible = true; startRaf() }
 
     document.addEventListener("mousemove", onMove,  { passive: true })
     document.addEventListener("mouseleave", onLeave)
