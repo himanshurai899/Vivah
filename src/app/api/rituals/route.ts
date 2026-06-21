@@ -7,7 +7,7 @@ export async function GET() {
       where: { weddingId: getWeddingId() },
       orderBy: { scheduledDate: "asc" },
     })
-    return ok(rituals.map(r => ({ ...r, requiredItems: JSON.parse(r.requiredItems) })))
+    return ok(rituals)
   } catch (e) {
     return serverErr(e)
   }
@@ -21,7 +21,7 @@ export async function POST(req: Request) {
         weddingId: getWeddingId(),
         name: body.name,
         description: body.description,
-        requiredItems: JSON.stringify(body.requiredItems ?? []),
+        requiredItems: body.requiredItems ?? [],
         responsiblePerson: body.responsiblePerson,
         budget: body.budget ? Number(body.budget) : null,
         status: body.status ?? "PENDING",
@@ -30,7 +30,7 @@ export async function POST(req: Request) {
         priestNotes: body.priestNotes,
       },
     })
-    return ok({ ...ritual, requiredItems: body.requiredItems ?? [] }, 201)
+    return ok(ritual, 201)
   } catch (e) {
     return serverErr(e)
   }

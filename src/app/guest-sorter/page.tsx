@@ -1,12 +1,12 @@
 "use client"
 
 import {
-  useState, useCallback, useRef, useMemo, useEffect,
+  useState, useCallback, useRef, useMemo, useEffect, useLayoutEffect, memo,
   type DragEvent,
 } from "react"
 import {
   Upload, Users, CheckCheck, X, Plus, Info,
-  CalendarDays, Loader2, RefreshCw, Star,
+  CalendarDays, Loader2, RefreshCw, Star, ChevronLeft, ChevronRight,
 } from "lucide-react"
 import { Button } from "@/components/ui/Button"
 import { Modal } from "@/components/ui/Modal"
@@ -212,6 +212,9 @@ function mergeIntoList(existing: SorterContact[], incoming: SorterContact[]): So
   return result
 }
 
+const PAGE_SIZE = 300
+const ITEM_H    = 60   // px per contact card slot (card ~54px + 6px gap)
+
 // ─── Sub-components ────────────────────────────────────────────────────────
 
 function ContactAvatar({ name }: { name: string }) {
@@ -225,6 +228,94 @@ function ContactAvatar({ name }: { name: string }) {
   )
 }
 
+const ContactCard = memo(function ContactCard({
+  c,
+  onSelect,
+  onDragStart,
+}: {
+  c: SorterContact
+  onSelect: (id: number) => void
+  onDragStart: (id: number, lane: "import") => (e: DragEvent) => void
+}) {
+  return (
+    <div
+      draggable
+      onDragStart={onDragStart(c.id, "import")}
+      onClick={() => onSelect(c.id)}
+      className="sorter-contact-card sorter-card-h flex items-center gap-2.5 px-3 rounded-lg border cursor-pointer select-none transition-all duration-150 hover:border-purple-300 dark:hover:border-purple-600 hover:shadow-sm hover:-translate-y-px active:translate-y-0"
+      tabIndex={0}
+      onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onSelect(c.id) } }}
+      aria-label={`${c.name}${c.phones[0] ? ", " + c.phones[0] : ""} — click to select`}
+    >
+      <ContactAvatar name={c.name} />
+      <div className="flex-1 min-w-0">
+        <p className="text-sm font-semibold truncate text-vivah-ink">{c.name || <em>No name</em>}</p>
+        <p className="text-xs truncate text-ink-sub">
+          {c.phones[0]}{c.phones[1] ? " · " + c.phones[1] : ""}
+        </p>
+      </div>
+    </div>
+  )
+})
+
+function VirtualContactList({
+  items,
+  onSelect,
+  onDragStart,
+}: {
+  items: SorterContact[]
+  onSelect: (id: number) => void
+  onDragStart: (id: number, lane: "import") => (e: DragEvent) => void
+}) {
+  const scrollRef = useRef<HTMLDivElement>(null)
+  const railRef   = useRef<HTMLDivElement>(null)
+  const winRef    = useRef<HTMLDivElement>(null)
+  const [scrollTop, setScrollTop] = useState(0)
+  const [viewH, setViewH]         = useState(400)
+
+  useEffect(() => {
+    const el = scrollRef.current
+    if (!el) return
+    setViewH(el.clientHeight)
+    const onScroll = () => setScrollTop(el.scrollTop)
+    el.addEventListener("scroll", onScroll, { passive: true })
+    const ro = new ResizeObserver(() => setViewH(el.clientHeight))
+    ro.observe(el)
+    return () => { el.removeEventListener("scroll", onScroll); ro.disconnect() }
+  }, [])
+
+  // Reset scroll when item list changes (page or search)
+  useEffect(() => {
+    scrollRef.current?.scrollTo({ top: 0 })
+    setScrollTop(0)
+  }, [items])
+
+  const OVERSCAN = 4
+  const startIdx = Math.max(0, Math.floor(scrollTop / ITEM_H) - OVERSCAN)
+  const endIdx   = Math.min(items.length, Math.ceil((scrollTop + viewH) / ITEM_H) + OVERSCAN)
+
+  // Set DOM dimensions imperatively — avoids inline style lint warnings
+  useLayoutEffect(() => {
+    if (railRef.current) railRef.current.style.height = `${items.length * ITEM_H}px`
+  }, [items.length])
+
+  useLayoutEffect(() => {
+    if (winRef.current) winRef.current.style.transform = `translateY(${startIdx * ITEM_H}px)`
+  })
+
+  return (
+    <div ref={scrollRef} className="flex-1 overflow-y-auto px-2 py-1.5">
+      <div ref={railRef} className="vl-rail">
+        <div ref={winRef} className="vl-window flex flex-col gap-1.5">
+          {items.slice(startIdx, endIdx).map(c => (
+            <ContactCard key={c.id} c={c} onSelect={onSelect} onDragStart={onDragStart} />
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
 // ─── Page ──────────────────────────────────────────────────────────────────
 
 export default function GuestSorterPage() {
@@ -234,8 +325,8 @@ export default function GuestSorterPage() {
   const [hydrated, setHydrated]      = useState(false)
   const [selectedIds, setSelected]   = useState<Set<number>>(new Set())
   const [tags, setTags]              = useState<Record<number, string[]>>({})
-  const [search, setSearch]          = useState("")
-  const [visibleCount, setVisible]   = useState(100)
+  const [search, setSearch]     = useState("")
+  const [currentPage, setPage]  = useState(0)
 
   const [events, setEvents]           = useState<WeddingEvent[]>([])
   const [eventsLoading, setEvLoading] = useState(true)
@@ -354,6 +445,17 @@ export default function GuestSorterPage() {
     selectedContacts.filter(c => (tags[c.id] ?? []).length > 0).length
   , [selectedContacts, tags])
 
+  // Pagination over filteredImport — reset to page 0 on filter change
+  const totalPages = Math.max(1, Math.ceil(filteredImport.length / PAGE_SIZE))
+  const safePage   = Math.min(currentPage, totalPages - 1)
+  const pageItems  = useMemo(
+    () => filteredImport.slice(safePage * PAGE_SIZE, (safePage + 1) * PAGE_SIZE),
+    [filteredImport, safePage]
+  )
+
+  // Reset page whenever search or contacts change
+  useEffect(() => { setPage(0) }, [search, contacts.length])
+
   // ── Import ────────────────────────────────────────────────────────────────
   const handleFiles = useCallback(async (files: FileList | null) => {
     if (!files || !files.length) return
@@ -372,7 +474,7 @@ export default function GuestSorterPage() {
         return next
       })
     }
-    setVisible(100)
+    setPage(0)
     toast({ message: `Imported ${totalNew} new contacts`, variant: "success" })
   }, [toast, setContacts])
 
@@ -583,7 +685,7 @@ export default function GuestSorterPage() {
             <input
               type="search"
               value={search}
-              onChange={e => { setSearch(e.target.value); setVisible(100) }}
+              onChange={e => { setSearch(e.target.value); setPage(0) }}
               placeholder="Search by name or number…"
               className="w-full h-9 pl-9 pr-3 rounded-md border text-sm focus:outline-none focus:ring-2 focus:ring-purple-400 bg-[var(--surface)] border-[var(--border)] text-vivah-ink"
               aria-label="Search contacts"
@@ -629,58 +731,87 @@ export default function GuestSorterPage() {
               <span className="text-[11px] text-ink-hint">Click or drag →</span>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-2 flex flex-col gap-1">
-              {filteredImport.length === 0 ? (
-                <div className="flex flex-col items-center justify-center gap-2 py-10 text-center text-ink-faint">
-                  <Users size={28} />
-                  <p className="text-sm font-medium">All contacts selected</p>
-                </div>
-              ) : (
-                filteredImport.slice(0, visibleCount).map(c => (
-                  <div
-                    key={c.id}
-                    draggable
-                    onDragStart={onCardDragStart(c.id, "import")}
-                    onClick={() => setSelected(prev => new Set([...prev, c.id]))}
-                    className="sorter-contact-card flex items-center gap-2.5 px-3 py-2 rounded-lg border cursor-pointer select-none transition-all duration-150 hover:border-purple-300 dark:hover:border-purple-600 hover:shadow-sm hover:-translate-y-px active:translate-y-0"
-                    tabIndex={0}
-                    onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setSelected(prev => new Set([...prev, c.id])) }}}
-                    aria-label={`${c.name}${c.phones[0] ? ", " + c.phones[0] : ""} — click to select`}
-                  >
-                    <ContactAvatar name={c.name} />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold truncate text-vivah-ink">{c.name || <em>No name</em>}</p>
-                      <p className="text-xs truncate text-ink-sub">
-                        {c.phones[0]}{c.phones[1] ? " · " + c.phones[1] : ""}
-                      </p>
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
+            {filteredImport.length === 0 ? (
+              <div className="flex flex-col items-center justify-center gap-2 py-10 text-center text-ink-faint flex-1">
+                <Users size={28} />
+                <p className="text-sm font-medium">All contacts selected</p>
+              </div>
+            ) : (
+              <VirtualContactList
+                items={pageItems}
+                onSelect={id => setSelected(prev => new Set([...prev, id]))}
+                onDragStart={onCardDragStart}
+              />
+            )}
 
-            {/* Footer — load more + select all, outside the scrollable area */}
-            <div className="px-3 py-2 border-t border-[var(--border)] shrink-0 flex flex-col gap-1">
-              {filteredImport.length > visibleCount && (
+            {/* Footer — pagination + select page */}
+            {filteredImport.length > 0 && (
+              <div className="px-3 py-2 border-t border-[var(--border)] shrink-0 space-y-1.5">
+                {/* Pagination controls */}
+                {totalPages > 1 && (
+                  <div className="flex items-center justify-between gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setPage(p => Math.max(0, p - 1))}
+                      disabled={safePage === 0}
+                      className="flex items-center gap-0.5 text-xs text-purple-600 dark:text-purple-400 hover:underline disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer font-medium"
+                    >
+                      <ChevronLeft size={12} /> Prev
+                    </button>
+
+                    <div className="flex items-center gap-1 flex-wrap justify-center">
+                      {Array.from({ length: Math.min(totalPages, 7) }, (_, i) => {
+                        // Show first, last, and pages around current
+                        const page = totalPages <= 7 ? i
+                          : i === 0 ? 0
+                          : i === 6 ? totalPages - 1
+                          : safePage - 2 + i < 0 ? i
+                          : safePage + i - 3
+                        const clamped = Math.max(0, Math.min(totalPages - 1, page))
+                        return (
+                          <button
+                            key={i}
+                            type="button"
+                            onClick={() => setPage(clamped)}
+                            className={cn(
+                              "w-5 h-5 rounded text-[10px] font-semibold transition-colors cursor-pointer",
+                              clamped === safePage
+                                ? "bg-purple-600 text-white"
+                                : "text-ink-muted hover:bg-[var(--surface-2)]"
+                            )}
+                          >
+                            {clamped + 1}
+                          </button>
+                        )
+                      })}
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))}
+                      disabled={safePage === totalPages - 1}
+                      className="flex items-center gap-0.5 text-xs text-purple-600 dark:text-purple-400 hover:underline disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer font-medium"
+                    >
+                      Next <ChevronRight size={12} />
+                    </button>
+                  </div>
+                )}
+
+                {/* Select all on current page */}
                 <button
                   type="button"
                   className="w-full text-xs text-purple-600 dark:text-purple-400 hover:underline font-medium cursor-pointer"
-                  onClick={() => setVisible(v => v + 100)}
+                  onClick={() => setSelected(prev => new Set([...prev, ...pageItems.map(c => c.id)]))}
                 >
-                  Load {Math.min(100, filteredImport.length - visibleCount).toLocaleString("en-IN")} more
-                  ({(filteredImport.length - visibleCount).toLocaleString("en-IN")} remaining)
+                  Select all {pageItems.length.toLocaleString("en-IN")} on this page
+                  {totalPages > 1 && (
+                    <span className="text-ink-faint ml-1">
+                      (page {safePage + 1}/{totalPages} · {filteredImport.length.toLocaleString("en-IN")} total)
+                    </span>
+                  )}
                 </button>
-              )}
-              {filteredImport.length > 0 && (
-                <button
-                  type="button"
-                  className="w-full text-xs text-purple-600 dark:text-purple-400 hover:underline font-medium cursor-pointer"
-                  onClick={() => setSelected(prev => new Set([...prev, ...filteredImport.slice(0, visibleCount).map(c => c.id)]))}
-                >
-                  Select all {Math.min(filteredImport.length, visibleCount).toLocaleString("en-IN")} visible
-                </button>
-              )}
-            </div>
+              </div>
+            )}
           </section>
 
           {/* ── Selected lane ────────────────────────────────────────────── */}

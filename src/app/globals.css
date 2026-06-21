@@ -957,3 +957,8 @@
 .sorter-empty-sel { border-color: rgba(124,58,237,0.25); }
 .dark .sorter-empty-sel { border-color: rgba(124,58,237,0.35); }
 
+/* Virtual list — heights/offsets set imperatively via useLayoutEffect */
+.vl-rail   { position: relative; }
+.vl-window { position: absolute; left: 0; right: 0; will-change: transform; }
+.sorter-card-h { height: 54px; }
+

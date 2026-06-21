@@ -10,7 +10,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
       data: {
         name: body.name,
         description: body.description,
-        requiredItems: JSON.stringify(body.requiredItems ?? []),
+        requiredItems: body.requiredItems ?? [],
         responsiblePerson: body.responsiblePerson,
         budget: body.budget ? Number(body.budget) : null,
         status: body.status,

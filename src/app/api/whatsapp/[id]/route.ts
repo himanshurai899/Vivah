@@ -7,7 +7,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
     const body = await req.json()
     const result = await prisma.whatsAppTemplate.updateMany({
       where: { id, weddingId: getWeddingId() },
-      data: { name: body.name, category: body.category, message: body.message, variables: JSON.stringify(body.variables ?? []), active: body.active },
+      data: { name: body.name, category: body.category, message: body.message, variables: body.variables ?? [], active: body.active },
     })
     if (result.count === 0) return err("Template not found", 404)
     return ok({ success: true })

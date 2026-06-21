@@ -16,7 +16,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
         endTime: body.endTime,
         coordinator: body.coordinator,
         budget: body.budget ? Number(body.budget) : null,
-        checklist: body.checklist ? JSON.stringify(body.checklist) : "[]",
+        checklist: body.checklist ?? [],
         notes: body.notes,
         isMainFunction: body.isMainFunction ?? false,
         status: body.status,

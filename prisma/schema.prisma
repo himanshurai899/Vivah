@@ -7,7 +7,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -110,7 +110,7 @@ model Event {
   endTime     String?
   coordinator String?
   budget      Float?
-  checklist   String   @default("[]") // JSON array string
+  checklist   Json     @default("[]")
   notes          String?
   isMainFunction Boolean  @default(false)
   status      String   @default("PLANNED") // PLANNED | IN_PROGRESS | COMPLETED | CANCELLED
@@ -171,7 +171,7 @@ model RoomAllocation {
   hotelId        String
   hotel          Hotel     @relation(fields: [hotelId], references: [id], onDelete: Cascade)
   roomNumber     String
-  assignedGuests String    @default("[]") // JSON array string
+  assignedGuests Json      @default("[]")
   checkInDate    DateTime?
   checkOutDate   DateTime?
   status         String    @default("PENDING") // PENDING | CONFIRMED | COMPLETED
@@ -210,7 +210,7 @@ model Ritual {
   wedding           Wedding   @relation(fields: [weddingId], references: [id], onDelete: Cascade)
   name              String
   description       String?
-  requiredItems     String    @default("[]") // JSON array string
+  requiredItems     Json      @default("[]")
   responsiblePerson String?
   budget            Float?
   status            String    @default("PENDING") // PENDING | IN_PROGRESS | COMPLETED
@@ -329,7 +329,7 @@ model WhatsAppTemplate {
   name      String
   category  String   @default("GENERAL") // INVITATION | REMINDER | CONFIRMATION | TRAVEL_UPDATE | GENERAL
   message   String
-  variables String   @default("[]") // JSON array of variable names
+  variables Json     @default("[]")
   active    Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

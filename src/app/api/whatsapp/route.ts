@@ -7,7 +7,7 @@ export async function GET() {
       where: { weddingId: getWeddingId() },
       orderBy: [{ category: "asc" }, { name: "asc" }],
     })
-    return ok(templates.map(t => ({ ...t, variables: JSON.parse(t.variables) })))
+    return ok(templates)
   } catch (e) {
     return serverErr(e)
   }
@@ -22,11 +22,11 @@ export async function POST(req: Request) {
         name: body.name,
         category: body.category ?? "GENERAL",
         message: body.message,
-        variables: JSON.stringify(body.variables ?? []),
+        variables: body.variables ?? [],
         active: body.active ?? true,
       },
     })
-    return ok({ ...template, variables: body.variables ?? [] }, 201)
+    return ok(template, 201)
   } catch (e) {
     return serverErr(e)
   }

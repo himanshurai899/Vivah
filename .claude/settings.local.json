@@ -36,7 +36,25 @@
       "PowerShell($env:DATABASE_URL = \"file:./dev.db\"; cd \"c:/Himanshu/Projects/Vivah\"; npx prisma migrate dev --name add_event_is_main_function 2>&1)",
       "PowerShell($env:DATABASE_URL = \"file:./dev.db\"; cd \"c:/Himanshu/Projects/Vivah\"; npx prisma db push 2>&1)",
       "PowerShell(cd c:\\\\Himanshu\\\\Projects\\\\Vivah; $env:DATABASE_URL = \"file:./dev.db\"; npx prisma db push --accept-data-loss 2>&1)",
-      "PowerShell(cd c:\\\\Himanshu\\\\Projects\\\\Vivah; $env:DATABASE_URL = \"file:./dev.db\"; $sql = \"UPDATE events SET isMainFunction = 1 WHERE name IN \\('Baraat', 'Tilak Ceremony'\\);\"; $sql | npx prisma db execute --stdin 2>&1)"
+      "PowerShell(cd c:\\\\Himanshu\\\\Projects\\\\Vivah; $env:DATABASE_URL = \"file:./dev.db\"; $sql = \"UPDATE events SET isMainFunction = 1 WHERE name IN \\('Baraat', 'Tilak Ceremony'\\);\"; $sql | npx prisma db execute --stdin 2>&1)",
+      "Bash(docker compose *)",
+      "Bash(docker context *)",
+      "Bash(docker info *)",
+      "PowerShell(Start-Process \"C:\\\\Program Files\\\\Docker\\\\Docker\\\\Docker Desktop.exe\")",
+      "PowerShell(docker context use default 2>&1)",
+      "PowerShell(docker info 2>&1)",
+      "PowerShell(cd c:\\\\Himanshu\\\\Projects\\\\Vivah; npx tsc --noEmit 2>&1 | Where-Object { $_ -match \"guest-sorter|VirtualContact|ContactCard|pageItems|currentPage\" })",
+      "Bash(curl -s http://localhost:3000/api/wedding)",
+      "PowerShell(cd c:\\\\Himanshu\\\\Projects\\\\Vivah; npx tsc --noEmit 2>&1 | Where-Object { $_ -match \"guest-sorter\" })",
+      "Bash(curl -s http://localhost:3000/api/rituals)",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(f'Rituals: {len\\(d\\)}, first requiredItems type: {type\\(d[0][\\\\\"requiredItems\\\\\"]\\).__name__}, count: {len\\(d[0][\\\\\"requiredItems\\\\\"]\\)}'\\)\")",
+      "Bash(node -e \"const d=JSON.parse\\(require\\('fs'\\).readFileSync\\('/dev/stdin','utf8'\\)\\); console.log\\('Rituals:', d.length, '| requiredItems type:', typeof d[0].requiredItems, '| isArray:', Array.isArray\\(d[0].requiredItems\\), '| count:', d[0].requiredItems.length\\)\")",
+      "Bash(node -e \"const d=JSON.parse\\(require\\('fs'\\).readFileSync\\('/tmp/rituals.json','utf8'\\)\\); console.log\\('Rituals:', d.length, '| requiredItems type:', typeof d[0].requiredItems, '| isArray:', Array.isArray\\(d[0].requiredItems\\), '| first item:', d[0].requiredItems[0]\\)\")",
+      "Bash(node -e \"process.stdin.resume\\(\\); let d=''; process.stdin.on\\('data',c=>d+=c\\); process.stdin.on\\('end',\\(\\)=>{const r=JSON.parse\\(d\\); console.log\\('Rituals:', r.length, '| isArray:', Array.isArray\\(r[0].requiredItems\\), '| first item:', r[0].requiredItems[0]\\)}\\)\")",
+      "Bash(curl -s http://localhost:3000/api/whatsapp)",
+      "Bash(node -e \"process.stdin.resume\\(\\); let d=''; process.stdin.on\\('data',c=>d+=c\\); process.stdin.on\\('end',\\(\\)=>{const r=JSON.parse\\(d\\); console.log\\('Templates:', r.length, '| variables isArray:', Array.isArray\\(r[0].variables\\), '| first var:', r[0].variables[0]\\)}\\)\")",
+      "Bash(curl -s http://localhost:3000/api/events)",
+      "Bash(node -e \"process.stdin.resume\\(\\); let d=''; process.stdin.on\\('data',c=>d+=c\\); process.stdin.on\\('end',\\(\\)=>{const r=JSON.parse\\(d\\); console.log\\('Events:', r.length, '| checklist isArray:', Array.isArray\\(r[0].checklist\\)\\)}\\)\")"
     ],
     "additionalDirectories": [
       "c:\\Users\\himan\\.claude\\projects\\c--Himanshu-Projects-Vivah"
