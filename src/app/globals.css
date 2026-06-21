@@ -933,6 +933,124 @@
   transform: translateY(-50%);
 }
 
+/* ── Vivah Custom Cursor ─────────────────────────────────────────────────── */
+/* Desktop fine-pointer only; SSR-safe (rendered only after JS hydration)     */
+@media (pointer: fine) {
+  /* Zero-size fixed anchor — JS sets transform: translate(x,y) each frame   */
+  .vc-pos {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+    z-index: 9998;
+    will-change: transform;
+  }
+
+  /* ── Inner dot ── precise, snaps instantly ── */
+  .vc-dot {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--gold);
+    box-shadow: 0 0 7px rgba(201, 168, 76, 0.85);
+    transform: translate(-50%, -50%) scale(0.3);
+    opacity: 0;
+    transition:
+      opacity    180ms var(--ease),
+      transform  200ms var(--ease),
+      background 400ms var(--ease),
+      box-shadow 400ms var(--ease);
+  }
+  .vc-dot.is-shown {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  /* Idle: breathes between gold and purple */
+  .vc-dot.is-idle {
+    animation: vc-dot-breathe 2.4s ease-in-out infinite;
+  }
+
+  /* ── Outer glow ring ── lags behind via JS lerp ── */
+  .vc-glow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 1px solid rgba(201, 168, 76, 0.20);
+    transform: translate(-50%, -50%) scale(0.4);
+    opacity: 0;
+    transition:
+      opacity      280ms var(--ease),
+      transform    300ms var(--ease),
+      width        420ms var(--ease),
+      height       420ms var(--ease),
+      border-color 300ms var(--ease);
+  }
+  /* Conic gradient lives on ::before so the spin animation                   */
+  /* doesn't conflict with the JS-controlled translate on the parent          */
+  .vc-glow::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: conic-gradient(
+      from 0deg,
+      rgba(124,  58, 237, 0.14),
+      rgba(201, 168,  76, 0.18),
+      rgba(226, 129,  63, 0.10),
+      rgba( 15,   6,  18, 0.06),
+      rgba(124,  58, 237, 0.14)
+    );
+  }
+  .vc-glow.is-shown {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  /* Idle: blooms larger and spins the gradient */
+  .vc-glow.is-idle {
+    width: 58px;
+    height: 58px;
+    border-color: rgba(201, 168, 76, 0.38);
+  }
+  .vc-glow.is-idle::before {
+    background: conic-gradient(
+      from 0deg,
+      rgba(124,  58, 237, 0.28),
+      rgba(201, 168,  76, 0.36),
+      rgba(226, 129,  63, 0.20),
+      rgba( 15,   6,  18, 0.04),
+      rgba(124,  58, 237, 0.28)
+    );
+    animation: vc-glow-spin 4s linear infinite;
+  }
+
+  @keyframes vc-dot-breathe {
+    0%, 100% {
+      background: var(--gold);
+      box-shadow: 0 0 7px rgba(201, 168, 76, 0.85);
+    }
+    50% {
+      background: var(--purple);
+      box-shadow: 0 0 14px rgba(124, 58, 237, 0.90), 0 0 28px rgba(124, 58, 237, 0.25);
+    }
+  }
+
+  /* rotate is the standalone CSS property (Transforms L2) — doesn't         */
+  /* stack with the parent's transform, so position is unaffected             */
+  @keyframes vc-glow-spin {
+    from { rotate: 0deg; }
+    to   { rotate: 360deg; }
+  }
+}
+
 /* ── Guest Sorter ─────────────────────────────────────────────────────────── */
 .text-ink-dim   { color: var(--ink); opacity: 0.55; }
 .text-ink-muted { color: var(--ink); opacity: 0.50; }
