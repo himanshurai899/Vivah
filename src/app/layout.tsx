@@ -9,7 +9,6 @@ import { GradientBackground } from "@/components/ui/gradient-background"
 import { ThemeProvider } from "@/components/ui/ThemeProvider"
 import { AuthProvider } from "@/components/layout/AuthProvider"
 import { ArkToastRegion } from "@/components/ui/basic-toast"
-import { VivahCursor } from "@/components/ui/VivahCursor"
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
@@ -66,7 +65,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <ToastProvider>
             <ArkToastRegion />
             <NavigationProgress />
-            <VivahCursor />
             <GradientBackground className="min-h-screen">
               <a href="#main-content" className="skip-nav">
                 Skip to main content

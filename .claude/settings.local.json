@@ -54,7 +54,15 @@
       "Bash(curl -s http://localhost:3000/api/whatsapp)",
       "Bash(node -e \"process.stdin.resume\\(\\); let d=''; process.stdin.on\\('data',c=>d+=c\\); process.stdin.on\\('end',\\(\\)=>{const r=JSON.parse\\(d\\); console.log\\('Templates:', r.length, '| variables isArray:', Array.isArray\\(r[0].variables\\), '| first var:', r[0].variables[0]\\)}\\)\")",
       "Bash(curl -s http://localhost:3000/api/events)",
-      "Bash(node -e \"process.stdin.resume\\(\\); let d=''; process.stdin.on\\('data',c=>d+=c\\); process.stdin.on\\('end',\\(\\)=>{const r=JSON.parse\\(d\\); console.log\\('Events:', r.length, '| checklist isArray:', Array.isArray\\(r[0].checklist\\)\\)}\\)\")"
+      "Bash(node -e \"process.stdin.resume\\(\\); let d=''; process.stdin.on\\('data',c=>d+=c\\); process.stdin.on\\('end',\\(\\)=>{const r=JSON.parse\\(d\\); console.log\\('Events:', r.length, '| checklist isArray:', Array.isArray\\(r[0].checklist\\)\\)}\\)\")",
+      "PowerShell(docker compose -f \"c:\\\\Himanshu\\\\Projects\\\\Vivah\\\\docker-compose.yml\" up -d postgres)",
+      "PowerShell(Start-Process \"C:\\\\Program Files\\\\Docker\\\\Docker\\\\Docker Desktop.exe\" -ErrorAction SilentlyContinue)",
+      "PowerShell(docker info 2>$null)",
+      "PowerShell(docker exec vivah-postgres psql -U vivah -d vivah -c \"SELECT id, name FROM \\\\\"Wedding\\\\\" LIMIT 1;\" 2>&1)",
+      "PowerShell(docker exec vivah-postgres psql -U vivah -d vivah -c 'SELECT id, name FROM \"Wedding\" LIMIT 1;' 2>&1)",
+      "PowerShell(docker exec vivah-postgres psql -U vivah -d vivah -c '\\\\dt' 2>&1)",
+      "PowerShell(docker exec vivah-postgres psql -U vivah -d vivah -c 'SELECT id, name FROM weddings LIMIT 3;' 2>&1)",
+      "PowerShell(docker image prune -f)"
     ],
     "additionalDirectories": [
       "c:\\Users\\himan\\.claude\\projects\\c--Himanshu-Projects-Vivah"
